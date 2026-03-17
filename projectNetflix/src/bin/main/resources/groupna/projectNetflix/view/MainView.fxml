@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.media.*?>
+<?import javafx.collections.*?>
+<?import java.lang.String?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:id="rootPane"
+            fx:controller="groupna.projectNetflix.controllers.MainViewController"
+            stylesheets="@../css/style.css"
+            styleClass="root">
+
+    <top>
+        <HBox spacing="20" alignment="CENTER_LEFT" styleClass="navbar">
+            <padding>
+                <Insets top="10" bottom="10" left="25" right="25"/>
+            </padding>
+
+            <Label text="BingeBox" styleClass="logo"/>
+
+            <Button text="Home" onAction="#goHome" styleClass="navButton"/>
+            <Button text="Movies" onAction="#openMovies" styleClass="navButton"/>
+            <Button text="Series" onAction="#openSeries" styleClass="navButton"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <ComboBox fx:id="languageSelector" styleClass="language-picker">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="🇺🇸 English" />
+                        <String fx:value="🇫🇷 Français" />
+                        <String fx:value="🇹🇳 Tunisian" />
+                    </FXCollections>
+                </items>
+                <value>
+                    <String fx:value="🇺🇸 English" />
+                </value>
+            </ComboBox>
+
+            <TextField promptText="Search movies..." styleClass="search"/>
+
+            <Button text="Subscribe" styleClass="subscribeBtn"/>
+            
+            <Button fx:id="themeToggle" onAction="#handleThemeChange" styleClass="theme-patch">
+                <graphic>
+                    <Label text="Switch Mode" styleClass="theme-label" /> 
+                </graphic>
+            </Button>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="scroll">
+            <VBox spacing="40" styleClass="main-container">
+                
+                <StackPane fx:id="heroSection" 
+                           styleClass="hero" 
+                           onMouseEntered="#playTrailer" 
+                           onMouseExited="#stopTrailer">
+                    
+                    <MediaView fx:id="trailerVideo" fitWidth="800" preserveRatio="true" />
+
+                    <VBox spacing="15" alignment="CENTER_LEFT" styleClass="hero-content">
+                        <Label text="Featured Movie" styleClass="heroTitle"/>
+                        <Label text="A powerful drama about family, power and secrets." 
+                               wrapText="true" styleClass="heroDesc"/>
+                        <Button text="Watch Now ▶" styleClass="watchBtn"/>
+                    </VBox>
+                </StackPane>
+
+                <VBox spacing="10" styleClass="category-section">
+                    <Label text="Selection" styleClass="categoryTitle"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="NEVER" styleClass="inner-scroll">
+                        <HBox spacing="15">
+                            <VBox styleClass="movieCard" onMouseEntered="#showDetails" onMouseExited="#hideDetails">
+                                <Rectangle width="140" height="200" styleClass="poster-placeholder"/>
+                                <Label text="Movie 1" styleClass="card-text"/>
+                            </VBox>
+                            <VBox styleClass="movieCard" onMouseEntered="#showDetails" onMouseExited="#hideDetails">
+                                <Rectangle width="140" height="200" styleClass="poster-placeholder"/>
+                                <Label text="Movie 2" styleClass="card-text"/>
+                            </VBox>
+                            <VBox styleClass="movieCard" onMouseEntered="#showDetails" onMouseExited="#hideDetails">
+                                <Rectangle width="140" height="200" styleClass="poster-placeholder"/>
+                                <Label text="Movie 3" styleClass="card-text"/>
+                            </VBox>
+                            <VBox styleClass="movieCard" onMouseEntered="#showDetails" onMouseExited="#hideDetails">
+                                <Rectangle width="140" height="200" styleClass="poster-placeholder"/>
+                                <Label text="Movie 4" styleClass="card-text"/>
+                            </VBox>
+                        </HBox>
+                    </ScrollPane>
+                </VBox>
+
+                <VBox spacing="10" styleClass="category-section">
+                    <Label text="Recommended For You" styleClass="categoryTitle"/>
+                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="NEVER" styleClass="inner-scroll">
+                        <HBox spacing="15">
+                            <VBox styleClass="movieCard" onMouseEntered="#showDetails" onMouseExited="#hideDetails">
+                                <Rectangle width="140" height="200" styleClass="poster-placeholder"/>
+                                <Label text="Series A" styleClass="card-text"/>
+                            </VBox>
+                            <VBox styleClass="movieCard" onMouseEntered="#showDetails" onMouseExited="#hideDetails">
+                                <Rectangle width="140" height="200" styleClass="poster-placeholder"/>
+                                <Label text="Series B" styleClass="card-text"/>
+                            </VBox>
+                            <VBox styleClass="movieCard" onMouseEntered="#showDetails" onMouseExited="#hideDetails">
+                                <Rectangle width="140" height="200" styleClass="poster-placeholder"/>
+                                <Label text="Series C" styleClass="card-text"/>
+                            </VBox>
+                        </HBox>
+                    </ScrollPane>
+                </VBox>
+
+                <Region prefHeight="100"/>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>
