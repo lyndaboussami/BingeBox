@@ -31,5 +31,26 @@ public class OeuvreService {
     }
 
     // -------------------------------------------------------------------------
+    public List<Categorie> getCategoriesForFilm(int filmId) {
+        return OeuvreDAO.getCategoriesByProduction(filmId, "film_categories", "id_film");
+    }
+
+    // --------------------------------------------------------------------------------
+
+    public List<Categorie> getCategoriesForSerie(int serieId) {
+        return OeuvreDAO.getCategoriesByProduction(serieId, "serie_categories", "id_serie");
+    }
+
+    // --------------------------------------------------------------------------------
+
+    public List<Artiste> getArtistesForFilm(int filmId) {
+        return OeuvreDAO.getArtistes(filmId, "film_artistes", "id_film");
+    }
+
+    // --------------------------------------------------------------------------------
+
+    public List<Artiste> getArtistesForSerie(int serieId) {
+        return OeuvreDAO.getArtistes(serieId, "serie_artistes", "id_serie");
+    }
 
 }
