@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class BingeBoxApp extends Application {
 
@@ -14,11 +15,14 @@ public class BingeBoxApp extends Application {
                 new FXMLLoader(getClass().getResource(
                 "/groupna/projectNetflix/view/MainView.fxml"));
 
+        //without the OS title bar
+        stage.initStyle(StageStyle.UNDECORATED);
+        
         Scene scene = new Scene(loader.load());
 
-        stage.setTitle("BingeBox Streaming");
-        stage.setScene(scene);
+        //stage.setTitle("BingeBox Streaming");
 
+        stage.setScene(scene);
         stage.setMaximized(true);
 
         stage.show();

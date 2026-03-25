@@ -1,6 +1,7 @@
 package groupna.projectNetflix.controllers;
 
 import java.util.*;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,7 +27,12 @@ public class MainViewController {
     @FXML private Label heroDesc;
     @FXML private Label selectionTitle;
     @FXML private Label recommendedTitle;
+    @FXML private HBox navbar;
 
+    private double xOffset = 0;
+    private double yOffset = 0;
+    
+    //à ajouter les autres composantes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private void updateLanguage(String langCode) {
         Locale locale = new Locale(langCode);
         ResourceBundle bundle = ResourceBundle.getBundle("groupna.projectNetflix.languages.bundle", locale);
@@ -34,7 +40,6 @@ public class MainViewController {
         homeBtn.setText(bundle.getString("navbar.home"));
         moviesBtn.setText(bundle.getString("navbar.movies"));
         seriesBtn.setText(bundle.getString("navbar.series"));
-        subscribeBtn.setText(bundle.getString("navbar.subscribe"));
 
         heroTitle.setText(bundle.getString("hero.title"));
         heroDesc.setText(bundle.getString("hero.description"));
@@ -42,10 +47,11 @@ public class MainViewController {
         selectionTitle.setText(bundle.getString("category.selection"));
         recommendedTitle.setText(bundle.getString("category.recommended"));
     }
+    
     @FXML
     public void initialize() {
         try {
-            var resource = getClass().getResource("/groupna/projectNetflix/assets/As Young As You Feel, Movie Trailer.mp4");
+            var resource = getClass().getResource("/groupna/projectNetflix/assets/Beast (2026) Movie Trailer.mp4");
             if (resource != null) {
                 String videoPath = resource.toExternalForm();
                 Media media = new Media(videoPath);
@@ -72,8 +78,81 @@ public class MainViewController {
                 updateLanguage("en");
             }
         });
+        if (navbar != null) {
+            navbar.setOnMousePressed(event -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+
+            navbar.setOnMouseDragged(event -> {
+                Stage stage = (Stage) navbar.getScene().getWindow();
+                if (!stage.isMaximized()) {
+                    stage.setX(event.getScreenX() - xOffset);
+                    stage.setY(event.getScreenY() - yOffset);
+                }
+            });
+        }
+        Platform.runLater(() -> {
+            Stage stage = (Stage) navbar.getScene().getWindow();
+            makeResizable(stage, navbar.getScene().getRoot());
+        });
+    }
+    
+    //ne marche pas à revoir !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public void makeResizable(Stage stage, Node root) {
+        final int RESIZE_MARGIN = 5;
+
+        root.setOnMouseMoved(event -> {
+            double x = event.getX();
+            double y = event.getY();
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+
+            Cursor cursor = Cursor.DEFAULT;
+
+            if (x < RESIZE_MARGIN && y < RESIZE_MARGIN) cursor = Cursor.NW_RESIZE;
+            else if (x < RESIZE_MARGIN && y > height - RESIZE_MARGIN) cursor = Cursor.SW_RESIZE;
+            else if (x > width - RESIZE_MARGIN && y < RESIZE_MARGIN) cursor = Cursor.NE_RESIZE;
+            else if (x > width - RESIZE_MARGIN && y > height - RESIZE_MARGIN) cursor = Cursor.SE_RESIZE;
+            else if (x < RESIZE_MARGIN) cursor = Cursor.W_RESIZE;
+            else if (x > width - RESIZE_MARGIN) cursor = Cursor.E_RESIZE;
+            else if (y < RESIZE_MARGIN) cursor = Cursor.N_RESIZE;
+            else if (y > height - RESIZE_MARGIN) cursor = Cursor.S_RESIZE;
+
+            root.setCursor(cursor);
+        });
+
+        root.setOnMouseDragged(event -> {
+            if (root.getCursor() != Cursor.DEFAULT) {
+                double x = event.getScreenX();
+                double y = event.getScreenY();
+
+                if (root.getCursor() == Cursor.E_RESIZE || root.getCursor() == Cursor.SE_RESIZE || root.getCursor() == Cursor.NE_RESIZE) {
+                    stage.setWidth(event.getX());
+                }
+                if (root.getCursor() == Cursor.S_RESIZE || root.getCursor() == Cursor.SE_RESIZE || root.getCursor() == Cursor.SW_RESIZE) {
+                    stage.setHeight(event.getY());
+                }
+            }
+        });
+    }
+    @FXML
+    private void handleClose(ActionEvent event) {
+        System.exit(0);
     }
 
+    @FXML
+    private void handleMinimize(ActionEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setIconified(true);
+    }
+
+    @FXML
+    private void handleMaximize(ActionEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setMaximized(!stage.isMaximized());
+    }
+    
     @FXML
     private void playTrailer(MouseEvent event) {
         if (mediaPlayer != null) {
@@ -90,6 +169,7 @@ public class MainViewController {
         }
     }
 
+    //à modifier pour correspondre à chaque film/série
     @FXML
     private void showDetails(MouseEvent event) {
         VBox card = (VBox) event.getSource();
@@ -109,7 +189,6 @@ public class MainViewController {
     private void hideDetails(MouseEvent event) {
         VBox card = (VBox) event.getSource();
     }
-    
     
 	private void loadPage(String fxml, ActionEvent event) {
 
@@ -154,5 +233,46 @@ public class MainViewController {
     @FXML
     private void openSeries(ActionEvent event){
         loadPage("SeriesView.fxml",event);
+
+    }
+    
+    @FXML
+    private void handleSearch(ActionEvent event) {
+        //à ajouter: filter movie list
+    }
+    
+    @FXML
+    private void handleProfile(ActionEvent event) {
+        loadPage("ProfileView.fxml",event);
+    }
+    
+    @FXML
+    private void handleHome(ActionEvent event) {
+        //à ajouter: Logic to scroll to top or reset view
+    }
+
+    @FXML
+    private void handleSeries(ActionEvent event) {
+        // à ajouter: Filter view for Series
+    }
+
+    @FXML
+    private void handleMovies(ActionEvent event) {
+        //à ajouter: Filter view for Movies
+    }
+
+    @FXML
+    private void handleHistory(ActionEvent event) {
+        //à ajouter: Show watch history
+    }
+    
+    @FXML
+    private void handleSettings(ActionEvent event) {
+        loadPage("SettingsView.fxml",event);
+    }
+
+    @FXML
+    private void handleFavorites() {
+        //à ajouter: Filter movie list to show only favorites
     }
 }
