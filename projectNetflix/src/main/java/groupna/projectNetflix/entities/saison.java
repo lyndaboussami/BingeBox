@@ -8,13 +8,15 @@ public class saison {
 	private LocalDate dateDeSortie;
 	private String Titre;
 	private String resume;
-	public saison(int id, int num, LocalDate dateDeSortie, String titre, String resume) {
+	private String PathTrailer;
+	public saison(int id, int num, LocalDate dateDeSortie, String titre, String resume, String pathTrailer) {
 		super();
 		this.id = id;
-		this.setNum(num);
+		this.num = num;
 		this.dateDeSortie = dateDeSortie;
 		Titre = titre;
 		this.resume = resume;
+		PathTrailer = pathTrailer;
 	}
 	public int getId() {
 		return id;
@@ -45,5 +47,11 @@ public class saison {
 	}
 	public void setNum(int num) {
 		this.num = num;
+	}
+	public String getPathTrailer() {
+		return PathTrailer;
+	}
+	public void setPathTrailer(String pathTrailer) {
+		PathTrailer = pathTrailer;
 	}
 }

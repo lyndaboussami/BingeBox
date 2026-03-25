@@ -3,12 +3,14 @@ package groupna.projectNetflix.entities;
 public class commentaire {
 	private int id_user;
 	private int id_oeuvre;
+	private boolean reported;
 	private String content;
-	public commentaire(int id_user, int id_oeuvre, String content) {
+	public commentaire(int id_user, int id_oeuvre, String content,boolean reported) {
 		super();
 		this.id_user = id_user;
 		this.id_oeuvre = id_oeuvre;
 		this.content = content;
+		this.reported=reported;
 	}
 	public int getId_user() {
 		return id_user;
@@ -28,7 +30,12 @@ public class commentaire {
 	public void setContent(String content) {
 		this.content = content;
 	}
+	public boolean isReported() {
+		return reported;
+	}
+	public void setReported(boolean reported) {
+		this.reported = reported;
+	}
 	
 	
 }
-

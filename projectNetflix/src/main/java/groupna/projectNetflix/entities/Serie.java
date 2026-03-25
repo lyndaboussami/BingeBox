@@ -6,11 +6,10 @@ import java.util.Map;
 
 public class Serie extends Oeuvre{
 	private Map<saison,List<Episode>> saisons;
-
 	public Serie(int id, String resume, List<Categorie> cat, String titre, LocalDate dateDeSortie,
-			List<Artiste> acteurs, List<Artiste> directeurs, double rate, String uRLann,
+			List<Artiste> acteurs, List<Artiste> directeurs, double rate, String pathPoster,
 			Map<saison, List<Episode>> saisons) {
-		super(id, resume, cat, titre, dateDeSortie, acteurs, directeurs, rate, uRLann);
+		super(id, resume, cat, titre, dateDeSortie, acteurs, directeurs, rate, pathPoster);
 		this.saisons = saisons;
 	}
 

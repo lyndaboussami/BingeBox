@@ -23,10 +23,10 @@
             </padding>
 
             <Label text="BingeBox" styleClass="logo"/>
-
-            <Button text="Home" onAction="#goHome" styleClass="navButton"/>
-            <Button text="Movies" onAction="#openMovies" styleClass="navButton"/>
-            <Button text="Series" onAction="#openSeries" styleClass="navButton"/>
+			
+			<Button fx:id="homeBtn" text="Home" onAction="#goHome" styleClass="navButton"/>
+			<Button fx:id="moviesBtn" text="Movies" onAction="#openMovies" styleClass="navButton"/>
+			<Button fx:id="seriesBtn" text="Series" onAction="#openSeries" styleClass="navButton"/>
 
             <Region HBox.hgrow="ALWAYS"/>
 
@@ -45,11 +45,11 @@
 
             <TextField promptText="Search movies..." styleClass="search"/>
 
-            <Button text="Subscribe" styleClass="subscribeBtn"/>
+			<Button fx:id="subscribeBtn" text="Subscribe" styleClass="subscribeBtn"/>
             
             <Button fx:id="themeToggle" onAction="#handleThemeChange" styleClass="theme-patch">
                 <graphic>
-                    <Label text="Switch Mode" styleClass="theme-label" /> 
+                    <Label text="🔀" styleClass="theme-label" /> 
                 </graphic>
             </Button>
         </HBox>
@@ -58,24 +58,36 @@
     <center>
         <ScrollPane fitToWidth="true" styleClass="scroll">
             <VBox spacing="40" styleClass="main-container">
-                
                 <StackPane fx:id="heroSection" 
-                           styleClass="hero" 
-                           onMouseEntered="#playTrailer" 
-                           onMouseExited="#stopTrailer">
-                    
-                    <MediaView fx:id="trailerVideo" fitWidth="800" preserveRatio="true" />
-
-                    <VBox spacing="15" alignment="CENTER_LEFT" styleClass="hero-content">
-                        <Label text="Featured Movie" styleClass="heroTitle"/>
-                        <Label text="A powerful drama about family, power and secrets." 
-                               wrapText="true" styleClass="heroDesc"/>
-                        <Button text="Watch Now ▶" styleClass="watchBtn"/>
-                    </VBox>
-                </StackPane>
-
+			           styleClass="hero" 
+			           onMouseEntered="#playTrailer" 
+			           onMouseExited="#stopTrailer">
+			
+				    <MediaView fx:id="trailerVideo" preserveRatio="false" opacity="1.0" />
+				
+				    <VBox spacing="10" alignment="CENTER_LEFT" mouseTransparent="true">
+				        <padding>
+				            <Insets left="40" bottom="30"/>
+				        </padding>
+				        
+				        <HBox spacing="10" alignment="CENTER_LEFT">
+				             <Label text="1h31" styleClass="meta-tag"/>
+				             <Label text="1951" styleClass="meta-tag"/>
+				             <Label text="Drama, Comedy" styleClass="meta-tag"/>
+				        </HBox>
+				
+				        <Label fx:id="heroTitle" text="As young as you feel" styleClass="heroTitle"/>
+				        
+				        <Label fx:id="heroDesc" styleClass="hero-desc-responsive"
+				               text="After John is forced to retire due to his company's policy, he poses as the president of his former employer's company, to make his boss hire him again...." 
+				               wrapText="true" maxWidth="450"/>
+				
+				        <Button text="Watch Now ▷" styleClass="watchBtn"/>
+			    </VBox>
+			    
+			</StackPane>
                 <VBox spacing="10" styleClass="category-section">
-                    <Label text="Selection" styleClass="categoryTitle"/>
+                    <Label fx:id="selectionTitle" text="Selection" styleClass="categoryTitle"/>
                     <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="NEVER" styleClass="inner-scroll">
                         <HBox spacing="15">
                             <VBox styleClass="movieCard" onMouseEntered="#showDetails" onMouseExited="#hideDetails">
@@ -99,7 +111,7 @@
                 </VBox>
 
                 <VBox spacing="10" styleClass="category-section">
-                    <Label text="Recommended For You" styleClass="categoryTitle"/>
+                    <Label fx:id="recommendedTitle" text="Recommended For You" styleClass="categoryTitle"/>
                     <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="NEVER" styleClass="inner-scroll">
                         <HBox spacing="15">
                             <VBox styleClass="movieCard" onMouseEntered="#showDetails" onMouseExited="#hideDetails">

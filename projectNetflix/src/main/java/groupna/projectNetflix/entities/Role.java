@@ -2,7 +2,7 @@ package groupna.projectNetflix.entities;
 
 public enum Role {
 	ADMIN("admin"),
-	UTILISATEUR("utilisateur");
+	USER("user");
 	private String role;
 
 	private Role(String role) {

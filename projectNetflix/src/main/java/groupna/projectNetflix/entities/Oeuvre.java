@@ -12,10 +12,15 @@ public class Oeuvre {
 	protected List<Artiste> acteurs;
 	protected List<Artiste> Directeurs;
 	protected double rate;
-	protected String URLann;
-	
+	protected String PathPoster;
+	public String getPathPoster() {
+		return PathPoster;
+	}
+	public void setPathPoster(String pathPoster) {
+		PathPoster = pathPoster;
+	}
 	public Oeuvre(int id, String resume, List<Categorie> cat, String titre, LocalDate dateDeSortie,
-			List<Artiste> acteurs, List<Artiste> directeurs, double rate, String uRLann) {
+			List<Artiste> acteurs, List<Artiste> directeurs, double rate, String pathPoster) {
 		super();
 		this.id = id;
 		this.resume = resume;
@@ -25,7 +30,7 @@ public class Oeuvre {
 		this.acteurs = acteurs;
 		Directeurs = directeurs;
 		this.rate = rate;
-		URLann = uRLann;
+		PathPoster = pathPoster;
 	}
 	public String getResume() {
 		return resume;
@@ -74,11 +79,5 @@ public class Oeuvre {
 	}
 	public void setCat(List<Categorie> cat) {
 		this.cat = cat;
-	}
-	public String getURLann() {
-		return URLann;
-	}
-	public void setURLann(String uRLann) {
-		URLann = uRLann;
 	}
 }

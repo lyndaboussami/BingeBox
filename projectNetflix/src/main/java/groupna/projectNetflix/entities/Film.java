@@ -5,13 +5,26 @@ import java.time.LocalTime;
 import java.util.List;
 
 public class Film extends Oeuvre {
+	
+	@Override
+	public String toString() {
+		return "Film [duree=" + duree + ", PathMovie=" + PathMovie + ", PathTrailer=" + PathTrailer + ", id=" + id
+				+ ", resume=" + resume + ", cat=" + cat + ", titre=" + titre + ", DateDeSortie=" + DateDeSortie
+				+ ", acteurs=" + acteurs + ", Directeurs=" + Directeurs + ", rate=" + rate + ", PathPoster="
+				+ PathPoster + "]";
+	}
+
 	private LocalTime duree;
-	private String URL;
+	private String PathMovie;
+	private String PathTrailer;
+
 	public Film(int id, String resume, List<Categorie> cat, String titre, LocalDate dateDeSortie, List<Artiste> acteurs,
-			List<Artiste> directeurs, double rate, String uRLann, LocalTime duree, String uRL) {
-		super(id, resume, cat, titre, dateDeSortie, acteurs, directeurs, rate, uRLann);
+			List<Artiste> directeurs, double rate, String pathPoster, LocalTime duree, String pathMovie,
+			String pathTrailer) {
+		super(id, resume, cat, titre, dateDeSortie, acteurs, directeurs, rate, pathPoster);
 		this.duree = duree;
-		URL = uRL;
+		setPathMovie(pathMovie);
+		PathTrailer = pathTrailer;
 	}
 
 	public LocalTime getDuree() {
@@ -21,12 +34,21 @@ public class Film extends Oeuvre {
 	public void setDuree(LocalTime duree) {
 		this.duree = duree;
 	}
+	
 
-	public String getURL() {
-		return URL;
+	public String getPathTrailer() {
+		return PathTrailer;
 	}
 
-	public void setURL(String uRL) {
-		URL = uRL;
+	public void setPathTrailer(String pathTrailer) {
+		PathTrailer = pathTrailer;
+	}
+
+	public String getPathMovie() {
+		return PathMovie;
+	}
+
+	public void setPathMovie(String pathMovie) {
+		PathMovie = pathMovie;
 	}
 }

@@ -8,15 +8,16 @@ public class Episode {
 	private String resume;
 	private String Titre;
 	private LocalTime duree;
-	private String URLann;
-	private String URL;
-	public Episode(String resume, String titre, LocalTime duree,String URLann,String URL,int num) {
+	private String PathEp;
+	
+	public Episode(int numero, int id, String resume, String titre, LocalTime duree, String pathEp) {
+		super();
+		this.numero = numero;
+		this.id = id;
 		this.resume = resume;
 		Titre = titre;
 		this.duree = duree;
-		this.URLann=URLann;
-		this.setURL(URL);
-		this.numero=num;
+		PathEp=pathEp;
 	}
 	public String getResume() {
 		return resume;
@@ -46,23 +47,17 @@ public class Episode {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public String getURLann() {
-		return URLann;
-	}
-	public void setURLann(String uRLann) {
-		URLann = uRLann;
-	}
-	public String getURL() {
-		return URL;
-	}
-	public void setURL(String uRL) {
-		URL = uRL;
-	}
 	public int getNumero() {
 		return numero;
 	}
 	public void setNumero(int numero) {
 		this.numero = numero;
+	}
+	public String getPathEp() {
+		return PathEp;
+	}
+	public void setPathEp(String pathEp) {
+		PathEp = pathEp;
 	}
 	
 }

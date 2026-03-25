@@ -1,4 +1,4 @@
-	package groupna.projectNetflix.entities;
+package groupna.projectNetflix.entities;
 	
 	public enum Categorie {
 	    // Catégories Générales
