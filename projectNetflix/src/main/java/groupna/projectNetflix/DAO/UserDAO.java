@@ -1,14 +1,11 @@
 package groupna.projectNetflix.DAO;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import groupna.projectNetflix.entities.Oeuvre;
 import groupna.projectNetflix.entities.Role;
-import groupna.projectNetflix.entities.Serie;
 import groupna.projectNetflix.entities.User;
 import groupna.projectNetflix.utils.ConxDB;
 

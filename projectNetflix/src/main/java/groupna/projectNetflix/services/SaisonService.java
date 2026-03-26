@@ -2,15 +2,15 @@ package groupna.projectNetflix.services;
 
 import java.util.List;
 import groupna.projectNetflix.DAO.SaisonDAO;
-import groupna.projectNetflix.entities.saison;
+import groupna.projectNetflix.entities.Saison;
 
 public class SaisonService {
 
     /**
-     * Ajoute une saison à une série.
+     * Ajoute une Saison à une série.
      * @return true si l'ID généré est valide.
      */
-    public boolean addSaison(saison s, int idSerie) {
+    public boolean addSaison(Saison s, int idSerie) {
         if (s != null && idSerie > 0) {
             int generatedId = SaisonDAO.save(s, idSerie);
             if (generatedId > 0) {
@@ -22,9 +22,9 @@ public class SaisonService {
     }
 
     /**
-     * Récupère une saison par son identifiant unique.
+     * Récupère une Saison par son identifiant unique.
      */
-    public saison getSaisonById(int idSaison) {
+    public Saison getSaisonById(int idSaison) {
         if (idSaison <= 0) return null;
         return SaisonDAO.findById(idSaison);
     }
@@ -32,15 +32,15 @@ public class SaisonService {
     /**
      * Récupère la liste des saisons d'une série.
      */
-    public List<saison> getSaisonsBySerie(int idSerie) {
+    public List<Saison> getSaisonsBySerie(int idSerie) {
         if (idSerie <= 0) return List.of();
         return SaisonDAO.findAllBySerie(idSerie);
     }
 
     /**
-     * Met à jour les informations d'une saison (titre, résumé, etc.).
+     * Met à jour les informations d'une Saison (titre, résumé, etc.).
      */
-    public boolean updateSaison(saison s) {
+    public boolean updateSaison(Saison s) {
         if (s != null && s.getId() > 0) {
             // On suppose que SaisonDAO.update renvoie un boolean ou le nombre de lignes
             SaisonDAO.update(s);
@@ -50,7 +50,7 @@ public class SaisonService {
     }
 
     /**
-     * Supprime une saison et tous ses épisodes associés (Cascade).
+     * Supprime une Saison et tous ses épisodes associés (Cascade).
      */
     public boolean deleteSaisonCompletement(int idSaison) {
         if (idSaison <= 0) return false;
@@ -63,7 +63,7 @@ public class SaisonService {
      */
     public int getNombreDeSaisons(int idSerie) {
         if (idSerie <= 0) return 0;
-        List<saison> saisons = SaisonDAO.findAllBySerie(idSerie);
+        List<Saison> saisons = SaisonDAO.findAllBySerie(idSerie);
         return (saisons != null) ? saisons.size() : 0;
     }
 }

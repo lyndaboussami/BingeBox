@@ -7,7 +7,7 @@ import groupna.projectNetflix.entities.Episode;
 public class EpisodeService {
 
     /**
-     * Ajoute un épisode à une saison.
+     * Ajoute un épisode à une Saison.
      * Met à jour l'ID de l'objet Episode avec l'ID généré en BDD.
      */
     public boolean addEpisode(Episode ep, int idSaison) {
@@ -25,7 +25,7 @@ public class EpisodeService {
     /**
      * Récupère un épisode spécifique.
      * CORRECTION : Comme getEpisodeBySeasonAndNumber n'existe pas dans le DAO, 
-     * on filtre la liste de la saison.
+     * on filtre la liste de la Saison.
      */
     public Episode getEpisode(int idSaison, int numeroEpisode) {
         if (idSaison <= 0 || numeroEpisode < 0) {
@@ -41,7 +41,7 @@ public class EpisodeService {
     }
 
     /**
-     * Récupère tous les épisodes d'une saison.
+     * Récupère tous les épisodes d'une Saison.
      */
     public List<Episode> getEpisodesBySaison(int idSaison) {
         if (idSaison <= 0) {
@@ -51,7 +51,7 @@ public class EpisodeService {
     }
 
     /**
-     * Supprime un épisode via son numéro et son ID de saison.
+     * Supprime un épisode via son numéro et son ID de Saison.
      */
     public boolean deleteEpisode(int numeroEpisode, int idSaison) {
         if (idSaison <= 0 || numeroEpisode < 0) {
@@ -61,7 +61,7 @@ public class EpisodeService {
     }
 
     /**
-     * Compte le nombre d'épisodes dans une saison.
+     * Compte le nombre d'épisodes dans une Saison.
      */
     public int countEpisodesInSaison(int idSaison) {
         if (idSaison <= 0) return 0;
