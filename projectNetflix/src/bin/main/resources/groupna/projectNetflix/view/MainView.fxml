@@ -16,122 +16,76 @@
             stylesheets="@../css/style.css"
             styleClass="root">
 
-    <top>
-        <HBox spacing="20" alignment="CENTER_LEFT" styleClass="navbar">
+	<left>
+        <VBox spacing="25" fx:id="sidebar" styleClass="sidebar">
             <padding>
-                <Insets top="10" bottom="10" left="25" right="25"/>
+                <Insets top="30" left="15" right="15"/>
             </padding>
-
-            <Label text="BingeBox" styleClass="logo"/>
-			
-			<Button fx:id="homeBtn" text="Home" onAction="#goHome" styleClass="navButton"/>
-			<Button fx:id="moviesBtn" text="Movies" onAction="#openMovies" styleClass="navButton"/>
-			<Button fx:id="seriesBtn" text="Series" onAction="#openSeries" styleClass="navButton"/>
-
-            <Region HBox.hgrow="ALWAYS"/>
-
-            <ComboBox fx:id="languageSelector" styleClass="language-picker">
-                <items>
-                    <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="🇺🇸 English" />
-                        <String fx:value="🇫🇷 Français" />
-                        <String fx:value="🇹🇳 Tunisian" />
-                    </FXCollections>
-                </items>
-                <value>
-                    <String fx:value="🇺🇸 English" />
-                </value>
-            </ComboBox>
-
-            <TextField promptText="Search movies..." styleClass="search"/>
-
-			<Button fx:id="subscribeBtn" text="Subscribe" styleClass="subscribeBtn"/>
             
-            <Button fx:id="themeToggle" onAction="#handleThemeChange" styleClass="theme-patch">
+            <Button onAction="#handleProfile" styleClass="sidebar-profile-btn">
                 <graphic>
-                    <Label text="🔀" styleClass="theme-label" /> 
+                    <Circle radius="20" fill="#CFB997"/>
                 </graphic>
             </Button>
-        </HBox>
-    </top>
 
-    <center>
-        <ScrollPane fitToWidth="true" styleClass="scroll">
-            <VBox spacing="40" styleClass="main-container">
-                <StackPane fx:id="heroSection" 
-			           styleClass="hero" 
-			           onMouseEntered="#playTrailer" 
-			           onMouseExited="#stopTrailer">
-			
-				    <MediaView fx:id="trailerVideo" preserveRatio="false" opacity="1.0" />
-				
-				    <VBox spacing="10" alignment="CENTER_LEFT" mouseTransparent="true">
-				        <padding>
-				            <Insets left="40" bottom="30"/>
-				        </padding>
-				        
-				        <HBox spacing="10" alignment="CENTER_LEFT">
-				             <Label text="1h31" styleClass="meta-tag"/>
-				             <Label text="1951" styleClass="meta-tag"/>
-				             <Label text="Drama, Comedy" styleClass="meta-tag"/>
-				        </HBox>
-				
-				        <Label fx:id="heroTitle" text="As young as you feel" styleClass="heroTitle"/>
-				        
-				        <Label fx:id="heroDesc" styleClass="hero-desc-responsive"
-				               text="After John is forced to retire due to his company's policy, he poses as the president of his former employer's company, to make his boss hire him again...." 
-				               wrapText="true" maxWidth="450"/>
-				
-				        <Button text="Watch Now ▷" styleClass="watchBtn"/>
-			    </VBox>
-			    
-			</StackPane>
-                <VBox spacing="10" styleClass="category-section">
-                    <Label fx:id="selectionTitle" text="Selection" styleClass="categoryTitle"/>
-                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="NEVER" styleClass="inner-scroll">
-                        <HBox spacing="15">
-                            <VBox styleClass="movieCard" onMouseEntered="#showDetails" onMouseExited="#hideDetails">
-                                <Rectangle width="140" height="200" styleClass="poster-placeholder"/>
-                                <Label text="Movie 1" styleClass="card-text"/>
-                            </VBox>
-                            <VBox styleClass="movieCard" onMouseEntered="#showDetails" onMouseExited="#hideDetails">
-                                <Rectangle width="140" height="200" styleClass="poster-placeholder"/>
-                                <Label text="Movie 2" styleClass="card-text"/>
-                            </VBox>
-                            <VBox styleClass="movieCard" onMouseEntered="#showDetails" onMouseExited="#hideDetails">
-                                <Rectangle width="140" height="200" styleClass="poster-placeholder"/>
-                                <Label text="Movie 3" styleClass="card-text"/>
-                            </VBox>
-                            <VBox styleClass="movieCard" onMouseEntered="#showDetails" onMouseExited="#hideDetails">
-                                <Rectangle width="140" height="200" styleClass="poster-placeholder"/>
-                                <Label text="Movie 4" styleClass="card-text"/>
-                            </VBox>
-                        </HBox>
-                    </ScrollPane>
-                </VBox>
+            <Region VBox.vgrow="ALWAYS" /> <Button onAction="#handleSearch" styleClass="sidebar-icon-btn" text="🔍" />
+            <Button onAction="#goHome" styleClass="sidebar-icon-btn" text="🏠" />
+            <Button onAction="#openSeries" styleClass="sidebar-icon-btn" text="📺" />
+            <Button onAction="#openMovies" styleClass="sidebar-icon-btn" text="🎬" />
+            <Button onAction="#handleFavorites" styleClass="sidebar-icon-btn" text="🔖" />
+            <Button onAction="#handleHistory" styleClass="sidebar-icon-btn" text="🕒" />
+            
+            <Region VBox.vgrow="ALWAYS" />
 
-                <VBox spacing="10" styleClass="category-section">
-                    <Label fx:id="recommendedTitle" text="Recommended For You" styleClass="categoryTitle"/>
-                    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="NEVER" styleClass="inner-scroll">
-                        <HBox spacing="15">
-                            <VBox styleClass="movieCard" onMouseEntered="#showDetails" onMouseExited="#hideDetails">
-                                <Rectangle width="140" height="200" styleClass="poster-placeholder"/>
-                                <Label text="Series A" styleClass="card-text"/>
-                            </VBox>
-                            <VBox styleClass="movieCard" onMouseEntered="#showDetails" onMouseExited="#hideDetails">
-                                <Rectangle width="140" height="200" styleClass="poster-placeholder"/>
-                                <Label text="Series B" styleClass="card-text"/>
-                            </VBox>
-                            <VBox styleClass="movieCard" onMouseEntered="#showDetails" onMouseExited="#hideDetails">
-                                <Rectangle width="140" height="200" styleClass="poster-placeholder"/>
-                                <Label text="Series C" styleClass="card-text"/>
-                            </VBox>
-                        </HBox>
-                    </ScrollPane>
-                </VBox>
-
-                <Region prefHeight="100"/>
-            </VBox>
-        </ScrollPane>
-    </center>
+            <Button onAction="#handleSettings" styleClass="sidebar-icon-btn" text="⛯" />
+        </VBox>
+    </left>
+    <top>
+	    <HBox fx:id="navbar" alignment="CENTER_LEFT" styleClass="navbar">
+	        <padding>
+	            <Insets top="0" bottom="0" left="25" right="0"/> </padding>
+	
+	        <HBox alignment="CENTER_LEFT" minWidth="200"> 
+	            <Label styleClass="logo" text="BingeBox"/>
+	        </HBox>
+	
+	        <Region HBox.hgrow="ALWAYS" />
+	
+	        <HBox fx:id="navLinksContainer" alignment="CENTER" spacing="25">
+	            <Button fx:id="homeBtn" text="Home" onAction="#goHome" styleClass="navButton"/>
+	            <Button fx:id="moviesBtn" text="Movies" onAction="#openMovies" styleClass="navButton"/>
+	            <Button fx:id="seriesBtn" text="Series" onAction="#openSeries" styleClass="navButton"/>
+	        </HBox>
+	
+	        <Region HBox.hgrow="ALWAYS" />
+	
+	        <HBox alignment="CENTER_RIGHT" spacing="15" minWidth="200">
+	            <ComboBox fx:id="languageSelector" styleClass="language-picker">
+	                <items>
+	                    <FXCollections fx:factory="observableArrayList">
+	                        <String fx:value="🇺🇸 English" />
+	                        <String fx:value="🇫🇷 Français" />
+	                        <String fx:value="🇹🇳 Tunisian" />
+	                    </FXCollections>
+	                </items>
+	                <value>
+	                    <String fx:value="🇺🇸 English" />
+	                </value>
+	            </ComboBox>
+	            
+	            <Button fx:id="themeToggle" onAction="#handleThemeChange" styleClass="theme-patch">
+	                <graphic>
+	                    <Label text="🔀" styleClass="theme-label" /> 
+	                </graphic>
+	            </Button>
+	
+	            <HBox alignment="CENTER_RIGHT" styleClass="window-controls">
+	                <Button onAction="#handleMinimize" text="—" styleClass="control-btn" />
+	                <Button onAction="#handleMaximize" text="▢" styleClass="control-btn" />
+	                <Button onAction="#handleClose" text="✕" styleClass="control-btn, close-btn" />
+	            </HBox>
+	        </HBox>
+	    </HBox>
+	</top>
+    <center/>
 </BorderPane>
