@@ -109,7 +109,7 @@ public class EpisodeDAO {
             isDeleted = (rowsAffected > 0);
 
             if (isDeleted) {
-                System.out.println("Épisode n°" + numeroEpisode + " de la saison " + idSaison + " supprimé.");
+                System.out.println("Épisode n°" + numeroEpisode + " de la Saison " + idSaison + " supprimé.");
             } else {
                 System.out.println("Aucun épisode trouvé avec ces paramètres.");
             }

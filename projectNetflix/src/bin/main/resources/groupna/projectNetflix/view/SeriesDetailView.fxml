@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<ScrollPane fitToWidth="true" styleClass="inner-scroll" 
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="groupna.projectNetflix.controllers.SeriesDetailController">
+    <VBox spacing="30" styleClass="main-container">
+        <StackPane prefHeight="350" style="-fx-background-color: -fx-hero-bg;">
+             <VBox alignment="BOTTOM_LEFT" spacing="10" styleClass="hero-overlay">
+                <padding><Insets left="50" bottom="30"/></padding>
+                <Label fx:id="seriesTitle" text="SERIES NAME" styleClass="heroTitle" />
+                <ToggleButton fx:id="favButton" styleClass="fav-button" text="❤" />
+                <Label fx:id="seriesMeta" text="Seasons • Year" style="-fx-text-fill: -fx-text-main;" />
+            	<Label fx:id="seriesDescription" 
+			           wrapText="true" 
+			           maxWidth="800"
+			           text="Loading description..." 
+			           style="-fx-text-fill: -fx-text-muted; -fx-font-size: 14px; -fx-line-spacing: 5;"/>
+            </VBox>
+        </StackPane>
+
+        <VBox spacing="30" style="-fx-padding: 0 50 50 50;">
+            <HBox spacing="20" alignment="CENTER_LEFT">
+                <Label text="Episodes" styleClass="categoryTitle" style="-fx-padding: 0;"/>
+                <ComboBox fx:id="seasonSelector" styleClass="language-picker" prefWidth="150" />
+            </HBox>
+
+            <VBox fx:id="episodeListContainer" spacing="15">
+                </VBox>
+        </VBox>
+    </VBox>
+</ScrollPane>

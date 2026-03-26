@@ -11,7 +11,7 @@ public class BingeBoxApp extends Application {
 	@Override
     public void start(Stage stage) throws Exception {
 
-        FXMLLoader loader =
+		FXMLLoader loader =
                 new FXMLLoader(getClass().getResource(
                 "/groupna/projectNetflix/view/MainView.fxml"));
 

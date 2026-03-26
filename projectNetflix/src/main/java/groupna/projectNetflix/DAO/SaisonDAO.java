@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class SaisonDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Erreur lors de l'ajout de la saison : " + e.getMessage());
+            System.err.println("Erreur lors de l'ajout de la Saison : " + e.getMessage());
         }
         
         return generatedId;

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.shape.*?>
+
+<ScrollPane fitToWidth="true" styleClass="scroll" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="groupna.projectNetflix.controllers.SearchController">
+    <VBox spacing="30" styleClass="main-container">
+        <padding>
+            <Insets top="30" bottom="40" left="40" right="40"/>
+        </padding>
+
+        <VBox spacing="20">
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Type title, category, or year..." 
+                           HBox.hgrow="ALWAYS" styleClass="search" 
+                           style="-fx-font-size: 18px; -fx-padding: 12;"/>
+                <Button text="Clear" onAction="#clearSearch" styleClass="navButton"/>
+            </HBox>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Format:" style="-fx-text-fill: #f2f0f0;"/>
+                <ToggleButton fx:id="filterMovies" text="Movies" styleClass="filter-chip"/>
+                <ToggleButton fx:id="filterSeries" text="Series" styleClass="filter-chip"/>
+                
+                <Separator orientation="VERTICAL" prefHeight="20" opacity="0.3"/>
+                
+                <Label text="Year:" style="-fx-text-fill: #f2f0f0;"/>
+                <ComboBox fx:id="yearFilter" promptText="All Years" styleClass="language-picker"/>
+            </HBox>
+
+            <FlowPane hgap="10" vgap="10" alignment="CENTER_LEFT">
+    			<Label text="Genres:" style="-fx-text-fill: #f2f0f0;"/>
+                <ToggleButton text="Action" styleClass="filter-chip"/>
+                <ToggleButton text="Comedy" styleClass="filter-chip"/>
+                <ToggleButton text="Sci-Fi" styleClass="filter-chip"/>
+                <ToggleButton text="Drama" styleClass="filter-chip"/>
+                <ToggleButton text="Horror" styleClass="filter-chip"/>
+            </FlowPane>
+        </VBox>
+
+        <Separator opacity="0.1" />
+
+        <VBox spacing="15">
+            <Label fx:id="resultsCountLabel" text="Explore all titles" style="-fx-font-size: 20px; -fx-text-fill: white;"/>
+            
+            <FlowPane fx:id="resultsPane" hgap="20" vgap="25">
+                <VBox styleClass="movieCard">
+                    <Rectangle width="140" height="200" styleClass="poster-placeholder"/>
+                    <Label text="Search Result 1" styleClass="card-text"/>
+                </VBox>
+                </FlowPane>
+        </VBox>
+
+        <Region prefHeight="50"/>
+    </VBox>
+</ScrollPane>

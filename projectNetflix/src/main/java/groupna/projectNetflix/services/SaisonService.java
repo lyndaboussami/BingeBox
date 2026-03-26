@@ -7,7 +7,7 @@ import groupna.projectNetflix.entities.Saison;
 public class SaisonService {
 
     /**
-     * Ajoute une saison à une série.
+     * Ajoute une Saison à une série.
      * @return true si l'ID généré est valide.
      */
     public boolean addSaison(Saison s, int idSerie) {
@@ -22,7 +22,7 @@ public class SaisonService {
     }
 
     /**
-     * Récupère une saison par son identifiant unique.
+     * Récupère une Saison par son identifiant unique.
      */
     public Saison getSaisonById(int idSaison) {
         if (idSaison <= 0) return null;
@@ -38,7 +38,7 @@ public class SaisonService {
     }
 
     /**
-     * Met à jour les informations d'une saison (titre, résumé, etc.).
+     * Met à jour les informations d'une Saison (titre, résumé, etc.).
      */
     public boolean updateSaison(Saison s) {
         if (s != null && s.getId() > 0) {
@@ -50,7 +50,7 @@ public class SaisonService {
     }
 
     /**
-     * Supprime une saison et tous ses épisodes associés (Cascade).
+     * Supprime une Saison et tous ses épisodes associés (Cascade).
      */
     public boolean deleteSaisonCompletement(int idSaison) {
         if (idSaison <= 0) return false;

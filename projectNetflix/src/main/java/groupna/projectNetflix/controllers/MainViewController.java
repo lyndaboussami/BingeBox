@@ -1,81 +1,66 @@
 package groupna.projectNetflix.controllers;
 
-import java.util.*;
+import groupna.projectNetflix.utils.Session;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.stage.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.media.*;
 
 public class MainViewController {
 	@FXML private BorderPane rootPane;
-    @FXML private Button themeToggle;
-    @FXML private StackPane heroSection;
     @FXML private ComboBox<String> languageSelector;
-    @FXML private MediaView trailerVideo;
-    private MediaPlayer mediaPlayer;
-    @FXML private Button homeBtn;
-    @FXML private Button moviesBtn;
-    @FXML private Button seriesBtn;
-    @FXML private Button subscribeBtn;
-    @FXML private Label heroTitle;
-    @FXML private Label heroDesc;
-    @FXML private Label selectionTitle;
-    @FXML private Label recommendedTitle;
+    @FXML private Button homeBtn, moviesBtn, seriesBtn, themeToggle;
     @FXML private HBox navbar;
+    @FXML private VBox sidebar;
+    @FXML private HBox navLinksContainer;
+    @FXML private Label heroTitle, heroDesc, selectionTitle, recommendedTitle;
+    
+    private static MainViewController instance;
+    
+    public MainViewController() {
+        instance = this;
+    }
 
-    private double xOffset = 0;
-    private double yOffset = 0;
-    private void updateLanguage(String langCode) {
-        Locale locale = new Locale(langCode);
-        ResourceBundle bundle = ResourceBundle.getBundle("groupna.projectNetflix.languages.bundle", locale);
-
-        homeBtn.setText(bundle.getString("navbar.home"));
-        moviesBtn.setText(bundle.getString("navbar.movies"));
-        seriesBtn.setText(bundle.getString("navbar.series"));
-
-        heroTitle.setText(bundle.getString("hero.title"));
-        heroDesc.setText(bundle.getString("hero.description"));
-
-        selectionTitle.setText(bundle.getString("category.selection"));
-        recommendedTitle.setText(bundle.getString("category.recommended"));
+    public static MainViewController getInstance() {
+        return instance;
     }
     
     @FXML
     public void initialize() {
-        try {
-            var resource = getClass().getResource("/groupna/projectNetflix/assets/Beast (2026) Movie Trailer.mp4");
-            if (resource != null) {
-                String videoPath = resource.toExternalForm();
-                Media media = new Media(videoPath);
-                mediaPlayer = new MediaPlayer(media);
-                mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-                mediaPlayer.setMute(true); 
-                trailerVideo.setMediaPlayer(mediaPlayer);
-            
-                trailerVideo.fitWidthProperty().bind(heroSection.widthProperty());
-                trailerVideo.fitHeightProperty().bind(heroSection.heightProperty());
-            } else {
-                System.out.println("Video file not found in assets!");
-            }
-        } catch (Exception e) {
-            System.err.println("Error loading media: " + e.getMessage());
+    	
+    	if (sidebar != null) {
+            sidebar.setVisible(false);
+            sidebar.setManaged(false);
         }
-        languageSelector.setOnAction(e -> {
-            String selected = languageSelector.getValue();
-            if (selected.contains("Français")) {
-                updateLanguage("fr");
-            } else if (selected.contains("Tunisian")) {
-                updateLanguage("tn");
-            } else {
-                updateLanguage("en");
-            }
-        });
+    	
+    	if (navLinksContainer != null) {
+            navLinksContainer.setVisible(false);
+            navLinksContainer.setManaged(false);
+        }
+    	
+    	if (navbar != null) {
+            loadPage("AuthView.fxml");
+        }
+    	
+    	setupWindowControls();
+    }
+    
+    public void unlockFullApp() {
+        sidebar.setVisible(true);
+        sidebar.setManaged(true);
+        
+        navLinksContainer.setVisible(true);
+        navLinksContainer.setManaged(true);
+        
+        loadPage("HomeView.fxml");
+    }
+    	
+    private void setupWindowControls() {
         if (navbar != null) {
             navbar.setOnMousePressed(event -> {
                 xOffset = event.getSceneX();
@@ -92,11 +77,18 @@ public class MainViewController {
         }
         Platform.runLater(() -> {
             Stage stage = (Stage) navbar.getScene().getWindow();
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+            stage.setMaxWidth(screenBounds.getWidth());
+            stage.setMaxHeight(screenBounds.getHeight());
             makeResizable(stage, navbar.getScene().getRoot());
         });
-    }
+    }   
+    
+    private double xOffset = 0;
+    private double yOffset = 0;
+
     public void makeResizable(Stage stage, Node root) {
-        final int RESIZE_MARGIN = 5;
+        final int RESIZE_MARGIN = 10;
 
         root.setOnMouseMoved(event -> {
             double x = event.getX();
@@ -119,22 +111,37 @@ public class MainViewController {
         });
 
         root.setOnMouseDragged(event -> {
+            double mouseX = event.getScreenX();
+            double mouseY = event.getScreenY();
+
             if (root.getCursor() != Cursor.DEFAULT) {
-                double x = event.getScreenX();
-                double y = event.getScreenY();
 
                 if (root.getCursor() == Cursor.E_RESIZE || root.getCursor() == Cursor.SE_RESIZE || root.getCursor() == Cursor.NE_RESIZE) {
-                    stage.setWidth(event.getX());
+                    stage.setWidth(mouseX - stage.getX());
                 }
+
                 if (root.getCursor() == Cursor.S_RESIZE || root.getCursor() == Cursor.SE_RESIZE || root.getCursor() == Cursor.SW_RESIZE) {
-                    stage.setHeight(event.getY());
+                    stage.setHeight(mouseY - stage.getY());
+                }
+
+                if (root.getCursor() == Cursor.W_RESIZE || root.getCursor() == Cursor.SW_RESIZE || root.getCursor() == Cursor.NW_RESIZE) {
+                    double newWidth = stage.getWidth() - (mouseX - stage.getX());
+                    stage.setX(mouseX);
+                    stage.setWidth(newWidth);
+                }
+
+                if (root.getCursor() == Cursor.N_RESIZE || root.getCursor() == Cursor.NE_RESIZE || root.getCursor() == Cursor.NW_RESIZE) {
+                    double newHeight = stage.getHeight() - (mouseY - stage.getY());
+                    stage.setY(mouseY);
+                    stage.setHeight(newHeight);
                 }
             }
         });
     }
+    
     @FXML
     private void handleClose(ActionEvent event) {
-        System.exit(0);
+    	Platform.exit();
     }
 
     @FXML
@@ -149,59 +156,23 @@ public class MainViewController {
         stage.setMaximized(!stage.isMaximized());
     }
     
-    @FXML
-    private void playTrailer(MouseEvent event) {
-        if (mediaPlayer != null) {
-            mediaPlayer.play();
-            trailerVideo.setOpacity(1.0);
+    private void loadPage(String fxml) {
+        try {
+        	FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/groupna/projectNetflix/view/" + fxml)
+                );
+
+                loader.setResources(Session.getInstance().getBundle());
+
+                Node node = loader.load();
+
+                rootPane.setCenter(node);
+
+        } catch (Exception e) {
+            System.err.println("Error loading FXML: " + fxml);
+            e.printStackTrace();
         }
     }
-
-    @FXML
-    private void stopTrailer(MouseEvent event) {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            trailerVideo.setOpacity(0.0);
-        }
-    }
-
-    //à modifier pour correspondre à chaque film/série
-    @FXML
-    private void showDetails(MouseEvent event) {
-        VBox card = (VBox) event.getSource();
-        Label title = (Label) card.getChildren().get(1);
-        
-        Tooltip info = new Tooltip(
-            "Title: " + title.getText() + "\n" +
-            "Genre: Drama/Action\n" +
-            "Rating: ★★★★☆\n" +
-            "Duration: 2h 15m"
-        );
-        info.setShowDelay(javafx.util.Duration.millis(100));
-        Tooltip.install(card, info);
-    }
-
-    @FXML
-    private void hideDetails(MouseEvent event) {
-        VBox card = (VBox) event.getSource();
-    }
-    
-	private void loadPage(String fxml, ActionEvent event) {
-
-	    try {
-	        Parent root = FXMLLoader.load(
-	            getClass().getResource("/groupna/projectNetflix/view/" + fxml)
-	        );
-
-	        Stage stage = (Stage)((Node)event.getSource())
-	                        .getScene().getWindow();
-
-	        stage.setScene(new Scene(root));
-
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	}
 	
 	@FXML
 	private void handleThemeChange(ActionEvent event) {
@@ -218,43 +189,28 @@ public class MainViewController {
 	
     @FXML
     private void goHome(ActionEvent event){
-        loadPage("MainView.fxml",event);
+        loadPage("HomeView.fxml");
     }
 
     @FXML
     private void openMovies(ActionEvent event){
-        loadPage("MoviesView.fxml",event);
+        loadPage("MoviesView.fxml");
     }
 
     @FXML
     private void openSeries(ActionEvent event){
-        loadPage("SeriesView.fxml",event);
+        loadPage("SeriesView.fxml");
 
     }
     
     @FXML
     private void handleSearch(ActionEvent event) {
-        //à ajouter: filter movie list
+        loadPage("SearchView.fxml");
     }
     
     @FXML
     private void handleProfile(ActionEvent event) {
-        loadPage("ProfileView.fxml",event);
-    }
-    
-    @FXML
-    private void handleHome(ActionEvent event) {
-        //à ajouter: Logic to scroll to top or reset view
-    }
-
-    @FXML
-    private void handleSeries(ActionEvent event) {
-        // à ajouter: Filter view for Series
-    }
-
-    @FXML
-    private void handleMovies(ActionEvent event) {
-        //à ajouter: Filter view for Movies
+        loadPage("ProfileView.fxml");
     }
 
     @FXML
@@ -263,12 +219,28 @@ public class MainViewController {
     }
     
     @FXML
+    private void handleFavorites() {
+    	loadPage("FavsView.fxml");
+    }
+    
+    @FXML
     private void handleSettings(ActionEvent event) {
-        loadPage("SettingsView.fxml",event);
+        loadPage("SettingsView.fxml");
     }
 
-    @FXML
-    private void handleFavorites() {
-    	loadPage("Favoris.fxml",null);
+    private Object selectedContent;
+
+    public void setSelectedContent(Object content) {
+        this.selectedContent = content;
     }
+
+    public Object getSelectedContent() {
+        return selectedContent;
+    }
+
+    public void loadDetailPage(String fxml, Object content) {
+        this.selectedContent = content;
+        loadPage(fxml);
+    }
+
 }
