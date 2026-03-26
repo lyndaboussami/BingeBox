@@ -11,6 +11,7 @@ import groupna.projectNetflix.utils.ConxDB;
 
 public class UserDAO {
     private static Connection conn = ConxDB.getInstance();
+    
     public static User login(String email, String mdp) {
         User user = null;
         String sql = "SELECT * FROM user WHERE email = ? AND mdp = ?";

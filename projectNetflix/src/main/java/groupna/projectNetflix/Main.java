@@ -48,7 +48,7 @@ public class Main {
             UserDAO.ajouterAuxFavoris(idUserTest, idFilm, "film");
             
             // Test Commentaire
-            commentaire com = new commentaire(idUserTest, idFilm, "Chef d'oeuvre !", false);
+            Commentaire com = new Commentaire(idUserTest, idFilm, "Chef d'oeuvre !", false);
             boolean isComSaved = CommentaireDAO.save(com, "film");
             System.out.println("[OK] Commentaire enregistré : " + isComSaved);
 

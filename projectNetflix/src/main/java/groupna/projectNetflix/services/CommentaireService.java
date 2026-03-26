@@ -1,21 +1,21 @@
 package groupna.projectNetflix.services;
 
 import groupna.projectNetflix.DAO.CommentaireDAO;
-import groupna.projectNetflix.entities.commentaire;
+import groupna.projectNetflix.entities.Commentaire;
 import java.util.List;
 
 public class CommentaireService {
     public boolean posterCommentaire(int idUser, int idOeuvre, String contenu, String type) {
         if (contenu == null || contenu.trim().isEmpty()) {
-            System.out.println("[Service] Le contenu du commentaire ne peut pas être vide.");
+            System.out.println("[Service] Le contenu du Commentaire ne peut pas être vide.");
             return false;
         }
 
-        commentaire nouveauCom = new commentaire(idUser, idOeuvre, contenu, false);
+        Commentaire nouveauCom = new Commentaire(idUser, idOeuvre, contenu, false);
         return CommentaireDAO.save(nouveauCom, type);
     }
 //---------------------------------------------------------------------------------------
-    public List<commentaire> recupererCommentairesOeuvre(int idOeuvre, String type) {
+    public List<Commentaire> recupererCommentairesOeuvre(int idOeuvre, String type) {
         return CommentaireDAO.findAllByOeuvre(idOeuvre, type);
     }
 //-------------------------------------------------------------------------------------------
@@ -27,7 +27,7 @@ public class CommentaireService {
         return CommentaireDAO.delete(idUser, idOeuvre, type);
     }
 //----------------------------------------------------------------------------------------------
-    public List<commentaire> listerCommentairesSignales() {
+    public List<Commentaire> listerCommentairesSignales() {
         return CommentaireDAO.findReported();
     }
 }

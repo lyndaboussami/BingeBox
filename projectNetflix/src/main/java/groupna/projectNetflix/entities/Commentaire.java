@@ -1,11 +1,11 @@
 package groupna.projectNetflix.entities;
 
-public class commentaire {
+public class Commentaire {
 	private int id_user;
 	private int id_oeuvre;
 	private boolean reported;
 	private String content;
-	public commentaire(int id_user, int id_oeuvre, String content,boolean reported) {
+	public Commentaire(int id_user, int id_oeuvre, String content,boolean reported) {
 		super();
 		this.id_user = id_user;
 		this.id_oeuvre = id_oeuvre;
