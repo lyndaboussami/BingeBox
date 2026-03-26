@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import groupna.projectNetflix.entities.commentaire;
+import groupna.projectNetflix.entities.Commentaire;
 import groupna.projectNetflix.utils.ConxDB;
 
 public class CommentaireDAO {
@@ -19,7 +19,7 @@ public class CommentaireDAO {
         return type.equalsIgnoreCase("film") ? "id_movie" : "id_serie";
     }
 
-    public static boolean save(commentaire c, String type) {
+    public static boolean save(Commentaire c, String type) {
         String table = getTableName(type);
         String idCol = getIdColumnName(type);
         
@@ -38,8 +38,8 @@ public class CommentaireDAO {
         }
     }
 
-    public static List<commentaire> findAllByOeuvre(int idOeuvre, String type) {
-        List<commentaire> liste = new ArrayList<>();
+    public static List<Commentaire> findAllByOeuvre(int idOeuvre, String type) {
+        List<Commentaire> liste = new ArrayList<>();
         String table = getTableName(type);
         String idCol = getIdColumnName(type);
         
@@ -49,7 +49,7 @@ public class CommentaireDAO {
             pstmt.setInt(1, idOeuvre);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    liste.add(new commentaire(
+                    liste.add(new Commentaire(
                         rs.getInt("id_user"),
                         rs.getInt(idCol),
                         rs.getString("content"),
@@ -92,8 +92,8 @@ public class CommentaireDAO {
             return false;
         }
     }
-    public static List<commentaire> findReported() {
-        List<commentaire> reportedList = new ArrayList<>();
+    public static List<Commentaire> findReported() {
+        List<Commentaire> reportedList = new ArrayList<>();
         String sql = "SELECT id_user, id_movie AS id_oeuvre, content, reported FROM film_commentaire WHERE reported = true " +
                      "UNION ALL " +
                      "SELECT id_user, id_serie AS id_oeuvre, content, reported FROM serie_commentaire WHERE reported = true";
@@ -102,7 +102,7 @@ public class CommentaireDAO {
              ResultSet rs = pstmt.executeQuery()) {
             
             while (rs.next()) {
-                reportedList.add(new commentaire(
+                reportedList.add(new Commentaire(
                     rs.getInt("id_user"),
                     rs.getInt("id_oeuvre"),
                     rs.getString("content"),

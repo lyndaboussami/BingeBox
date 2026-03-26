@@ -16,19 +16,49 @@
             stylesheets="@../css/style.css"
             styleClass="root">
 
+	<left>
+        <VBox spacing="25" styleClass="sidebar">
+            <padding>
+                <Insets top="30" left="15" right="15"/>
+            </padding>
+            
+            <Button onAction="#handleProfile" styleClass="sidebar-profile-btn">
+                <graphic>
+                    <Circle radius="20" fill="#CFB997"/>
+                </graphic>
+            </Button>
+
+            <Region VBox.vgrow="ALWAYS" /> <Button onAction="#handleSearch" styleClass="sidebar-icon-btn" text="🔍" />
+            <Button onAction="#handleHome" styleClass="sidebar-icon-btn" text="🏠" />
+            <Button onAction="#handleSeries" styleClass="sidebar-icon-btn" text="📺" />
+            <Button onAction="#handleMovies" styleClass="sidebar-icon-btn" text="🎬" />
+            <Button onAction="#handleFavorites" styleClass="sidebar-icon-btn" text="🔖" />
+            <Button onAction="#handleHistory" styleClass="sidebar-icon-btn" text="🕒" />
+            
+            <Region VBox.vgrow="ALWAYS" />
+
+            <Button onAction="#handleSettings" styleClass="sidebar-icon-btn" text="⛯" />
+        </VBox>
+    </left>
     <top>
-        <HBox spacing="20" alignment="CENTER_LEFT" styleClass="navbar">
+        <HBox fx:id="navbar" alignment="CENTER" spacing="10" styleClass="navbar">
+        
+        	<HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+        		<Label styleClass="logo" text="BingeBox" />
+    		</HBox>	
+    		
+    		<Region HBox.hgrow="ALWAYS" /> 
+    		
+    		<HBox alignment="CENTER" spacing="10">		
+				<Button fx:id="homeBtn" text="Home" onAction="#goHome" styleClass="navButton"/>
+				<Button fx:id="moviesBtn" text="Movies" onAction="#openMovies" styleClass="navButton"/>
+				<Button fx:id="seriesBtn" text="Series" onAction="#openSeries" styleClass="navButton"/>
+			</HBox>
+			<Region HBox.hgrow="ALWAYS" /> 
+			
             <padding>
                 <Insets top="10" bottom="10" left="25" right="25"/>
             </padding>
-
-            <Label text="BingeBox" styleClass="logo"/>
-			
-			<Button fx:id="homeBtn" text="Home" onAction="#goHome" styleClass="navButton"/>
-			<Button fx:id="moviesBtn" text="Movies" onAction="#openMovies" styleClass="navButton"/>
-			<Button fx:id="seriesBtn" text="Series" onAction="#openSeries" styleClass="navButton"/>
-
-            <Region HBox.hgrow="ALWAYS"/>
 
             <ComboBox fx:id="languageSelector" styleClass="language-picker">
                 <items>
@@ -44,14 +74,17 @@
             </ComboBox>
 
             <TextField promptText="Search movies..." styleClass="search"/>
-
-			<Button fx:id="subscribeBtn" text="Subscribe" styleClass="subscribeBtn"/>
             
             <Button fx:id="themeToggle" onAction="#handleThemeChange" styleClass="theme-patch">
                 <graphic>
                     <Label text="🔀" styleClass="theme-label" /> 
                 </graphic>
             </Button>
+            <HBox alignment="CENTER_RIGHT" styleClass="window-controls">
+		        <Button onAction="#handleMinimize" text="—" styleClass="control-btn" />
+		        <Button onAction="#handleMaximize" text="▢" styleClass="control-btn" />
+		        <Button onAction="#handleClose" text="✕" styleClass="control-btn, close-btn" />
+		    </HBox>
         </HBox>
     </top>
 
@@ -71,15 +104,16 @@
 				        </padding>
 				        
 				        <HBox spacing="10" alignment="CENTER_LEFT">
-				             <Label text="1h31" styleClass="meta-tag"/>
-				             <Label text="1951" styleClass="meta-tag"/>
-				             <Label text="Drama, Comedy" styleClass="meta-tag"/>
+				             <Label text="Release on April 10, 2026" styleClass="meta-tag"/>
+				             <Label text="1h53" styleClass="meta-tag"/>
+				             <Label text="2026" styleClass="meta-tag"/>
+				             <Label text="Sports, Action, Drama" styleClass="meta-tag"/>
 				        </HBox>
 				
-				        <Label fx:id="heroTitle" text="As young as you feel" styleClass="heroTitle"/>
+				        <Label fx:id="heroTitle" text="BEAST" styleClass="heroTitle"/>
 				        
 				        <Label fx:id="heroDesc" styleClass="hero-desc-responsive"
-				               text="After John is forced to retire due to his company's policy, he poses as the president of his former employer's company, to make his boss hire him again...." 
+				               text="MMA legend Patton James, now a commercial fisherman, is pulled back into the cage when his brother is in danger. Reuniting with his old coach Sammy, he commits to one final fight in ONE Championship against its champion Xavier Grau." 
 				               wrapText="true" maxWidth="450"/>
 				
 				        <Button text="Watch Now ▷" styleClass="watchBtn"/>

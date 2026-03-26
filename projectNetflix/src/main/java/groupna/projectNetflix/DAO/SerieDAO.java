@@ -11,7 +11,7 @@ import groupna.projectNetflix.entities.Artiste;
 import groupna.projectNetflix.entities.Categorie;
 import groupna.projectNetflix.entities.Episode;
 import groupna.projectNetflix.entities.Serie;
-import groupna.projectNetflix.entities.saison;
+import groupna.projectNetflix.entities.Saison;
 
 public class SerieDAO extends OeuvreDAO {
 
@@ -37,10 +37,10 @@ public class SerieDAO extends OeuvreDAO {
                     List<Artiste> acteurs = getArtistes(id, "serie_acteurs", "id_serie");
                     List<Artiste> directeurs = getArtistes(id, "serie_directeurs", "id_serie");
 
-                    Map<saison, List<Episode>> mapSaisons = new LinkedHashMap<>();
-                    List<saison> listeSaisons = SaisonDAO.findAllBySerie(id);
+                    Map<Saison, List<Episode>> mapSaisons = new LinkedHashMap<>();
+                    List<Saison> listeSaisons = SaisonDAO.findAllBySerie(id);
 
-                    for (saison s : listeSaisons) {
+                    for (Saison s : listeSaisons) {
                         List<Episode> episodes = EpisodeDAO.getEpisodesBySaison(s.getId());
                         mapSaisons.put(s, episodes);
                     }
@@ -81,8 +81,8 @@ public class SerieDAO extends OeuvreDAO {
                 saveArtistes(s.getId(), s.getDirecteurs(), "serie_directeurs", "id_serie");
                 
                 if (s.getSaisons() != null) {
-                    for (Map.Entry<saison, List<Episode>> entry : s.getSaisons().entrySet()) {
-                        saison saisonObj = entry.getKey();
+                    for (Map.Entry<Saison, List<Episode>> entry : s.getSaisons().entrySet()) {
+                        Saison saisonObj = entry.getKey();
                         List<Episode> episodes = entry.getValue();
                         
                         int id=SaisonDAO.save(saisonObj, generatedId);

@@ -9,13 +9,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import groupna.projectNetflix.entities.saison;
+import groupna.projectNetflix.entities.Saison;
 import groupna.projectNetflix.utils.ConxDB;
 
 public class SaisonDAO {
     private static Connection conn = ConxDB.getInstance();
 
-    public static int save(saison s, int idSerie) {
+    public static int save(Saison s, int idSerie) {
         int generatedId = -1;
         String sql = "INSERT INTO saisons (num, date_sortie, titre, resume, path_trailer, id_serie) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -42,15 +42,15 @@ public class SaisonDAO {
         return generatedId;
     }
 
-    public static saison findById(int idSaison) {
-        saison s = null;
+    public static Saison findById(int idSaison) {
+        Saison s = null;
         String sql = "SELECT * FROM saisons WHERE id = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, idSaison);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    s = new saison(
+                    s = new Saison(
                         rs.getInt("id"),
                         rs.getInt("num"),
                         rs.getDate("date_sortie").toLocalDate(),
@@ -66,15 +66,15 @@ public class SaisonDAO {
         return s;
     }
 
-    public static List<saison> findAllBySerie(int idSerie) {
-        List<saison> liste = new ArrayList<>();
+    public static List<Saison> findAllBySerie(int idSerie) {
+        List<Saison> liste = new ArrayList<>();
         String sql = "SELECT * FROM saisons WHERE id_serie = ? ORDER BY num ASC";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, idSerie);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    liste.add(new saison(
+                    liste.add(new Saison(
                         rs.getInt("id"),
                         rs.getInt("num"),
                         rs.getDate("date_sortie").toLocalDate(),
@@ -90,7 +90,7 @@ public class SaisonDAO {
         return liste;
     }
 
-    public static void update(saison s) {
+    public static void update(Saison s) {
         String sql = "UPDATE saisons SET num = ?, date_sortie = ?, titre = ?, resume = ?, path_trailer = ? WHERE id = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {

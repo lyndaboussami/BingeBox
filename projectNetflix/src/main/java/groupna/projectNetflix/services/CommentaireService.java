@@ -1,7 +1,7 @@
 package groupna.projectNetflix.services;
 
 import groupna.projectNetflix.DAO.CommentaireDAO;
-import groupna.projectNetflix.entities.commentaire;
+import groupna.projectNetflix.entities.Commentaire;
 import java.util.List;
 
 public class CommentaireService {
@@ -11,11 +11,11 @@ public class CommentaireService {
             return false;
         }
 
-        commentaire nouveauCom = new commentaire(idUser, idOeuvre, contenu, false);
+        Commentaire nouveauCom = new Commentaire(idUser, idOeuvre, contenu, false);
         return CommentaireDAO.save(nouveauCom, type);
     }
 //---------------------------------------------------------------------------------------
-    public List<commentaire> recupererCommentairesOeuvre(int idOeuvre, String type) {
+    public List<Commentaire> recupererCommentairesOeuvre(int idOeuvre, String type) {
         return CommentaireDAO.findAllByOeuvre(idOeuvre, type);
     }
 //-------------------------------------------------------------------------------------------
@@ -27,7 +27,7 @@ public class CommentaireService {
         return CommentaireDAO.delete(idUser, idOeuvre, type);
     }
 //----------------------------------------------------------------------------------------------
-    public List<commentaire> listerCommentairesSignales() {
+    public List<Commentaire> listerCommentairesSignales() {
         return CommentaireDAO.findReported();
     }
 }

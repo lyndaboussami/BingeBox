@@ -31,8 +31,6 @@ public class MainViewController {
 
     private double xOffset = 0;
     private double yOffset = 0;
-    
-    //à ajouter les autres composantes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private void updateLanguage(String langCode) {
         Locale locale = new Locale(langCode);
         ResourceBundle bundle = ResourceBundle.getBundle("groupna.projectNetflix.languages.bundle", locale);
@@ -97,8 +95,6 @@ public class MainViewController {
             makeResizable(stage, navbar.getScene().getRoot());
         });
     }
-    
-    //ne marche pas à revoir !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public void makeResizable(Stage stage, Node root) {
         final int RESIZE_MARGIN = 5;
 
@@ -273,6 +269,6 @@ public class MainViewController {
 
     @FXML
     private void handleFavorites() {
-        //à ajouter: Filter movie list to show only favorites
+    	loadPage("Favoris.fxml",null);
     }
 }
