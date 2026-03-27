@@ -6,9 +6,6 @@ import java.security.NoSuchAlgorithmException;
 
 public class PasswordHasher {
 
-    /**
-     * Transforme un mot de passe en empreinte numérique (Hash) SHA-256.
-     */
     public static String hashPassword(String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");

@@ -1,5 +1,8 @@
 package groupna.projectNetflix.entities;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class User {
@@ -10,18 +13,18 @@ public class User {
 	private String mdp;
 	private Role role;
 	private Set<Oeuvre> favs;
-	private Set<Oeuvre> his;
+	private Map<LocalDate, List<Visualisable>> his;
 	public User(int id, String nom, String prenom, String email, String mdp, Role role, Set<Oeuvre> favs,
-			Set<Oeuvre> his) {
+			Map<LocalDate, List<Visualisable>> his) {
 		super();
 		this.id = id;
 		this.nom = nom;
 		this.prenom = prenom;
 		this.email = email;
 		this.mdp = mdp;
-		this.setRole(role);
+		this.role = role;
 		this.favs = favs;
-		this.his = his;
+		this.his=his;
 	}
 	public String getNom() {
 		return nom;
@@ -53,12 +56,6 @@ public class User {
 	public void setFavs(Set<Oeuvre> favs) {
 		this.favs = favs;
 	}
-	public Set<Oeuvre> getHis() {
-		return his;
-	}
-	public void setHis(Set<Oeuvre> his) {
-		this.his = his;
-	}
 	public int  getId() {
 		return id;
 	}
@@ -70,5 +67,11 @@ public class User {
 	}
 	public void setRole(Role role) {
 		this.role = role;
+	}
+	public Map<LocalDate, List<Visualisable>> getHis() {
+		return his;
+	}
+	public void setHis(Map<LocalDate, List<Visualisable>> his) {
+		this.his = his;
 	}
 }

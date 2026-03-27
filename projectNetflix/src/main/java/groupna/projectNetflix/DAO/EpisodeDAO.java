@@ -17,7 +17,7 @@ public class EpisodeDAO {
 
     public static int addEpisode(Episode ep, int idSaison) {
         int generatedId = 0;
-        String sql = "INSERT INTO episodes (titre, numero, duree, resume, id_saison, Path_ep) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO episodes (titre, numero, duree, resume, id_saison, path_ep, path_miniature) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, ep.getTitre());
@@ -26,6 +26,7 @@ public class EpisodeDAO {
             pstmt.setString(4, ep.getResume());
             pstmt.setInt(5, idSaison);
             pstmt.setString(6, ep.getPathEp());
+            pstmt.setString(7, ep.getPathMiniaure());
 
             pstmt.executeUpdate();
             try (ResultSet rs = pstmt.getGeneratedKeys()) {
@@ -53,15 +54,7 @@ public class EpisodeDAO {
             
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    int id = rs.getInt("id");
-                    String titre = rs.getString("titre");
-                    int num = rs.getInt("numero");
-                    String resume = rs.getString("resume");
-                    String pathEp = rs.getString("Path_ep");
-                    
-                    java.sql.Time sqlTime = rs.getTime("duree");
-                    LocalTime duree = (sqlTime != null) ? sqlTime.toLocalTime() : null;
-                    ep = new Episode(num, id, resume, titre, duree, pathEp);
+                    ep = mapResultSetToEpisode(rs);
                 }
             }
         } catch (SQLException e) {
@@ -79,22 +72,31 @@ public class EpisodeDAO {
             
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    int id = rs.getInt("id");
-                    String titre = rs.getString("titre");
-                    int num = rs.getInt("numero");
-                    String resume = rs.getString("resume");
-                    String pathEp = rs.getString("path_ep");
-                    
-                    java.sql.Time sqlTime = rs.getTime("duree");
-                    LocalTime duree = (sqlTime != null) ? sqlTime.toLocalTime() : null;
-
-                    episodes.add(new Episode(num, id, resume, titre, duree, pathEp));
+                    episodes.add(mapResultSetToEpisode(rs));
                 }
             }
         } catch (SQLException e) {
             System.err.println("Erreur lors de la lecture des épisodes : " + e.getMessage());
         }
         return episodes;
+    }
+
+    /**
+     * Méthode utilitaire pour éviter la répétition de code lors de la lecture d'un ResultSet
+     */
+    private static Episode mapResultSetToEpisode(ResultSet rs) throws SQLException {
+        int id = rs.getInt("id");
+        String titre = rs.getString("titre");
+        int num = rs.getInt("numero");
+        String resume = rs.getString("resume");
+        String pathEp = rs.getString("path_ep");
+        String pathMin = rs.getString("path_miniature"); // Assurez-vous que cette colonne existe en BDD
+        
+        java.sql.Time sqlTime = rs.getTime("duree");
+        LocalTime duree = (sqlTime != null) ? sqlTime.toLocalTime() : null;
+
+        // Utilisation du constructeur à 7 paramètres défini dans Episode.java
+        return new Episode(num, id, resume, titre, duree, pathEp, pathMin);
     }
 
     public static boolean deleteEpisode(int numeroEpisode, int idSaison) {
@@ -110,8 +112,6 @@ public class EpisodeDAO {
 
             if (isDeleted) {
                 System.out.println("Épisode n°" + numeroEpisode + " de la Saison " + idSaison + " supprimé.");
-            } else {
-                System.out.println("Aucun épisode trouvé avec ces paramètres.");
             }
 
         } catch (SQLException e) {
@@ -119,5 +119,31 @@ public class EpisodeDAO {
         }
 
         return isDeleted;
+    }
+    public static Episode getEpisodeById(int id) {
+        Episode episode = null;
+        String sql = "SELECT * FROM episodes WHERE id = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    episode = new Episode(
+                        rs.getInt("numero"),
+                        rs.getInt("id"),
+                        rs.getString("resume"),
+                        rs.getString("titre"),
+                        rs.getTime("duree") != null ? rs.getTime("duree").toLocalTime() : null,
+                        rs.getString("path_ep"),
+                        rs.getString("path_miniature")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("[Erreur SQL] Impossible de charger l'épisode " + id);
+            e.printStackTrace();
+        }
+        return episode;
     }
 }

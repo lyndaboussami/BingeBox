@@ -15,7 +15,6 @@ public class BingeBoxApp extends Application {
                 new FXMLLoader(getClass().getResource(
                 "/groupna/projectNetflix/view/MainView.fxml"));
 
-        //without the OS title bar
         stage.initStyle(StageStyle.UNDECORATED);
         
         Scene scene = new Scene(loader.load());
