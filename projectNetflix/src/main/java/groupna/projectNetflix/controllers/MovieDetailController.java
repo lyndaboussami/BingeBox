@@ -1,5 +1,6 @@
 package groupna.projectNetflix.controllers;
 
+import java.io.IOException;
 import java.util.stream.Collectors;
 
 import groupna.projectNetflix.entities.Categorie;
@@ -10,8 +11,12 @@ import groupna.projectNetflix.services.CommentaireService;
 import groupna.projectNetflix.utils.Session;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
 
 public class MovieDetailController {
 
@@ -57,9 +62,61 @@ public class MovieDetailController {
     
     @FXML
     private void handlePlay() {
-        System.out.println("Starting Video Player...");
-        //video player logic à ajouter
+        Object content = MainViewController.getInstance().getSelectedContent();
+        
+        if (content instanceof Film movie) {
+            String moviePath = movie.getPathMovie();
+
+            if (moviePath == null || moviePath.isEmpty()) {
+                System.err.println("Error: No path defined for this movie in the database.");
+                return;
+            }
+
+            try {
+                java.net.URL resource = getClass().getResource(moviePath);
+                
+                if (resource == null) {
+                    System.err.println("File not found at path: " + moviePath);
+                    return;
+                }
+
+                String fullUrl = resource.toExternalForm();
+                
+                // Open the player window
+                openVideoPlayer(fullUrl, movie.getId(), movie.getTitre());
+
+            } catch (Exception e) {
+                System.err.println("Error playing video: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        
     }
+    
+    private void openVideoPlayer(String url, int movieId, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/groupna/projectNetflix/view/VideoPlayerView.fxml"));
+            
+            
+            Parent playerView = loader.load();
+            
+            VideoPlayerController controller = loader.getController();
+            controller.loadVideo(url, movieId);
+            
+            StackPane mainStack = (StackPane) movieTitle.getScene().getRoot();
+                        
+            mainStack.getChildren().add(playerView);
+            
+            controller.setOnCloseRequest(() -> {
+                controller.stopVideo();
+                mainStack.getChildren().remove(playerView);            });
+            
+        } catch (IOException e) {
+        	System.err.println("Error loading player: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
     
     private void setupFavLogic(Oeuvre currentMedia) {
         User user = Session.getInstance().getUser();

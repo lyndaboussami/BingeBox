@@ -26,7 +26,7 @@ public class DataStore {
             	    List.of(new Artiste(1, "DiCaprio", "Leonardo", "Oscar-winning actor...", List.of("Titanic", "The Revenant"))), 
             	    List.of(new Artiste(2, "Nolan", "Christopher", "Visionary director...", List.of("Interstellar", "The Dark Knight"))),
             	    8.8, "/groupna/projectNetflix/assets/inception.jpg", 
-            	    LocalTime.of(2, 28), "/assets/inception.mp4", "/assets/inception_tr.mp4"),
+            	    LocalTime.of(2, 28), "/groupna/projectNetflix/assets/inception.mp4", "/assets/inception_tr.mp4"),
             new Film(2, 
             	    "The lives of two mob hitmen, a boxer, and a gangster's wife intertwine.", 
             	    List.of(Categorie.POLICIER, Categorie.DRAME), 
