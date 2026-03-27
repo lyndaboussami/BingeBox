@@ -2,22 +2,24 @@ package groupna.projectNetflix.entities;
 
 import java.time.LocalTime;
 
-public class Episode {
+public class Episode implements Visualisable {
 	private int numero;
 	private int id;
 	private String resume;
 	private String Titre;
 	private LocalTime duree;
 	private String PathEp;
-	
-	public Episode(int numero, int id, String resume, String titre, LocalTime duree, String pathEp) {
+	private String PathMiniaure;
+	public Episode(int numero, int id, String resume, String titre, LocalTime duree, String pathEp,
+			String pathMiniaure) {
 		super();
 		this.numero = numero;
 		this.id = id;
 		this.resume = resume;
 		Titre = titre;
 		this.duree = duree;
-		PathEp=pathEp;
+		PathEp = pathEp;
+		PathMiniaure = pathMiniaure;
 	}
 	public String getResume() {
 		return resume;
@@ -59,5 +61,21 @@ public class Episode {
 	public void setPathEp(String pathEp) {
 		PathEp = pathEp;
 	}
+	public String getPathMiniaure() {
+		return PathMiniaure;
+	}
+	public void setPathMiniaure(String pathMiniaure) {
+		PathMiniaure = pathMiniaure;
+	}
+	public Episode(int numero, int id, String resume, String titre, LocalTime duree, String pathEp) {
+		super();
+		this.numero = numero;
+		this.id = id;
+		this.resume = resume;
+		Titre = titre;
+		this.duree = duree;
+		PathEp = pathEp;
+	}
+	
 	
 }
