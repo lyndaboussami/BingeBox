@@ -1,13 +1,17 @@
 package groupna.projectNetflix.controllers;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.media.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
+import groupna.projectNetflix.entities.Episode;
 
 public class VideoPlayerController {
     @FXML private MediaView mediaView;
@@ -22,59 +26,103 @@ public class VideoPlayerController {
     @FXML private StackPane playerRoot;
     private Runnable onCloseRequest;
     
+    
+    private List<Episode> playlist;
+    private int currentIndex;
+    private Timeline bingeTimer;
+    @FXML private VBox nextEpisodeOverlay;
+    @FXML private Label countdownLabel;
+    
     // Temporary memory (Static Map) - This replaces DB logic for now
     private static final Map<Integer, Double> localWatchHistory = new HashMap<>();
 
-    public void loadVideo(String url, int movieId) {
-        this.currentMovieId = movieId;
+    
+    
+    private void initializePlayer(String url) {
+    	
+    	if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.dispose();
+        }
 
         try {
             Media media = new Media(url);
             mediaPlayer = new MediaPlayer(media);
             mediaView.setMediaPlayer(mediaPlayer);
 
-            //resume logic
-            if (localWatchHistory.containsKey(movieId) && localWatchHistory.get(movieId) > 5.0) {
-                showResumeDialog(localWatchHistory.get(movieId));
-            } else {
-                mediaPlayer.play();
-            }
+            Platform.runLater(() -> {
+                if (playerRoot != null) {
+                    mediaView.fitWidthProperty().bind(playerRoot.widthProperty());
+                    mediaView.fitHeightProperty().bind(playerRoot.heightProperty());
+                }
+            });
+            mediaView.setPreserveRatio(true);
 
-            mediaPlayer.currentTimeProperty().addListener((obs, oldTime, currentTime) -> {
-                updateUI(currentTime);
+            //volume
+            mediaPlayer.volumeProperty().bind(volumeSlider.valueProperty().divide(100));
+
+            //slider/time labels
+            mediaPlayer.currentTimeProperty().addListener((obs, oldTime, newTime) -> {
+                updateUI(newTime);
             });
 
-            mediaPlayer.setOnReady(() -> {
-                progressBar.setMax(100);
-            });
-
-            //skip
-            progressBar.setOnMouseReleased(e -> {
-                if (mediaPlayer.getTotalDuration() != null) {
-                    double newTime = (progressBar.getValue() / 100) * mediaPlayer.getTotalDuration().toSeconds();
-                    mediaPlayer.seek(Duration.seconds(newTime));
+            //slider interactions (drag/click)
+            progressBar.valueProperty().addListener((obs, oldVal, newVal) -> {
+                if (progressBar.isValueChanging()) {
+                    double total = mediaPlayer.getTotalDuration().toMillis();
+                    mediaPlayer.seek(Duration.millis((newVal.doubleValue() / 100) * total));
                 }
             });
 
-            //volume
-            volumeSlider.setValue(70);
-            mediaPlayer.volumeProperty().bind(volumeSlider.valueProperty().divide(100));
-
-            //movie finished (replay option)
-            mediaPlayer.setOnEndOfMedia(() -> {
-                localWatchHistory.remove(currentMovieId); // Movie finished! Clear memory.
-                playPauseBtn.setText("↺"); // Show replay icon
+            progressBar.setOnMouseClicked(event -> {
+                double total = mediaPlayer.getTotalDuration().toMillis();
+                double targetPercent = event.getX() / progressBar.getWidth();
+                mediaPlayer.seek(Duration.millis(targetPercent * total));
             });
-        
-            mediaView.fitWidthProperty().bind(((StackPane)mediaView.getParent()).widthProperty());
-            mediaView.fitHeightProperty().bind(((StackPane)mediaView.getParent()).heightProperty());
 
-            //keeping the movie's aspect ratio (no stretching)
-            mediaView.setPreserveRatio(true);
         } catch (Exception e) {
             System.err.println("Error initializing Media Player: " + e.getMessage());
+        }		
+	}
+    
+    public void loadVideo(String url, int movieId) {
+        this.currentMovieId = movieId;
+        initializePlayer(url);
+
+        //resume
+        if (localWatchHistory.containsKey(movieId) && localWatchHistory.get(movieId) > 5.0) {
+            showResumeDialog(localWatchHistory.get(movieId));
+        } else {
+            mediaPlayer.play();
         }
+
+        mediaPlayer.setOnEndOfMedia(() -> {
+            localWatchHistory.remove(currentMovieId);
+            playPauseBtn.setText("↺");
+        });
     }
+    
+
+	private void playCurrentEpisode() {
+        if (currentIndex < 0 || currentIndex >= playlist.size()) return;
+
+        Episode ep = playlist.get(currentIndex);
+        String url = getClass().getResource(ep.getPathEp()).toExternalForm();
+
+        initializePlayer(url);
+        nextEpisodeOverlay.setVisible(false);
+
+        //binge wtch
+        mediaPlayer.setOnEndOfMedia(() -> {
+            if (currentIndex < playlist.size() - 1) {
+                startBingeCountdown();
+            }
+        });
+
+        mediaPlayer.play();
+        playPauseBtn.setText("⏸");
+    }
+    
     public void setOnCloseRequest(Runnable callback) {
         this.onCloseRequest = callback;
     }
@@ -136,10 +184,9 @@ public class VideoPlayerController {
         }
     }
 
-
     public void stopVideo() {
         if (mediaPlayer != null) {
-            // SAVE TO MEMORY (Replace this with DB logic later)
+            // SAVE TO MEMORY (Replace DB logic )
             localWatchHistory.put(currentMovieId, mediaPlayer.getCurrentTime().toSeconds());
             
             mediaPlayer.stop();
@@ -149,8 +196,44 @@ public class VideoPlayerController {
 
     @FXML private void rewind() { mediaPlayer.seek(mediaPlayer.getCurrentTime().subtract(Duration.seconds(10))); }
     @FXML private void forward() { mediaPlayer.seek(mediaPlayer.getCurrentTime().add(Duration.seconds(10))); }
+    
     @FXML private void toggleFullScreen() {
         Stage stage = (Stage) mediaView.getScene().getWindow();
         stage.setFullScreen(!stage.isFullScreen());
+        
+    }   
+    
+    public void loadSeries(List<Episode> episodes, int index) {
+        this.playlist = episodes;
+        this.currentIndex = index;
+        playCurrentEpisode();
+    }
+
+    private void startBingeCountdown() {
+        nextEpisodeOverlay.setVisible(true);
+        final int[] secondsLeft = {10};
+        
+        bingeTimer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+            secondsLeft[0]--;
+            countdownLabel.setText(String.valueOf(secondsLeft[0]));
+            if (secondsLeft[0] <= 0) {
+                playNextImmediately();
+            }
+        }));
+        bingeTimer.setCycleCount(10);
+        bingeTimer.play();
+    }
+
+    @FXML
+    private void playNextImmediately() {
+        if (bingeTimer != null) bingeTimer.stop();
+        currentIndex++;
+        playCurrentEpisode();
+    }
+
+    @FXML
+    private void cancelAutoPlay() {
+        if (bingeTimer != null) bingeTimer.stop();
+        nextEpisodeOverlay.setVisible(false);
     }
 }

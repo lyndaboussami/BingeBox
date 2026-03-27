@@ -26,6 +26,5 @@ public abstract class BaseController {
 
     @FXML
     private void hideDetails(MouseEvent event) {
-        VBox card = (VBox) event.getSource();
     }
 }

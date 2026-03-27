@@ -62,7 +62,7 @@ public class DataStore {
             "Diagnosed with terminal lung cancer, a chemistry teacher teams up with a former student.", 
             "Pilot", 
             LocalTime.of(0, 58), 
-            "/episodes/bb_s1_e1.mp4"
+            "/groupna/projectNetflix/assets/inception.mp4"
         ));
 
         s1Episodes.add(new Episode(

@@ -27,12 +27,5 @@ public class Serie extends Oeuvre{
 				+ ", DateDeSortie=" + DateDeSortie + ", acteurs=" + acteurs + ", Directeurs=" + Directeurs + ", rate="
 				+ rate + ", PathPoster=" + PathPoster + "]";
 	}
-	
-	
-	
 
-
-	
-	
-	
 }

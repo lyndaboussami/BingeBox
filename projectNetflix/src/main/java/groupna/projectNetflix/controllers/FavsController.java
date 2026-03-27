@@ -1,7 +1,5 @@
 package groupna.projectNetflix.controllers;
 
-import java.util.Set;
-
 import groupna.projectNetflix.entities.Film;
 import groupna.projectNetflix.entities.Oeuvre;
 import groupna.projectNetflix.entities.Serie;
