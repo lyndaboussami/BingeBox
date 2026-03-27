@@ -18,7 +18,7 @@ import groupna.projectNetflix.entities.Visualisable;
 import groupna.projectNetflix.utils.ConxDB;
 
 public class UserDAO {
-    private static Connection conn = ConxDB.getInstance();
+    private static Connection conn = ConxDB.getInstance();    
 //--------------------------------------------------------------------------------------
     public static User login(String email, String mdp) {
         User user = null;

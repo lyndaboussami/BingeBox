@@ -11,6 +11,7 @@ public class SettingsViewController extends BaseController{
 
     @FXML
     public void initialize() {
+    	
         System.out.println("Settings View loaded.");
     }
 

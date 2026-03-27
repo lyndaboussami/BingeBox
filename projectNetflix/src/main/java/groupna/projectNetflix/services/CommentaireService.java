@@ -5,9 +5,10 @@ import groupna.projectNetflix.entities.Commentaire;
 import java.util.List;
 
 public class CommentaireService {
+	
     public boolean posterCommentaire(int idUser, int idOeuvre, String contenu, String type) {
         if (contenu == null || contenu.trim().isEmpty()) {
-            System.out.println("[Service] Le contenu du commentaire ne peut pas être vide.");
+            System.out.println("[Service] Le contenu du Commentaire ne peut pas être vide."); //à modifier Alert.. (notification au lieu de syso)
             return false;
         }
 

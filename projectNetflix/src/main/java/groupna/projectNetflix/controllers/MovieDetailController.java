@@ -6,10 +6,12 @@ import groupna.projectNetflix.entities.Categorie;
 import groupna.projectNetflix.entities.Film;
 import groupna.projectNetflix.entities.Oeuvre;
 import groupna.projectNetflix.entities.User;
+import groupna.projectNetflix.services.CommentaireService;
 import groupna.projectNetflix.utils.Session;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 
 public class MovieDetailController {
 
@@ -21,9 +23,14 @@ public class MovieDetailController {
 
     @FXML private ToggleButton favButton;
 
+    @FXML private HBox starContainer;
+    @FXML private TextField commentField;
+    @FXML private VBox commentsContainer;
+
+    private int currentRating = 0;
+    
     @FXML
     public void initialize() {
-        // Retrieve the movie clicked from the Main Controller
         Object content = MainViewController.getInstance().getSelectedContent();
         
         if (content instanceof Film movie) {
@@ -83,4 +90,62 @@ public class MovieDetailController {
             favButton.setStyle("-fx-text-fill: white;"); // White for inactive
             }
         }
+    
+    @FXML
+    private void handleRate(ActionEvent event) {
+        Button clickedStar = (Button) event.getSource();
+        currentRating = Integer.parseInt(clickedStar.getUserData().toString());
+        
+        for (int i = 0; i < starContainer.getChildren().size(); i++) {
+            Button star = (Button) starContainer.getChildren().get(i);
+            if (i < currentRating) {
+                star.setStyle("-fx-text-fill: #ffcc00; -fx-background-color: transparent; -fx-font-size: 24px;"); // Gold
+            } else {
+                star.setStyle("-fx-text-fill: #555; -fx-background-color: transparent; -fx-font-size: 24px;"); // Grey
+            }
+        }
+        
+        System.out.println("User rated movie: " + currentRating + " stars.");
+        //RateService.save(rate) (à ajouter dans service)
+
+    }
+
+    @FXML
+    private void handlePostComment() {
+    	try {
+    		String text = commentField.getText();
+            if (text == null || text.trim().isEmpty()) return;
+
+            User user = Session.getInstance().getUser();
+            Film movie = (Film) MainViewController.getInstance().getSelectedContent();
+            
+            CommentaireService service = new CommentaireService();
+            boolean success = service.posterCommentaire(user.getId(), movie.getId(), text, "FILM");
+            
+            VBox commentBox = new VBox(5);
+            commentBox.setStyle("-fx-background-color: #1a1a1a; -fx-padding: 10; -fx-background-radius: 5;");
+            Label userLabel = new Label(user.getNom() + " • " + currentRating + "★");
+            userLabel.setStyle("-fx-text-fill: -fx-text-muted; -fx-font-size: 12px; -fx-font-weight: bold;");
+            
+            Label contentLabel = new Label(text);
+            contentLabel.setWrapText(true);
+            contentLabel.setStyle("-fx-text-fill: white;");
+
+            if (success) {
+            	commentBox.getChildren().addAll(userLabel, contentLabel);
+                commentsContainer.getChildren().add(0, commentBox);
+                commentField.clear();
+            }
+    	} catch (Exception e) {
+            showError("Critical Error", "An unexpected error occurred.");
+            e.printStackTrace();
+        }   
+        }
+    private void showError(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+    
 }
