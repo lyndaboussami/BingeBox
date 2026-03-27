@@ -20,5 +20,19 @@ public class Serie extends Oeuvre{
 	public void setSaisons(Map<Saison, List<Episode>> saisons) {
 		this.saisons = saisons;
 	}
+
+	@Override
+	public String toString() {
+		return "Serie [saisons=" + saisons + ", id=" + id + ", resume=" + resume + ", cat=" + cat + ", titre=" + titre
+				+ ", DateDeSortie=" + DateDeSortie + ", acteurs=" + acteurs + ", Directeurs=" + Directeurs + ", rate="
+				+ rate + ", PathPoster=" + PathPoster + "]";
+	}
+	
+	
+	
+
+
+	
+	
 	
 }

@@ -54,8 +54,7 @@ public class SaisonService {
      */
     public boolean deleteSaisonCompletement(int idSaison) {
         if (idSaison <= 0) return false;
-        // Votre DAO possède déjà la méthode gérant la suppression des épisodes
-        return SaisonDAO.deleteSaisonEtEpisodes(idSaison);
+        return SaisonDAO.deleteSaison(idSaison);
     }
 
     /**

@@ -62,7 +62,7 @@ public class UserService {
         return UserDAO.getAllUsers();
     }
     
-    public User rechercherParEmail(String email) {
-        return UserDAO.findByEmail(email);
+    public int rechercherParEmail(String email) {
+        return UserDAO.getIdParEmail(email);
     }
 }

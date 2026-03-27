@@ -146,4 +146,20 @@ public class EpisodeDAO {
         }
         return episode;
     }
+    public static int getNombreVuesEpisode(int idEpisode) {
+        int totalVues = 0;
+        String sql = "SELECT COUNT(*) FROM historique_episodes WHERE id_episode = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idEpisode);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    totalVues = rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return totalVues;
+    }
 }

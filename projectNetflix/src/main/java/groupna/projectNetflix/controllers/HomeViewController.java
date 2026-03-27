@@ -76,6 +76,20 @@ public class HomeViewController extends BaseController{
         VBox card = new VBox();
         card.getStyleClass().add("movieCard");
         card.setSpacing(10);
+        
+        //////////////////////////////////////////////////////////////
+     // 1. "Hide" the data in the card
+        card.setUserData(data); 
+
+        // 2. Link to the MainViewController for the hover effect
+        MainViewController mainCtrl = MainViewController.getInstance();
+        if (mainCtrl != null) {
+            card.setOnMouseEntered(event -> mainCtrl.showDetails(event));
+            card.setOnMouseExited(event -> mainCtrl.hideDetails(event));
+        }
+
+            // ... (rest of your existing code for ImageViews, Labels, and Clicks)
+
 
         StackPane imageContainer = new StackPane();
         

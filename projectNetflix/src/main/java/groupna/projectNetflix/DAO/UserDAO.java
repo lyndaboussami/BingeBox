@@ -218,8 +218,8 @@ public class UserDAO {
         }
     }
 //----------------------------------------------------------------------------------
-    public static User findByEmail(String email) {
-        User user = null;
+    public static int getIdParEmail(String email) {
+        int id = 0;
         String sql = "SELECT id FROM user WHERE email = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -227,15 +227,14 @@ public class UserDAO {
             
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    int id = rs.getInt("id");
-                    user = findById(id); 
+                    id = rs.getInt("id");
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la recherche par email : " + e.getMessage());
+            System.err.println("Erreur lors de la récupération de l'ID par email : " + e.getMessage());
             e.printStackTrace();
         }
-        return user;
+        return id;
     }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     public static List<User> getAllUsers() {
