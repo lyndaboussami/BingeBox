@@ -13,6 +13,7 @@ public class Oeuvre {
 	protected List<Artiste> Directeurs;
 	protected double rate;
 	protected String PathPoster;
+	
 	public String getPathPoster() {
 		return PathPoster;
 	}

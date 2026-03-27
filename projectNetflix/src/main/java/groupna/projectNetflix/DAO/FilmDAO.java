@@ -1,6 +1,5 @@
 package groupna.projectNetflix.DAO;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -143,5 +142,21 @@ public class FilmDAO extends OeuvreDAO {
         }
         
         return isDeleted;
+    }
+    public static int getNombreVuesFilm(int idFilm) {
+        int totalVues = 0;
+        String sql = "SELECT COUNT(*) FROM historique_film WHERE id_oeuvre = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idFilm);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    totalVues = rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return totalVues;
     }
 }

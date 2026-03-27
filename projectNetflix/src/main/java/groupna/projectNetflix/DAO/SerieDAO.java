@@ -11,7 +11,7 @@ import groupna.projectNetflix.entities.Artiste;
 import groupna.projectNetflix.entities.Categorie;
 import groupna.projectNetflix.entities.Episode;
 import groupna.projectNetflix.entities.Serie;
-import groupna.projectNetflix.entities.saison;
+import groupna.projectNetflix.entities.Saison;
 
 public class SerieDAO extends OeuvreDAO {
 
@@ -37,10 +37,10 @@ public class SerieDAO extends OeuvreDAO {
                     List<Artiste> acteurs = getArtistes(id, "serie_acteurs", "id_serie");
                     List<Artiste> directeurs = getArtistes(id, "serie_directeurs", "id_serie");
 
-                    Map<saison, List<Episode>> mapSaisons = new LinkedHashMap<>();
-                    List<saison> listeSaisons = SaisonDAO.findAllBySerie(id);
+                    Map<Saison, List<Episode>> mapSaisons = new LinkedHashMap<>();
+                    List<Saison> listeSaisons = SaisonDAO.findAllBySerie(id);
 
-                    for (saison s : listeSaisons) {
+                    for (Saison s : listeSaisons) {
                         List<Episode> episodes = EpisodeDAO.getEpisodesBySaison(s.getId());
                         mapSaisons.put(s, episodes);
                     }
@@ -81,8 +81,8 @@ public class SerieDAO extends OeuvreDAO {
                 saveArtistes(s.getId(), s.getDirecteurs(), "serie_directeurs", "id_serie");
                 
                 if (s.getSaisons() != null) {
-                    for (Map.Entry<saison, List<Episode>> entry : s.getSaisons().entrySet()) {
-                        saison saisonObj = entry.getKey();
+                    for (Map.Entry<Saison, List<Episode>> entry : s.getSaisons().entrySet()) {
+                        Saison saisonObj = entry.getKey();
                         List<Episode> episodes = entry.getValue();
                         
                         int id=SaisonDAO.save(saisonObj, generatedId);
@@ -119,42 +119,16 @@ public class SerieDAO extends OeuvreDAO {
     }
 
     public static boolean delete(int serieId) {
-        String deleteCats = "DELETE FROM serie_categorie WHERE id_serie = ?";
-        String deleteActors = "DELETE FROM serie_acteurs WHERE id_serie = ?";
-        String deleteDirectors = "DELETE FROM serie_directeurs WHERE id_serie = ?";
-        String deleteEpisodes = "DELETE FROM episodes WHERE id_saison IN (SELECT id FROM saisons WHERE id_serie = ?)";
-        String deleteSaisons = "DELETE FROM saisons WHERE id_serie = ?";
-        String deleteSerie = "DELETE FROM series WHERE id = ?";
-
-        try {
-            conn.setAutoCommit(false);
-
-            try (PreparedStatement psCats = conn.prepareStatement(deleteCats);
-                 PreparedStatement psActs = conn.prepareStatement(deleteActors);
-                 PreparedStatement psDirs = conn.prepareStatement(deleteDirectors);
-                 PreparedStatement psEps = conn.prepareStatement(deleteEpisodes);
-                 PreparedStatement psSais = conn.prepareStatement(deleteSaisons);
-                 PreparedStatement psSerie = conn.prepareStatement(deleteSerie)) {
-
-                psCats.setInt(1, serieId); psCats.executeUpdate();
-                psActs.setInt(1, serieId); psActs.executeUpdate();
-                psDirs.setInt(1, serieId); psDirs.executeUpdate();
-                psEps.setInt(1, serieId);  psEps.executeUpdate();
-                psSais.setInt(1, serieId); psSais.executeUpdate();
-                
-                psSerie.setInt(1, serieId);
-                int rowsAffected = psSerie.executeUpdate();
-                
-                conn.commit();
-                return rowsAffected > 0;
-            }
-
+        String sql = "DELETE FROM series WHERE id = ?";
+        
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, serieId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+            
         } catch (SQLException e) {
-            try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
             e.printStackTrace();
             return false;
-        } finally {
-            try { conn.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
         }
     }
 }

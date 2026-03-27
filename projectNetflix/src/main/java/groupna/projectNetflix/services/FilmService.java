@@ -2,6 +2,7 @@ package groupna.projectNetflix.services;
 
 import java.util.List;
 import groupna.projectNetflix.DAO.FilmDAO;
+import groupna.projectNetflix.DAO.UserDAO;
 import groupna.projectNetflix.entities.Film;
 
 public class FilmService {
@@ -81,4 +82,8 @@ public class FilmService {
                              f.getTitre().toLowerCase().contains(keyword.toLowerCase()))
                 .toList();
     }
+    public int getVues(int idFilm) {
+        return FilmDAO.getNombreVuesFilm(idFilm);
+    }
+    
 }

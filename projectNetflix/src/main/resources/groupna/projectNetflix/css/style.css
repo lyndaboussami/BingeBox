@@ -40,6 +40,12 @@
     -fx-background-color: -fx-primary-bg;
 }
 
+.main-container .label {
+	-fx-text-fill: -fx-text-main;
+    -fx-font-weight: bold;
+    -fx-opacity: 1.0;
+}
+
 .navbar {
     -fx-background-color: -fx-nav-bg;
     -fx-min-height: 60px; /* Force a height so it can't disappear */
@@ -54,9 +60,10 @@
     -fx-font-weight: bold;
 }
 
-.navButton, .theme-label {
+.navButton, .theme-label, .theme-patch{
     -fx-background-color: transparent;
     -fx-text-fill: -fx-text-main;
+    -fx-font-weight: bold;
     -fx-font-size: 14px;
 }
 
@@ -64,13 +71,22 @@
     -fx-opacity: 0.7;
 }
 
-.language-picker, .search {
+.language-picker {
     -fx-background-color: -fx-card-bg;
     -fx-text-fill: -fx-text-main;
     -fx-background-radius: 15;
     -fx-prompt-text-fill: -fx-text-muted;
 }
 
+.combo-box-base .list-view .list-cell:filled:selected, 
+.combo-box-base .list-view .list-cell:filled:hover {
+    -fx-background-color: -fx-accent;
+    -fx-text-fill: -fx-button-text;
+}
+
+.combo-box .list-cell{
+    -fx-text-fill: -fx-text-main;
+}
 .watchBtn {
     -fx-background-color: -fx-accent;
     -fx-text-fill: -fx-button-text;
@@ -78,6 +94,7 @@
     -fx-font-weight: bold;
 }
 
+/*hero */
 .hero {
     -fx-background-color: -fx-hero-bg;
     -fx-min-height: 400px;
@@ -107,6 +124,30 @@
     -fx-font-size: 15px;
     -fx-line-spacing: 5;
 }
+/*hero light mode */
+.light-mode .hero {
+    -fx-background-color: #111522; 
+}
+
+.light-mode .hero-overlay {
+    -fx-background-color: linear-gradient(to top, #b8ac9d 5%, rgba(36, 44, 69, 0) 70%);
+}
+
+.light-mode .hero .heroTitle, 
+.light-mode .hero .meta-tag,
+.light-mode .hero .label {
+    -fx-text-fill: #e6d7c4;
+}
+
+.light-mode .hero .hero-desc-responsive {
+    -fx-text-fill: #b0a596;
+}
+
+.light-mode .hero .watchBtn {
+    -fx-background-color: #cfc2b0;
+    -fx-text-fill: #242c45;
+}
+/* */
 
 .categoryTitle {
     -fx-text-fill: -fx-text-main;
@@ -125,6 +166,7 @@
     -fx-scale-x: 1.05;
     -fx-scale-y: 1.05;
     -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 0);
 }
 
 .card-text {
@@ -132,7 +174,11 @@
 }
 
 .poster-placeholder {
-    -fx-fill: #1a1f31;
+    -fx-fill: #1a1f31; /* Navy */
+}
+
+.light-mode .poster-placeholder {
+    -fx-fill: #d6ccbd; /* Beige */
 }
 
 
@@ -169,6 +215,50 @@
     -fx-cursor: hand;
 }
 
+/*detail oeuvre */
+.meta-tag {
+    -fx-background-color: rgba(207, 185, 151, 0.1); /* Transparent beige */
+    -fx-text-fill: -fx-text-main;
+    -fx-padding: 5 10;
+    -fx-background-radius: 5;
+    -fx-font-size: 12px;
+}
+
+.episode-row:hover {
+    -fx-background-color: #1a1f31; /* Darker navy hover */
+    -fx-cursor: hand;
+}
+
+.light-mode .episode-row:hover {
+    -fx-background-color: #d6ccbd; /* Darker beige hover */
+}
+/*fav heart */
+.fav-button {
+    -fx-background-color: rgba(255,255,255,0.1);
+    -fx-background-radius: 50;
+    -fx-font-size: 20px;
+    -fx-cursor: hand;
+    -fx-padding: 5 10 5 10;
+}
+
+.fav-button:hover {
+    -fx-background-color: rgba(255,255,255,0.2);
+}
+
+.fav-button:selected {
+    -fx-effect: dropshadow(three-pass-box, #ff4d4d, 10, 0, 0, 0);
+}
+/*rate */
+.star-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #555;
+    -fx-font-size: 24px;
+    -fx-cursor: hand;
+}
+
+.star-button:hover {
+    -fx-text-fill: #ffcc00;
+}
 /* Container for 3 buttons */
 .window-controls {
     -fx-spacing: 0; 
@@ -194,3 +284,82 @@
 
 
 
+/*Profile */
+.profile-card {
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s;
+}
+
+.profile-card:hover {
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+.profile-avatar-container {
+    -fx-background-radius: 10;
+}
+
+.manage-profile-btn:hover {
+    -fx-border-color: white;
+    -fx-text-fill: white;
+}
+
+/* Search */
+.filter-chip {
+    -fx-background-color: #333;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+    -fx-padding: 5 15;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.filter-chip:selected {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+}
+
+.filter-chip:hover {
+    -fx-background-color: #444;
+}
+
+.filter-chip:selected:hover {
+    -fx-background-color: #eee;
+}
+
+/* Auth Screen Specifics */
+.auth-container {
+    -fx-background-color: -fx-primary-bg; /* Navy Blue #111522 */
+}
+
+.auth-card {
+    -fx-background-color: -fx-card-bg;    /* #2d3755 */
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 20, 0, 0, 10);
+}
+
+.auth-field {
+    -fx-background-color: #1a1f31;        /* Darker Navy for inputs */
+    -fx-text-fill: -fx-text-main;         /* Beige */
+    -fx-prompt-text-fill: -fx-text-muted;
+    -fx-background-radius: 5;
+    -fx-border-color: transparent transparent -fx-accent transparent; /* Beige bottom border */
+    -fx-border-width: 0 0 2 0;
+}
+
+.auth-field:focused {
+    -fx-background-color: #242c45;
+    -fx-border-color: -fx-text-main;      /* Bright Beige on focus */
+}
+
+.auth-submit-btn {
+    -fx-background-color: -fx-accent;    /* Beige */
+    -fx-text-fill: -fx-button-text;      /* Navy Blue */
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.auth-submit-btn:hover {
+    -fx-opacity: 0.9;
+}

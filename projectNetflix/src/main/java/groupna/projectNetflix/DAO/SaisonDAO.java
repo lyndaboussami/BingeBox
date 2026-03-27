@@ -5,17 +5,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import groupna.projectNetflix.entities.saison;
+import groupna.projectNetflix.entities.Saison;
 import groupna.projectNetflix.utils.ConxDB;
 
 public class SaisonDAO {
     private static Connection conn = ConxDB.getInstance();
 
-    public static int save(saison s, int idSerie) {
+    public static int save(Saison s, int idSerie) {
         int generatedId = -1;
         String sql = "INSERT INTO saisons (num, date_sortie, titre, resume, path_trailer, id_serie) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -36,21 +35,21 @@ public class SaisonDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Erreur lors de l'ajout de la saison : " + e.getMessage());
+            System.err.println("Erreur lors de l'ajout de la Saison : " + e.getMessage());
         }
         
         return generatedId;
     }
 
-    public static saison findById(int idSaison) {
-        saison s = null;
+    public static Saison findById(int idSaison) {
+        Saison s = null;
         String sql = "SELECT * FROM saisons WHERE id = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, idSaison);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    s = new saison(
+                    s = new Saison(
                         rs.getInt("id"),
                         rs.getInt("num"),
                         rs.getDate("date_sortie").toLocalDate(),
@@ -66,15 +65,15 @@ public class SaisonDAO {
         return s;
     }
 
-    public static List<saison> findAllBySerie(int idSerie) {
-        List<saison> liste = new ArrayList<>();
+    public static List<Saison> findAllBySerie(int idSerie) {
+        List<Saison> liste = new ArrayList<>();
         String sql = "SELECT * FROM saisons WHERE id_serie = ? ORDER BY num ASC";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, idSerie);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    liste.add(new saison(
+                    liste.add(new Saison(
                         rs.getInt("id"),
                         rs.getInt("num"),
                         rs.getDate("date_sortie").toLocalDate(),
@@ -90,7 +89,7 @@ public class SaisonDAO {
         return liste;
     }
 
-    public static void update(saison s) {
+    public static void update(Saison s) {
         String sql = "UPDATE saisons SET num = ?, date_sortie = ?, titre = ?, resume = ?, path_trailer = ? WHERE id = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -107,40 +106,17 @@ public class SaisonDAO {
         }
     }
 
-    public static boolean deleteSaisonEtEpisodes(int idSaison) {
-        String sqlEpisodes = "DELETE FROM episodes WHERE id_saison = ?";
-        String sqlSaison = "DELETE FROM saisons WHERE id = ?";
+    public static boolean deleteSaison(int idSaison) {
+        String sql = "DELETE FROM saisons WHERE id = ?";
 
-        try {
-            conn.setAutoCommit(false); 
-            
-            try (PreparedStatement pstmt1 = conn.prepareStatement(sqlEpisodes)) {
-                pstmt1.setInt(1, idSaison);
-                pstmt1.executeUpdate();
-            }
-            
-            try (PreparedStatement pstmt2 = conn.prepareStatement(sqlSaison)) {
-                pstmt2.setInt(1, idSaison);
-                int rows = pstmt2.executeUpdate();
-                
-                conn.commit();
-                return rows > 0;
-            }
-
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idSaison);
+            int rows = pstmt.executeUpdate();
+            return rows > 0;
         } catch (SQLException e) {
-            try { 
-                if (conn != null) conn.rollback(); 
-            } catch (SQLException ex) { 
-                ex.printStackTrace(); 
-            }
+            System.err.println("[Erreur SQL] Impossible de supprimer la saison : " + e.getMessage());
             e.printStackTrace();
             return false;
-        } finally {
-            try { 
-                if (conn != null) conn.setAutoCommit(true); 
-            } catch (SQLException e) { 
-                e.printStackTrace(); 
-            }
         }
     }
 }

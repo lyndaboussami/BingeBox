@@ -48,7 +48,7 @@ public class Main {
             UserDAO.ajouterAuxFavoris(idUserTest, idFilm, "film");
             
             // Test Commentaire
-            commentaire com = new commentaire(idUserTest, idFilm, "Chef d'oeuvre !", false);
+            Commentaire com = new Commentaire(idUserTest, idFilm, "Chef d'oeuvre !", false);
             boolean isComSaved = CommentaireDAO.save(com, "film");
             System.out.println("[OK] Commentaire enregistré : " + isComSaved);
 
@@ -59,7 +59,7 @@ public class Main {
             SerieDAO.save(breakingBad);
             int idSerie = OeuvreDAO.findIDifExisted("Breaking Bad", LocalDate.now().toString(), "Un prof de chimie...", "series");
             
-            saison s1 = new saison(0, 1, LocalDate.now(), "Saison 1", "Le début", "trailer.mp4");
+            Saison s1 = new Saison(0, 1, LocalDate.now(), "Saison 1", "Le début", "trailer.mp4");
             int idSaison = SaisonDAO.save(s1, idSerie);
             
             Episode ep1 = new Episode(1, 0, "Pilot", "Premier épisode", LocalTime.of(0, 45), "ep1.mp4");

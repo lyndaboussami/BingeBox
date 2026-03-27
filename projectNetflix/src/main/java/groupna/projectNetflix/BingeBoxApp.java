@@ -11,11 +11,10 @@ public class BingeBoxApp extends Application {
 	@Override
     public void start(Stage stage) throws Exception {
 
-        FXMLLoader loader =
+		FXMLLoader loader =
                 new FXMLLoader(getClass().getResource(
                 "/groupna/projectNetflix/view/MainView.fxml"));
 
-        //without the OS title bar
         stage.initStyle(StageStyle.UNDECORATED);
         
         Scene scene = new Scene(loader.load());

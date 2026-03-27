@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-public class Film extends Oeuvre {
+public class Film extends Oeuvre implements Visualisable {
 	
 	@Override
 	public String toString() {

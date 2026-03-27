@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<ScrollPane fitToWidth="true" 
+            styleClass="inner-scroll" 
+            xmlns="http://javafx.com/javafx/21" 
+            xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="groupna.projectNetflix.controllers.MovieDetailController">
+    
+    <VBox spacing="0" styleClass="main-container">
+        <StackPane prefHeight="450" style="-fx-background-color: -fx-hero-bg;">
+            <VBox alignment="BOTTOM_LEFT" spacing="15" styleClass="hero-overlay">
+                <padding><Insets left="50" bottom="50"/></padding>
+                <Label fx:id="movieCategories" text="Categories" styleClass="meta-tag" />
+                <Label fx:id="movieMeta" text="2026 • 1h 53m" styleClass="meta-tag" />
+            	<Label fx:id="movieTitle" text="Title Placeholder" styleClass="heroTitle" />
+                <ToggleButton fx:id="favButton" styleClass="fav-button" text="❤" />
+                <Button text="▶ Play Movie" styleClass="watchBtn" prefWidth="200" prefHeight="45" />
+            </VBox>
+        </StackPane>
+
+        <VBox spacing="25" style="-fx-padding: 40 50;">
+            <VBox spacing="10">
+                <Label text="Synopsis" styleClass="categoryTitle" style="-fx-padding: 0;"/>
+                <Label fx:id="movieDescription" text="Detailed movie description goes here..." wrapText="true" styleClass="hero-desc-responsive" maxWidth="800" />
+            </VBox>
+            <VBox spacing="5">
+                <Label text="Cast" styleClass="categoryTitle" style="-fx-padding: 0; -fx-font-size: 18px;"/>
+                <Label fx:id="movieCast" text="Actor Name, Actress Name, Director Name" style="-fx-text-fill: -fx-text-muted;" />
+            </VBox>
+            <Separator prefWidth="800" style="-fx-opacity: 0.2;" />
+
+			<VBox spacing="20">
+			    <Label text="Rate this movie" styleClass="categoryTitle" style="-fx-font-size: 18px;"/>
+			    <HBox fx:id="starContainer" spacing="5">
+			        <Button text="★" fx:id="star1" onAction="#handleRate" styleClass="star-button" userData="1"/>
+			        <Button text="★" fx:id="star2" onAction="#handleRate" styleClass="star-button" userData="2"/>
+			        <Button text="★" fx:id="star3" onAction="#handleRate" styleClass="star-button" userData="3"/>
+			        <Button text="★" fx:id="star4" onAction="#handleRate" styleClass="star-button" userData="4"/>
+			        <Button text="★" fx:id="star5" onAction="#handleRate" styleClass="star-button" userData="5"/>
+			    </HBox>
+			</VBox>
+			
+			<VBox spacing="15">
+			    <Label text="Comments" styleClass="categoryTitle" style="-fx-font-size: 18px;"/>
+			    
+			    <HBox spacing="10">
+			        <TextField fx:id="commentField" promptText="Add a review..." HBox.hgrow="ALWAYS" 
+			                   style="-fx-background-color: #2b2b2b; -fx-text-fill: white; -fx-prompt-text-fill: #888; -fx-padding: 10;"/>
+			        <Button text="Post" onAction="#handlePostComment" styleClass="watchBtn" prefWidth="80" />
+			    </HBox>
+			
+			    <VBox fx:id="commentsContainer" spacing="10" style="-fx-padding: 10 0;">
+			        </VBox>
+			</VBox>
+        </VBox>
+    </VBox>
+</ScrollPane>
