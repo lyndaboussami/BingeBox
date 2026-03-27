@@ -1,18 +1,34 @@
+
 package groupna.projectNetflix.controllers;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
+
+import groupna.projectNetflix.entities.Artiste;
+import groupna.projectNetflix.entities.Categorie;
+import groupna.projectNetflix.entities.Film;
+import groupna.projectNetflix.entities.Serie;
+import groupna.projectNetflix.services.FilmService;
+import groupna.projectNetflix.services.SerieService;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.media.*;
+import javafx.scene.shape.Rectangle;
 
 public class MainViewController {
+
 	@FXML private BorderPane rootPane;
     @FXML private Button themeToggle;
     @FXML private StackPane heroSection;
@@ -96,6 +112,8 @@ public class MainViewController {
             Stage stage = (Stage) navbar.getScene().getWindow();
             makeResizable(stage, navbar.getScene().getRoot());
         });
+        
+        
     }
     
     //ne marche pas à revoir !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -184,7 +202,7 @@ public class MainViewController {
         info.setShowDelay(javafx.util.Duration.millis(100));
         Tooltip.install(card, info);
     }
-
+    
     @FXML
     private void hideDetails(MouseEvent event) {
         VBox card = (VBox) event.getSource();
@@ -219,6 +237,7 @@ public class MainViewController {
 	        themeToggle.setText("🔆");
 	    }
 	}
+	
 	
     @FXML
     private void goHome(ActionEvent event){
@@ -275,4 +294,14 @@ public class MainViewController {
     private void handleFavorites() {
         //à ajouter: Filter movie list to show only favorites
     }
+
+
+       
+       
+    
+    
+    
+    
+    
+    
 }
