@@ -106,40 +106,17 @@ public class SaisonDAO {
         }
     }
 
-    public static boolean deleteSaisonEtEpisodes(int idSaison) {
-        String sqlEpisodes = "DELETE FROM episodes WHERE id_saison = ?";
-        String sqlSaison = "DELETE FROM saisons WHERE id = ?";
+    public static boolean deleteSaison(int idSaison) {
+        String sql = "DELETE FROM saisons WHERE id = ?";
 
-        try {
-            conn.setAutoCommit(false); 
-            
-            try (PreparedStatement pstmt1 = conn.prepareStatement(sqlEpisodes)) {
-                pstmt1.setInt(1, idSaison);
-                pstmt1.executeUpdate();
-            }
-            
-            try (PreparedStatement pstmt2 = conn.prepareStatement(sqlSaison)) {
-                pstmt2.setInt(1, idSaison);
-                int rows = pstmt2.executeUpdate();
-                
-                conn.commit();
-                return rows > 0;
-            }
-
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idSaison);
+            int rows = pstmt.executeUpdate();
+            return rows > 0;
         } catch (SQLException e) {
-            try { 
-                if (conn != null) conn.rollback(); 
-            } catch (SQLException ex) { 
-                ex.printStackTrace(); 
-            }
+            System.err.println("[Erreur SQL] Impossible de supprimer la saison : " + e.getMessage());
             e.printStackTrace();
             return false;
-        } finally {
-            try { 
-                if (conn != null) conn.setAutoCommit(true); 
-            } catch (SQLException e) { 
-                e.printStackTrace(); 
-            }
         }
     }
 }

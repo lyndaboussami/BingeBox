@@ -119,42 +119,16 @@ public class SerieDAO extends OeuvreDAO {
     }
 
     public static boolean delete(int serieId) {
-        String deleteCats = "DELETE FROM serie_categorie WHERE id_serie = ?";
-        String deleteActors = "DELETE FROM serie_acteurs WHERE id_serie = ?";
-        String deleteDirectors = "DELETE FROM serie_directeurs WHERE id_serie = ?";
-        String deleteEpisodes = "DELETE FROM episodes WHERE id_saison IN (SELECT id FROM saisons WHERE id_serie = ?)";
-        String deleteSaisons = "DELETE FROM saisons WHERE id_serie = ?";
-        String deleteSerie = "DELETE FROM series WHERE id = ?";
-
-        try {
-            conn.setAutoCommit(false);
-
-            try (PreparedStatement psCats = conn.prepareStatement(deleteCats);
-                 PreparedStatement psActs = conn.prepareStatement(deleteActors);
-                 PreparedStatement psDirs = conn.prepareStatement(deleteDirectors);
-                 PreparedStatement psEps = conn.prepareStatement(deleteEpisodes);
-                 PreparedStatement psSais = conn.prepareStatement(deleteSaisons);
-                 PreparedStatement psSerie = conn.prepareStatement(deleteSerie)) {
-
-                psCats.setInt(1, serieId); psCats.executeUpdate();
-                psActs.setInt(1, serieId); psActs.executeUpdate();
-                psDirs.setInt(1, serieId); psDirs.executeUpdate();
-                psEps.setInt(1, serieId);  psEps.executeUpdate();
-                psSais.setInt(1, serieId); psSais.executeUpdate();
-                
-                psSerie.setInt(1, serieId);
-                int rowsAffected = psSerie.executeUpdate();
-                
-                conn.commit();
-                return rowsAffected > 0;
-            }
-
+        String sql = "DELETE FROM series WHERE id = ?";
+        
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, serieId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+            
         } catch (SQLException e) {
-            try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
             e.printStackTrace();
             return false;
-        } finally {
-            try { conn.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
         }
     }
 }
