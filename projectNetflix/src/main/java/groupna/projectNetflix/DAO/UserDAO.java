@@ -18,8 +18,11 @@ import groupna.projectNetflix.entities.Visualisable;
 import groupna.projectNetflix.utils.ConxDB;
 
 public class UserDAO {
+	/*
     private static Connection conn = ConxDB.getInstance();    
-//--------------------------------------------------------------------------------------
+
+    //--------------------------------------------------------------------------------------
+    
     public static User login(String email, String mdp) {
         User user = null;
         String sql = "SELECT * FROM user WHERE email = ? AND mdp = ?";
@@ -143,6 +146,7 @@ public class UserDAO {
                 )
             )).descendingMap();
     }
+
 //-------------------------------------------------------------------------------------------------
     public static void removeFromCollection(int idUser, int idOeuvre, String tableName) {
         String sql = "DELETE FROM " + tableName + " WHERE id_user = ? AND id_oeuvre = ?";
@@ -255,5 +259,5 @@ public class UserDAO {
         
         return users;
     }
-
+*/
 }

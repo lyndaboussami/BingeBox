@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 public class Serie extends Oeuvre{
+	
 	private Map<Saison,List<Episode>> saisons;
+	
 	public Serie(int id, String resume, List<Categorie> cat, String titre, LocalDate dateDeSortie,
 			List<Artiste> acteurs, List<Artiste> directeurs, double rate, String pathPoster,
 			Map<Saison, List<Episode>> saisons) {

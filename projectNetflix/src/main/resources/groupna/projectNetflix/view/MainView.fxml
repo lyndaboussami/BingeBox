@@ -39,6 +39,19 @@
 	            <Region VBox.vgrow="ALWAYS" />
 	
 	            <Button onAction="#handleSettings" styleClass="sidebar-icon-btn" text="⛯" />
+	        
+		        <Separator prefWidth="150.0" styleClass="admin-separator" />
+	    
+			    <Label text="BACK OFFICE" styleClass="admin-section-label" />
+			
+			    <Button fx:id="btnManageContent" text="🎬 Manage Content" 
+			            styleClass="admin-nav-button" onAction="#handleAdminNav" />
+			            
+			    <Button fx:id="btnManageUsers" text="👥 User Control" 
+			            styleClass="admin-nav-button" onAction="#handleAdminNav" />
+			            
+			    <Button fx:id="btnAnalytics" text="📊 Performance" 
+			            styleClass="admin-nav-button" onAction="#handleAdminNav" />
 	        </VBox>
 	    </left>
 	    <top>

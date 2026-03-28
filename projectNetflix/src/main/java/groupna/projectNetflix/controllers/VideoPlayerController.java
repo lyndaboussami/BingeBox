@@ -186,6 +186,7 @@ public class VideoPlayerController {
 
     public void stopVideo() {
         if (mediaPlayer != null) {
+        	
             // SAVE TO MEMORY (Replace DB logic )
             localWatchHistory.put(currentMovieId, mediaPlayer.getCurrentTime().toSeconds());
             

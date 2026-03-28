@@ -259,6 +259,14 @@
 .star-button:hover {
     -fx-text-fill: #ffcc00;
 }
+/*history */
+.history-row {
+    -fx-transition: background-color 0.2s;
+}
+
+.history-row:hover {
+    -fx-background-color: #2b2b2b;
+}
 /* Container for 3 buttons */
 .window-controls {
     -fx-spacing: 0; 
@@ -362,4 +370,81 @@
 
 .auth-submit-btn:hover {
     -fx-opacity: 0.9;
+}
+
+/*ADMIN */
+.admin-separator {
+    -fx-padding: 10 0 10 0;
+    -fx-opacity: 0.3;
+}
+
+.admin-section-label {
+    -fx-text-fill: #888888;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 0 10;
+}
+
+.admin-nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e0e0e0;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10 20 10 20;
+    -fx-cursor: hand;
+    -fx-transition: 0.3s;
+}
+
+.admin-nav-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-border-color: transparent transparent transparent #7b2cbf;
+    -fx-border-width: 0 0 0 4;
+}
+
+.admin-tabs .tab-header-area .tab {
+    -fx-background-color: #1a1a1a;
+    -fx-text-fill: white;
+}
+
+/*----------- */
+.media-card {
+    -fx-background-color: -fx-card-bg;
+    -fx-background-radius: 10;
+    -fx-padding: 15;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 5);
+}
+
+.media-card:hover {
+    -fx-background-color: -fx-card-bg;
+    -fx-border-color: -fx-accent;
+    -fx-border-radius: 10;
+}
+
+.card-title {
+    -fx-text-fill: -fx-text-main;
+    -fx-font-weight: bold;
+}
+
+.search-bar {
+    -fx-background-color: #2b2b2b;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #888;
+    -fx-background-radius: 20;
+    -fx-padding: 8 15;
+    -fx-border-color: #444;
+    -fx-border-radius: 20;
+}
+
+.search-bar:focused {
+    -fx-border-color: -fx-accent;
+}
+
+/* Hide ScrollPane border */
+.scroll-pane {
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
 }

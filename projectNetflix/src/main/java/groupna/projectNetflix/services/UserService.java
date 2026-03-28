@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class UserService {
+	/*
     public User seConnecter(String email, String mdpSaisi) {
         if (email == null || mdpSaisi == null) return null;
         String mdpHache = PasswordHasher.hashPassword(mdpSaisi);
@@ -65,4 +66,5 @@ public class UserService {
     public int rechercherParEmail(String email) {
         return UserDAO.getIdParEmail(email);
     }
+    */
 }

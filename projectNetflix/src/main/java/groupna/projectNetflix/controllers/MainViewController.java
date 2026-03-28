@@ -1,5 +1,7 @@
 package groupna.projectNetflix.controllers;
 
+import java.io.IOException;
+
 import groupna.projectNetflix.utils.Session;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -8,7 +10,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.*;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.*;
+import javafx.util.Duration;
 import javafx.scene.layout.*;
 
 public class MainViewController {
@@ -215,7 +219,7 @@ public class MainViewController {
 
     @FXML
     private void handleHistory(ActionEvent event) {
-        //à ajouter: Show watch history
+        loadPage("HistoryView.fxml");
     }
     
     @FXML
@@ -242,7 +246,6 @@ public class MainViewController {
         this.selectedContent = content;
         loadPage(fxml);
     }
-    /////////////////////////////////////////////////////////////////////////////
     
     @FXML
     public void showDetails(javafx.scene.input.MouseEvent event) {
@@ -254,23 +257,20 @@ public class MainViewController {
         StringBuilder sb = new StringBuilder();
 
         if (data instanceof groupna.projectNetflix.entities.Film f) {
-            // Line 1: Icon, Title, and Year
-            sb.append("🎬 ").append(f.getTitre())
+
+        	sb.append("🎬 ").append(f.getTitre())
               .append(" (").append(f.getDateDeSortie().getYear()).append(")\n");
             
-            // Line 2: Rating and Duration
             sb.append("⭐ ").append(String.format("%.1f", f.getRate()))
               .append("/5  |  🕒 ").append(f.getDuree()).append("\n");
             
-            // Line 3: Categories (Labels)
             if (f.getCat() != null && !f.getCat().isEmpty()) {
                 String genres = f.getCat().stream()
                                  .map(groupna.projectNetflix.entities.Categorie::getLabel)
                                  .collect(java.util.stream.Collectors.joining(" • "));
-                sb.append("🏷️ ").append(genres).append("\n");
+                sb.append("🎫 ").append(genres).append("\n");
             }
             
-            // Description
             sb.append("\n\"").append(truncateResume(f.getResume())).append("\"");
         } 
         else if (data instanceof groupna.projectNetflix.entities.Serie s) {
@@ -286,7 +286,7 @@ public class MainViewController {
                 String genres = s.getCat().stream()
                                  .map(groupna.projectNetflix.entities.Categorie::getLabel)
                                  .collect(java.util.stream.Collectors.joining(" • "));
-                sb.append("🏷️ ").append(genres).append("\n");
+                sb.append("🎫 ").append(genres).append("\n");
             }
             
             sb.append("\n\"").append(truncateResume(s.getResume())).append("\"");
@@ -296,7 +296,6 @@ public class MainViewController {
         tooltip.setWrapText(true);
         tooltip.setPrefWidth(280); 
         
-        // Premium Netflix Styling
         tooltip.setStyle(
             "-fx-background-color: #0d111a;" + // Slightly darker navy
             "-fx-text-fill: #e6d7c4;" +        // Beige text
@@ -309,13 +308,13 @@ public class MainViewController {
             "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.7), 15, 0, 0, 5);"
         );
         
-        tooltip.setShowDelay(javafx.util.Duration.millis(150));
+        tooltip.setShowDelay(Duration.millis(150));
         Tooltip.install(card, tooltip);
     }
 
     private String truncateResume(String resume) {
         if (resume == null || resume.trim().isEmpty()) return "Aucune description disponible.";
-        // Limits the summary so it doesn't take over the screen
+
         if (resume.length() > 140) {
             return resume.substring(0, 137).trim() + "...";
         }
@@ -323,11 +322,26 @@ public class MainViewController {
     }
 
     @FXML
-    public void hideDetails(javafx.scene.input.MouseEvent event) {
-        // This empty method prevents the FXML error. 
-        // Tooltip.install handles the hiding automatically!
+    public void hideDetails(MouseEvent event) {
     }
-    
-    
+    @FXML private Button btnManageContent;
+    @FXML private Button btnManageUsers;
+    @FXML private Button btnAnalytics;
 
+    @FXML
+    private void handleAdminNav(ActionEvent event) {
+        Button clickedButton = (Button) event.getSource();
+        
+        if (clickedButton == btnManageContent) {
+            loadPage("AdminMediaCRUD.fxml");
+        }
+        else if (clickedButton == btnManageUsers) {
+            loadPage("AdminUserManagement.fxml");
+        }
+        else if (clickedButton == btnAnalytics) {
+            loadPage("AdminUserManagement.fxml");
+        }
+    }
 }
+
+    
