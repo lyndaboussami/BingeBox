@@ -23,9 +23,6 @@ public class UserService {
         u.setMdp(mdpHache); 
         return UserDAO.save(u);
     }
-
-    // --- GESTION DES FAVORIS ---
-
     public void ajouterAuxFavoris(int idUser, int idOeuvre, String type) {
         UserDAO.ajouterAuxFavoris(idUser, idOeuvre, type);
     }

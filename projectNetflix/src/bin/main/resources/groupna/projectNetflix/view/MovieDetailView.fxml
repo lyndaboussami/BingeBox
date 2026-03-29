@@ -31,6 +31,31 @@
                 <Label text="Cast" styleClass="categoryTitle" style="-fx-padding: 0; -fx-font-size: 18px;"/>
                 <Label fx:id="movieCast" text="Actor Name, Actress Name, Director Name" style="-fx-text-fill: -fx-text-muted;" />
             </VBox>
+            <Separator prefWidth="800" style="-fx-opacity: 0.2;" />
+
+			<VBox spacing="20">
+			    <Label text="Rate this movie" styleClass="categoryTitle" style="-fx-font-size: 18px;"/>
+			    <HBox fx:id="starContainer" spacing="5">
+			        <Button text="★" fx:id="star1" onAction="#handleRate" styleClass="star-button" userData="1"/>
+			        <Button text="★" fx:id="star2" onAction="#handleRate" styleClass="star-button" userData="2"/>
+			        <Button text="★" fx:id="star3" onAction="#handleRate" styleClass="star-button" userData="3"/>
+			        <Button text="★" fx:id="star4" onAction="#handleRate" styleClass="star-button" userData="4"/>
+			        <Button text="★" fx:id="star5" onAction="#handleRate" styleClass="star-button" userData="5"/>
+			    </HBox>
+			</VBox>
+			
+			<VBox spacing="15">
+			    <Label text="Comments" styleClass="categoryTitle" style="-fx-font-size: 18px;"/>
+			    
+			    <HBox spacing="10">
+			        <TextField fx:id="commentField" promptText="Add a review..." HBox.hgrow="ALWAYS" 
+			                   style="-fx-background-color: #2b2b2b; -fx-text-fill: white; -fx-prompt-text-fill: #888; -fx-padding: 10;"/>
+			        <Button text="Post" onAction="#handlePostComment" styleClass="watchBtn" prefWidth="80" />
+			    </HBox>
+			
+			    <VBox fx:id="commentsContainer" spacing="10" style="-fx-padding: 10 0;">
+			        </VBox>
+			</VBox>
         </VBox>
     </VBox>
 </ScrollPane>

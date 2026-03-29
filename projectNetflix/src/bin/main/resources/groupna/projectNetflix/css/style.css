@@ -248,7 +248,17 @@
 .fav-button:selected {
     -fx-effect: dropshadow(three-pass-box, #ff4d4d, 10, 0, 0, 0);
 }
+/*rate */
+.star-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #555;
+    -fx-font-size: 24px;
+    -fx-cursor: hand;
+}
 
+.star-button:hover {
+    -fx-text-fill: #ffcc00;
+}
 /* Container for 3 buttons */
 .window-controls {
     -fx-spacing: 0; 
