@@ -76,6 +76,14 @@ public class HomeViewController extends BaseController{
         VBox card = new VBox();
         card.getStyleClass().add("movieCard");
         card.setSpacing(10);
+        
+        card.setUserData(data); 
+
+        MainViewController mainCtrl = MainViewController.getInstance();
+        if (mainCtrl != null) {
+            card.setOnMouseEntered(event -> mainCtrl.showDetails(event));
+            card.setOnMouseExited(event -> mainCtrl.hideDetails(event));
+        }
 
         StackPane imageContainer = new StackPane();
         
@@ -112,7 +120,7 @@ public class HomeViewController extends BaseController{
         try {
             title = bundle.getString(titleKey);
         } catch (MissingResourceException e) {
-            // If the key is missing, fallback to the object's default title
+            //if the key is missing -> object's default title
             title = (data instanceof Film f) ? f.getTitre() : ((Serie)data).getTitre();
         }
 

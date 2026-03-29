@@ -18,8 +18,12 @@
                 <Label fx:id="movieMeta" text="2026 • 1h 53m" styleClass="meta-tag" />
             	<Label fx:id="movieTitle" text="Title Placeholder" styleClass="heroTitle" />
                 <ToggleButton fx:id="favButton" styleClass="fav-button" text="❤" />
-                <Button text="▶ Play Movie" styleClass="watchBtn" prefWidth="200" prefHeight="45" />
-            </VBox>
+				<Button fx:id="playButton" 
+				        text="▶ Play Movie" 
+				        styleClass="watchBtn" 
+				        prefWidth="200" 
+				        prefHeight="45" 
+				        onAction="#handlePlay" />            </VBox>
         </StackPane>
 
         <VBox spacing="25" style="-fx-padding: 40 50;">

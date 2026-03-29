@@ -7,8 +7,12 @@ import groupna.projectNetflix.entities.Saison;
 import groupna.projectNetflix.entities.Episode;
 import groupna.projectNetflix.entities.Oeuvre;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+
+import java.io.IOException;
 import java.util.List;
 
 public class SeriesDetailController {
@@ -19,7 +23,7 @@ public class SeriesDetailController {
     @FXML private VBox episodeListContainer;
 
     @FXML private ToggleButton favButton;
-
+    
     @FXML
     public void initialize() {
         Object content = MainViewController.getInstance().getSelectedContent();
@@ -57,6 +61,30 @@ public class SeriesDetailController {
         }
     }
 
+    private void playEpisode(Episode ep, List<Episode> currentSeasonEpisodes) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/groupna/projectNetflix/view/VideoPlayerView.fxml"));
+            Parent playerView = loader.load();
+
+            VideoPlayerController controller = loader.getController();
+            int startIndex = currentSeasonEpisodes.indexOf(ep);
+            
+            controller.loadSeries(currentSeasonEpisodes, startIndex);
+
+            StackPane mainStack = (StackPane) seriesTitle.getScene().getRoot();
+            mainStack.getChildren().add(playerView);
+
+            controller.setOnCloseRequest(() -> {
+                controller.stopVideo();
+                mainStack.getChildren().remove(playerView);
+            });
+
+        } catch (IOException e) {
+            System.err.println("Could not play episode: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
     private void loadEpisodes(Serie series, String selectedSeasonLabel) {
     	if (selectedSeasonLabel == null || episodeListContainer == null) {
             return;
@@ -75,16 +103,18 @@ public class SeriesDetailController {
                 List<Episode> episodes = series.getSaisons().get(currentSaison);
                 if (episodes != null) {
                     for (Episode ep : episodes) {
-                        episodeListContainer.getChildren().add(createEpisodeRow(ep));
+                        episodeListContainer.getChildren().add(createEpisodeRow(ep,episodes));
                     }
                 }
             }
         } catch (Exception e) {
-            System.err.println("Error parsing season label: " + selectedSeasonLabel);
+            System.err.println("Error loading eps: " + selectedSeasonLabel);
         }
     }
 
-    private HBox createEpisodeRow(Episode ep) {
+
+    private HBox createEpisodeRow(Episode ep, List<Episode> allEpisodesInSeason) {
+    	
         HBox row = new HBox(20);
         row.getStyleClass().add("episode-row");
         row.setStyle("-fx-background-color: -fx-card-bg; -fx-padding: 15; -fx-background-radius: 10;");
@@ -114,6 +144,14 @@ public class SeriesDetailController {
         Button playBtn = new Button("▶");
         playBtn.getStyleClass().add("navButton");
 
+        playBtn.setOnAction(e -> playEpisode(ep, allEpisodesInSeason));
+        
+        row.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2) { // Double click to play
+                playEpisode(ep, allEpisodesInSeason);
+            }
+        });
+        
         row.getChildren().addAll(thumb, info, playBtn);
         return row;
     }

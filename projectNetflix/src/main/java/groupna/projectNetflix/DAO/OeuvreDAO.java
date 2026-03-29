@@ -69,7 +69,7 @@ public class OeuvreDAO {
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     int idArtiste = rs.getInt("id");
-                    List<String> oeuvresList = artiste.findOeuvresByArtiste(idArtiste);
+                    List<String> oeuvresList = ArtisteDAO.findOeuvresByArtiste(idArtiste);
 
                     Artiste a = new Artiste(
                         idArtiste,
