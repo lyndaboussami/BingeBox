@@ -1,36 +1,31 @@
 package groupna.projectNetflix.entities;
 	
 	public enum Categorie {
-	    // Catégories Générales
-	    ACTION("Action"),
-	    AVENTURE("Aventure"),
-	    COMEDIE("Comédie"),
-	    DRAME("Drame"),
-	    HORREUR("Horreur"),
-	    THRILLER("Thriller"),
-	    WESTERN("Western"),
-	    
-	    // Imaginaire et Suspense
-	    FANTASY("Fantasy"),
-	    SCIENCE_FICTION("Science-Fiction"),
-	    POLICIER("Policier"),
-	    MYSTERE("Mystère"),
-	    
-	    // Animation et Jeunesse
-	    ANIMATION("Animation"),
-	    ANIME("Anime Japonais"),
-	    FAMILLE("Famille"),
-	    
-	    // Réalité et Information
-	    DOCUMENTAIRE("Documentaire"),
-	    BIOPIC("Biopic"),
-	    HISTORIQUE("Historique"),
-	    REAL_TV("Télé-Réalité"),
-	    
-	    // Autres genres spécifiques
-	    ROMANCE("Romance"),
-	    MUSICAL("Comédie Musicale"),
-	    GUERRE("Guerre");
+		ACTION("Action"),
+		AVENTURE("Adventure"),
+		COMEDIE("Comedy"),
+		DRAME("Drama"),
+		HORREUR("Horror"),
+		THRILLER("Thriller"),
+		WESTERN("Western"),
+
+		FANTASY("Fantasy"),
+		SCIENCE_FICTION("Science Fiction"),
+		POLICIER("Crime"),
+		MYSTERE("Mystery"),
+
+		ANIMATION("Animation"),
+		ANIME("Japanese Anime"),
+		FAMILLE("Family"),
+
+		DOCUMENTAIRE("Documentary"),
+		BIOPIC("Biopic"),
+		HISTORIQUE("Historical"),
+		REAL_TV("Reality TV"),
+
+		ROMANCE("Romance"),
+		MUSICAL("Musical"),
+		GUERRE("War");
 	
 	    private final String label;
 	

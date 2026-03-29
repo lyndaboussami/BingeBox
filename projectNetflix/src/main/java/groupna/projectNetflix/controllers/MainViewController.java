@@ -339,7 +339,7 @@ public class MainViewController {
             loadPage("AdminUserManagement.fxml");
         }
         else if (clickedButton == btnAnalytics) {
-            loadPage("AdminUserManagement.fxml");
+            loadPage("AdminPerformanceView.fxml");
         }
     }
 }
