@@ -221,6 +221,25 @@ public class UserDAO {
             e.printStackTrace();
         }
     }
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    public static List<User> getAllUsers() {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM users";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                User user=findById(rs.getInt("id"));
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            System.err.println("[Erreur] Impossible de récupérer la liste des utilisateurs.");
+            e.printStackTrace();
+        }
+        
+        return users;
+    }
 //----------------------------------------------------------------------------------
     public static int getIdParEmail(String email) {
         int id = 0;
@@ -240,24 +259,32 @@ public class UserDAO {
         }
         return id;
     }
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    public static List<User> getAllUsers() {
-        List<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM users";
+//----------------------------------------------------------------------------------
+    public static Map<LocalDate, Integer> getInscriptionsParDate() {
+        Map<LocalDate, Integer> stats = new TreeMap<>();
+        String sql = "SELECT date_inscris, COUNT(*) as nb_users " +
+                     "FROM user " +
+                     "WHERE date_inscris IS NOT NULL " +
+                     "GROUP BY date_inscris " +
+                     "ORDER BY date_inscris DESC";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
-                User user=findById(rs.getInt("id"));
-                users.add(user);
+                Date sqlDate = rs.getDate("date_inscris");
+                if (sqlDate != null) {
+                    LocalDate date = sqlDate.toLocalDate();
+                    int count = rs.getInt("nb_users");
+                    stats.put(date, count);
+                }
             }
         } catch (SQLException e) {
-            System.err.println("[Erreur] Impossible de récupérer la liste des utilisateurs.");
+            System.err.println("[Erreur SQL] Impossible de récupérer les statistiques d'inscription.");
             e.printStackTrace();
         }
-        
-        return users;
+
+        return stats;
     }
 */
 }
