@@ -97,8 +97,13 @@
 /*hero */
 .hero {
     -fx-background-color: -fx-hero-bg;
-    -fx-min-height: 400px;
-    -fx-max-height: 550px;
+	-fx-min-height: 450px;
+    -fx-max-height: 500px;
+    -fx-overflow-typed: hidden;
+}
+
+.hero .media-view {
+    -fx-alignment: center;
 }
 
 .hero-overlay {
@@ -124,6 +129,28 @@
     -fx-font-size: 15px;
     -fx-line-spacing: 5;
 }
+
+.hero-container {
+    -fx-background-color: -fx-hero-bg;
+}
+
+.hero-container #heroBlurredPoster {
+	-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 50, 0, 0, 0);
+    -fx-opacity: 0.3;
+}
+
+#movieSharpPoster, #seriesSharpPoster {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 15, 0, 0, 5);
+    -fx-background-radius: 10;
+}
+
+.hero-container ImageView {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 25, 0, 0, 10);
+    -fx-border-color: rgba(255,255,255,0.05); /* very faint border */
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+}
+
 /*hero light mode */
 .light-mode .hero {
     -fx-background-color: #111522; 
@@ -301,13 +328,43 @@
 }
 
 .profile-avatar-container {
-    -fx-background-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 15, 0, 0, 0);
 }
 
+.profile-avatar-container:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-transition: 0.3s;
+}
+.profile-circle {
+    -fx-fill: transparent;
+    -fx-stroke: -fx-accent;
+    -fx-stroke-width: 2;
+    -fx-stroke-dash-array: 10;
+}
 .manage-profile-btn:hover {
     -fx-border-color: white;
     -fx-text-fill: white;
 }
+.profile-container {
+    -fx-alignment: center;
+    -fx-cursor: hand;
+    -fx-padding: 20 0;
+}
+
+.profile-icon {
+    -fx-background-color: transparent;
+    -fx-text-fill: #968d7f;
+    -fx-font-size: 32px;
+    -fx-cursor: hand;
+    -fx-transition: 0.2s;
+}
+
+.profile-container:hover .profile-icon {
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(255,255,255,0.3), 10, 0, 0, 0);
+}
+
 
 /* Search */
 .filter-chip {

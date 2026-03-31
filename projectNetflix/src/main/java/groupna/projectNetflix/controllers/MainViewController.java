@@ -1,7 +1,5 @@
 package groupna.projectNetflix.controllers;
 
-import java.io.IOException;
-
 import groupna.projectNetflix.utils.Session;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -23,7 +21,7 @@ public class MainViewController {
     @FXML private VBox sidebar;
     @FXML private HBox navLinksContainer;
     @FXML private Label heroTitle, heroDesc, selectionTitle, recommendedTitle;
-    
+    private String lastPage = "HomeView.fxml";
     private static MainViewController instance;
     
     public MainViewController() {
@@ -33,7 +31,7 @@ public class MainViewController {
     public static MainViewController getInstance() {
         return instance;
     }
-    
+        
     @FXML
     public void initialize() {
     	
@@ -160,8 +158,16 @@ public class MainViewController {
         stage.setMaximized(!stage.isMaximized());
     }
     
-    private void loadPage(String fxml) {
+    public void loadPage(String fxml) {
+
         try {
+        	
+        	if (!fxml.equals("MovieDetailView.fxml") && 
+                    !fxml.equals("SeriesDetailView.fxml") && 
+                    !fxml.equals("ProfileView.fxml")) {
+                    
+                    this.lastPage = fxml;
+        	}
         	FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/groupna/projectNetflix/view/" + fxml)
                 );
@@ -171,6 +177,17 @@ public class MainViewController {
                 Node node = loader.load();
 
                 rootPane.setCenter(node);
+                
+                if (fxml.equals("HomeView.fxml") || fxml.equals("MoviesView.fxml") || fxml.equals("SeriesView.fxml")) {
+                	if (sidebar != null) {
+                        sidebar.setVisible(true);
+                        sidebar.setManaged(true);
+                    }
+                    if (navLinksContainer != null) {
+                        navLinksContainer.setVisible(true);
+                        navLinksContainer.setManaged(true);
+                    }
+                }
 
         } catch (Exception e) {
             System.err.println("Error loading FXML: " + fxml);
@@ -178,6 +195,10 @@ public class MainViewController {
         }
     }
 	
+    public void goBack() {
+        loadPage(lastPage);
+    }
+    
 	@FXML
 	private void handleThemeChange(ActionEvent event) {
 	    Parent root = themeToggle.getScene().getRoot();
@@ -210,11 +231,6 @@ public class MainViewController {
     @FXML
     private void handleSearch(ActionEvent event) {
         loadPage("SearchView.fxml");
-    }
-    
-    @FXML
-    private void handleProfile(ActionEvent event) {
-        loadPage("ProfileView.fxml");
     }
 
     @FXML
@@ -320,7 +336,31 @@ public class MainViewController {
         }
         return resume;
     }
+    
+    public void hideNavigation() {
+        if (sidebar != null) {
+            sidebar.setVisible(false);
+            sidebar.setManaged(false);
+        }
+        if (navLinksContainer != null) {
+            navLinksContainer.setVisible(false);
+            navLinksContainer.setManaged(false);
+        }
+    }
 
+    private boolean isViewingProfile = false;
+
+    @FXML
+    private void handleProfileClick(MouseEvent event) {
+        if (isViewingProfile) {
+            loadPage("HomeView.fxml");
+            isViewingProfile = false;
+        } else {
+            loadPage("ProfileView.fxml");
+            isViewingProfile = true;
+        }
+    }
+    
     @FXML
     public void hideDetails(MouseEvent event) {
     }

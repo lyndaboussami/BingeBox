@@ -20,36 +20,13 @@ public class HomeViewController extends BaseController{
     @FXML private MediaView trailerVideo;
     @FXML private Label heroTitle;
     @FXML private Label heroDesc;
-    @FXML private Label selectionTitle;
-    @FXML private Label recommendedTitle;
+    @FXML private HBox heroMetaBox, selectionRow, mostWatchedRow;
 
     private MediaPlayer mediaPlayer;
 
-    @FXML private HBox moviesRow;
-    @FXML private HBox seriesRow;
-    
     @FXML
     public void initialize() {
-        setupVideo();
         loadContent();
-    }
-
-    private void setupVideo() {
-        try {
-            var resource = getClass().getResource("/groupna/projectNetflix/assets/Beast (2026) Movie Trailer.mp4");
-            if (resource != null) {
-                Media media = new Media(resource.toExternalForm());
-                mediaPlayer = new MediaPlayer(media);
-                mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-                mediaPlayer.setMute(true);
-                trailerVideo.setMediaPlayer(mediaPlayer);
-
-                trailerVideo.fitWidthProperty().bind(heroSection.widthProperty());
-                trailerVideo.fitHeightProperty().bind(heroSection.heightProperty());
-            }
-        } catch (Exception e) {
-            System.out.println("Video failed: " + e.getMessage());
-        }
     }
 
     @FXML
@@ -68,10 +45,62 @@ public class HomeViewController extends BaseController{
     	List<Film> movies = DataStore.getMovies();
         List<Serie> series = DataStore.getSeries();
         
-        movies.forEach(m -> moviesRow.getChildren().add(createCard(m)));
-        series.forEach(s -> seriesRow.getChildren().add(createCard(s)));
+        if (!movies.isEmpty()) {
+            setupHero(movies.get(movies.size() - 1));
+        }
+
+        //Mix first 3 movies and first 2 series
+        movies.stream().limit(3).forEach(m -> selectionRow.getChildren().add(createCard(m)));
+        series.stream().limit(2).forEach(s -> selectionRow.getChildren().add(createCard(s)));
+
+        // MOST WATCHED: For now, we mix them (Logic: sort by a 'views' property)
+        //"newest" as "trending"
+        for (int i = movies.size() - 1; i >= 0 && i > movies.size() - 4; i--) {
+            mostWatchedRow.getChildren().add(createCard(movies.get(i)));
+        }
     }
 
+    private void setupHero(Film movie) {
+        heroTitle.setText(movie.getTitre().toUpperCase());
+        heroDesc.setText(movie.getResume());
+        
+        heroMetaBox.getChildren().clear();
+        heroMetaBox.getChildren().addAll(
+            createMetaTag(movie.getDateDeSortie() + ""),
+            createMetaTag(movie.getDuree()+ "")
+        );
+
+        try {
+            String videoPath = movie.getPathTrailer();
+            if (videoPath != null) {
+                Media media = new Media(getClass().getResource(videoPath).toExternalForm());
+                mediaPlayer = new MediaPlayer(media);
+                mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+                mediaPlayer.setMute(true);
+                
+                trailerVideo.setMediaPlayer(mediaPlayer);
+                
+                Rectangle clip = new Rectangle();
+                clip.widthProperty().bind(heroSection.widthProperty());
+                clip.heightProperty().bind(heroSection.heightProperty());
+                
+                heroSection.setClip(clip);
+                trailerVideo.setPreserveRatio(true);
+                
+                
+                trailerVideo.fitWidthProperty().bind(heroSection.widthProperty());
+            }
+        } catch (Exception e) {
+            System.err.println("Hero video failed to load: " + e.getMessage());
+        }
+    }
+    
+    private Label createMetaTag(String text) {
+        Label l = new Label(text);
+        l.getStyleClass().add("meta-tag");
+        return l;
+    }
+    
     private VBox createCard(Object data) {
         VBox card = new VBox();
         card.getStyleClass().add("movieCard");
@@ -89,12 +118,12 @@ public class HomeViewController extends BaseController{
         
         
         ImageView posterView = new ImageView();
-        posterView.setFitWidth(140);
-        posterView.setFitHeight(200);
+        posterView.setFitWidth(200);
+        posterView.setFitHeight(300);
         posterView.setPreserveRatio(false);
         posterView.getStyleClass().add("movie-poster");
 
-        Rectangle clip = new Rectangle(140, 200);
+        Rectangle clip = new Rectangle(200, 300);
         clip.setArcWidth(15);
         clip.setArcHeight(15);
         posterView.setClip(clip);

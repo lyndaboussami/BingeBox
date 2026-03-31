@@ -10,6 +10,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.image.*;
 import javafx.scene.layout.*;
 
 import java.io.IOException;
@@ -23,6 +25,53 @@ public class SeriesDetailController {
     @FXML private VBox episodeListContainer;
 
     @FXML private ToggleButton favButton;
+    @FXML private Button trailerButton;
+    
+    @FXML private ImageView heroBlurredPoster;
+    @FXML private ImageView seriesSharpPoster;
+    
+    @FXML
+    private void handleBack() {
+        MainViewController.getInstance().goBack();
+    }
+    
+    @FXML
+    private void handlePlayTrailer() {
+    	Serie series = (Serie) MainViewController.getInstance().getSelectedContent();
+    	String selectedLabel = seasonSelector.getValue();
+
+    	if (series != null && selectedLabel != null) {
+            int selectedNum = Integer.parseInt(selectedLabel.replace("Season ", "").trim());
+
+            Saison currentSaison = series.getSaisons().keySet().stream()
+                    .filter(s -> s.getNum() == selectedNum)
+                    .findFirst()
+                    .orElse(null);
+
+            if (currentSaison != null && currentSaison.getPathTrailer() != null) {
+                String path = currentSaison.getPathTrailer();
+                openVideoPlayer(path, series.getTitre() + " - " + selectedLabel);
+            } else {
+                System.out.println("No trailer defined for this season.");
+            }
+        }
+    }
+    
+    private void openVideoPlayer(String fullUrl, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/groupna/projectNetflix/view/VideoPlayerView.fxml"));
+            Parent playerView = loader.load();
+            VideoPlayerController controller = loader.getController();
+            
+            controller.loadVideo(fullUrl, 0); 
+
+            StackPane mainStack = (StackPane) seriesTitle.getScene().getRoot();
+            mainStack.getChildren().add(playerView);
+            controller.setOnCloseRequest(() -> mainStack.getChildren().remove(playerView));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     
     @FXML
     public void initialize() {
@@ -30,6 +79,22 @@ public class SeriesDetailController {
         
         if (content instanceof Serie series) {
             if (seriesTitle != null) seriesTitle.setText(series.getTitre().toUpperCase());
+            String path = series.getPathPoster();
+            
+            if (path != null) {
+                try {
+                    Image img = new Image(getClass().getResource(path).toExternalForm(), true);
+                    
+                    seriesSharpPoster.setImage(img);
+                    heroBlurredPoster.setImage(img);
+                    
+                    GaussianBlur blur = new GaussianBlur(30);
+                    heroBlurredPoster.setEffect(blur);
+                    
+                } catch (Exception e) {
+                    System.err.println("Could not load image: " + path);
+                }
+            }
             
             if (seriesMeta != null) {
                 int totalSeasons = series.getSaisons().size();

@@ -7,40 +7,38 @@
 
 <ScrollPane fitToWidth="true" styleClass="scroll" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="groupna.projectNetflix.controllers.HomeViewController">
     <VBox spacing="40" styleClass="main-container">
-        <StackPane fx:id="heroSection" styleClass="hero" onMouseEntered="#playTrailer" onMouseExited="#stopTrailer">
-            <MediaView fx:id="trailerVideo" preserveRatio="false" opacity="1.0" />
+        <StackPane fx:id="heroSection" styleClass="hero" onMouseEntered="#playTrailer" onMouseExited="#stopTrailer" prefHeight="500">
+            <MediaView fx:id="trailerVideo" preserveRatio="true" opacity="0.8" StackPane.alignment="CENTER" />
             
-            <VBox spacing="10" alignment="CENTER_LEFT" mouseTransparent="true">
-                <padding><Insets left="40" bottom="30"/></padding>
+            <Region style="-fx-background-color: linear-gradient(to right, rgba(17,21,34,1) 10%, rgba(17,21,34,0) 80%);" mouseTransparent="true"/>
+
+            <VBox spacing="15" alignment="CENTER_LEFT" mouseTransparent="true">
+                <padding><Insets left="60" bottom="30"/></padding>
                 
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                     <Label text="%hero.release" styleClass="meta-tag"/>
-                     <Label text="1h53" styleClass="meta-tag"/>
-                     <Label text="2026" styleClass="meta-tag"/>
-                     <Label text="%cat.action_drama" styleClass="meta-tag"/>
-                </HBox>
+                <HBox fx:id="heroMetaBox" spacing="10" alignment="CENTER_LEFT">
+                     </HBox>
 
-                <Label fx:id="heroTitle" text="%movie.3.title" styleClass="heroTitle"/>
-                <Label fx:id="heroDesc" text="%movie.3.desc" styleClass="hero-desc-responsive" wrapText="true" maxWidth="450"/>
+                <Label fx:id="heroTitle" styleClass="heroTitle" wrapText="true" maxWidth="600"/>
+                <Label fx:id="heroDesc" styleClass="hero-desc-responsive" wrapText="true" maxWidth="500"/>
 
-                <Button text="%btn.watch_now" styleClass="watchBtn"/>
+                <Button fx:id="heroWatchBtn" text="%btn.watch_now" styleClass="watchBtn"/>
             </VBox>
         </StackPane>
 
         <VBox spacing="10" styleClass="category-section">
-            <Label fx:id="selectionTitle" text="%label.selection" styleClass="categoryTitle"/>
-            <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="NEVER" styleClass="inner-scroll">
-                <HBox fx:id="moviesRow" spacing="15">
-                    <padding><Insets left="20" right="20"/></padding>
+            <Label text="%label.selection" styleClass="categoryTitle"/>
+            <ScrollPane hbarPolicy="NEVER" vbarPolicy="NEVER" styleClass="inner-scroll">
+                <HBox fx:id="selectionRow" spacing="20">
+                    <padding><Insets left="40" right="40"/></padding>
                 </HBox>
             </ScrollPane>
         </VBox>
         
         <VBox spacing="10" styleClass="category-section">
-            <Label fx:id="recommendedTitle" text="%label.recommended" styleClass="categoryTitle"/>
-            <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="NEVER" styleClass="inner-scroll">
-                <HBox fx:id="seriesRow" spacing="15">
-                    <padding><Insets left="20" right="20"/></padding>
+            <Label text="Most Watched" styleClass="categoryTitle"/>
+            <ScrollPane hbarPolicy="NEVER" vbarPolicy="NEVER" styleClass="inner-scroll">
+                <HBox fx:id="mostWatchedRow" spacing="20">
+                    <padding><Insets left="40" right="40"/></padding>
                 </HBox>
             </ScrollPane>
         </VBox>

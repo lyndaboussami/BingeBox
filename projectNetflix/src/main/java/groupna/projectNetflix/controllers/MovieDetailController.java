@@ -1,9 +1,11 @@
 package groupna.projectNetflix.controllers;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.stream.Collectors;
 
 import groupna.projectNetflix.entities.Categorie;
+import groupna.projectNetflix.entities.Commentaire;
 import groupna.projectNetflix.entities.Film;
 import groupna.projectNetflix.entities.Oeuvre;
 import groupna.projectNetflix.entities.User;
@@ -14,6 +16,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.image.*;
 import javafx.scene.layout.*;
 
 public class MovieDetailController {
@@ -30,6 +34,11 @@ public class MovieDetailController {
     @FXML private TextField commentField;
     @FXML private VBox commentsContainer;
 
+    @FXML private Button trailerButton;
+    
+    @FXML private ImageView heroBlurredPoster;
+    @FXML private ImageView movieSharpPoster;
+    
     private int currentRating = 0;
     
     @FXML
@@ -38,6 +47,23 @@ public class MovieDetailController {
         
         if (content instanceof Film movie) {
 
+        	String posterPath = movie.getPathPoster();
+
+            if (posterPath != null && !posterPath.isEmpty()) {
+                try {
+                    Image posterImage = new Image(getClass().getResource(posterPath).toExternalForm(), true);
+
+                    if (posterImage != null) {
+                        movieSharpPoster.setImage(posterImage);
+                        heroBlurredPoster.setImage(posterImage);
+
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error loading poster: " + posterPath);
+                }
+            }
+        	
+        	
             String categories = movie.getCat().stream()
                     .map(Categorie::getLabel)
                     .collect(Collectors.joining(", "));
@@ -54,7 +80,7 @@ public class MovieDetailController {
             movieMeta.setText(movie.getDateDeSortie().getYear() + "  •  " 
             				+ movie.getDuree().getHour()+"h"+String.format("%02d", movie.getDuree().getMinute()));
             setupFavLogic(movie);
-
+            loadComments(movie.getId());
         }
     }
     
@@ -71,7 +97,7 @@ public class MovieDetailController {
             }
 
             try {
-                java.net.URL resource = getClass().getResource(moviePath);
+                URL resource = getClass().getResource(moviePath);
                 
                 if (resource == null) {
                     System.err.println("File not found at path: " + moviePath);
@@ -174,21 +200,14 @@ public class MovieDetailController {
             User user = Session.getInstance().getUser();
             Film movie = (Film) MainViewController.getInstance().getSelectedContent();
             
+            Commentaire newComment = new Commentaire(user.getId(), movie.getId(), text, false);
+            
             CommentaireService service = new CommentaireService();
             boolean success = service.posterCommentaire(user.getId(), movie.getId(), text, "FILM");
             
-            VBox commentBox = new VBox(5);
-            commentBox.setStyle("-fx-background-color: #1a1a1a; -fx-padding: 10; -fx-background-radius: 5;");
-            Label userLabel = new Label(user.getNom() + " • " + currentRating + "★");
-            userLabel.setStyle("-fx-text-fill: -fx-text-muted; -fx-font-size: 12px; -fx-font-weight: bold;");
-            
-            Label contentLabel = new Label(text);
-            contentLabel.setWrapText(true);
-            contentLabel.setStyle("-fx-text-fill: white;");
 
             if (success) {
-            	commentBox.getChildren().addAll(userLabel, contentLabel);
-                commentsContainer.getChildren().add(0, commentBox);
+            	commentsContainer.getChildren().add(0, createCommentNode(newComment));
                 commentField.clear();
             }
     	} catch (Exception e) {
@@ -196,6 +215,105 @@ public class MovieDetailController {
             e.printStackTrace();
         }   
         }
+    
+    private void loadComments(int movieId) {
+        commentsContainer.getChildren().clear();
+        CommentaireService service = new CommentaireService();
+        
+        // Fetch comments from DB
+        /*
+        service.getCommentairesByMedia(movieId, "FILM").forEach(comment -> {
+            commentsContainer.getChildren().add(createCommentNode(comment));
+        });*/
+    }
+    
+    private VBox createCommentNode(Commentaire comment) {
+        VBox commentBox = new VBox(8);
+        commentBox.setStyle("-fx-background-color: #1a1a1a; -fx-padding: 10; -fx-background-radius: 5;");
+        
+        // à ajouter :a way to get the name from id_user
+        Label userLabel = new Label("User #" + comment.getId_user());
+        userLabel.setStyle("-fx-text-fill: -fx-text-muted; -fx-font-size: 12px; -fx-font-weight: bold;");
+
+        // Content: The actual text
+        Label contentLabel = new Label(comment.getContent());
+        contentLabel.setWrapText(true);
+        contentLabel.setStyle("-fx-text-fill: white;");
+
+        // Report Section
+        HBox footer = new HBox(10);
+        footer.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+
+        if (comment.isReported()) {
+            Label reportedLabel = new Label("⚠️ Under Review");
+            reportedLabel.setStyle("-fx-text-fill: #ff6b6b; -fx-font-style: italic; -fx-font-size: 12px;");
+            footer.getChildren().add(reportedLabel);
+        } else {
+            Button reportBtn = new Button("Report");
+            reportBtn.getStyleClass().add("navButton");
+            reportBtn.setStyle("-fx-font-size: 11px; -fx-cursor: hand; -fx-text-fill: -fx-text-muted;");
+            reportBtn.setOnAction(e -> handleReportClick(comment, commentBox));
+            footer.getChildren().add(reportBtn);
+        }
+
+        commentBox.getChildren().addAll(userLabel, contentLabel, footer);
+        return commentBox;
+    }
+    
+    private void handleReportClick(Commentaire comment, VBox commentBox) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Report Comment");
+        dialog.setHeaderText("Why are you reporting this comment?");
+        dialog.setContentText("Please specify the reason:");
+
+        dialog.showAndWait().ifPresent(reason -> {
+            if (!reason.trim().isEmpty()) {
+                CommentaireService service = new CommentaireService();
+                
+                // Pass the user_id and oeuvre_id (primary keys for comment)
+                /*
+                boolean success = service.markAsReported(comment.getId_user(), comment.getId_oeuvre(), reason);
+                
+                if (success) {
+                    comment.setReported(true);
+                    
+                    int index = commentsContainer.getChildren().indexOf(commentBox);
+                    commentsContainer.getChildren().set(index, createCommentNode(comment));
+                }*/
+            }
+        });
+    }
+    
+    @FXML
+    private void handlePlayTrailer() {
+        Object content = MainViewController.getInstance().getSelectedContent();
+        
+        if (content instanceof Film movie) {
+            String trailerPath = movie.getPathTrailer(); 
+
+            if (trailerPath == null || trailerPath.isEmpty()) {
+                showError("Trailer Unavailable", "No trailer found for this movie.");
+                return;
+            }
+
+            try {
+                URL resource = getClass().getResource(trailerPath);
+                if (resource != null) {
+                    openVideoPlayer(resource.toExternalForm(), movie.getId(), movie.getTitre() + " - Trailer");
+                } else {
+                    showError("File Error", "Trailer file not found on disk.");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    @FXML
+    private void handleBack() {
+    	MainViewController.getInstance().goBack();
+    }
+    
     private void showError(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);

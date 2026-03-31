@@ -132,7 +132,7 @@ public class AdminMediaController {
         catTags.setPrefWidth(300);
         updateTags(selectedCats, catTags);
 
-        ComboBox<Categorie> catCombo = new ComboBox<>(); // Load from DAO 
+        ComboBox<Categorie> catCombo = new ComboBox<>();
         catCombo.setPromptText("Select Category");
         catCombo.setEditable(true);
         
@@ -201,7 +201,7 @@ public class AdminMediaController {
         
         FlowPane actorTags = new FlowPane(5, 5);
         updateTags(selectedActors, actorTags);
-        TextField actorInput = new TextField(); // Simplified: replace with ComboBox if you have ArtistDAO
+        TextField actorInput = new TextField();
         Button addActorBtn = new Button("+ Actor");
         addActorBtn.getStyleClass().add("watchBtn");
 

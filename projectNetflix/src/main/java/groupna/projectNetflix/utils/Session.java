@@ -12,7 +12,7 @@ public class Session {
     private Locale currentLocale = Locale.ENGLISH;
 
     private Session() {
-        this.currentUser = new User(0, "User123", "password", null, null, null, null, null); 
+        this.currentUser = new User(0, "ben foulen", "foulen", "foulenbenfoulen@gmail.com", null, null, null, null); 
         if (this.currentUser.getFavs() == null) {
             this.currentUser.setFavs(new HashSet<>());
         }

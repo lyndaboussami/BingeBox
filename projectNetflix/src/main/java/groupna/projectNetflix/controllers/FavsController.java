@@ -48,8 +48,8 @@ public class FavsController {
         StackPane imageStack = new StackPane();
         
         ImageView poster = new ImageView();
-        poster.setFitWidth(140);
-        poster.setFitHeight(200);
+        poster.setFitWidth(200);
+        poster.setFitHeight(300);
         
         try {
             if (movie.getPathPoster() != null) {
@@ -59,7 +59,7 @@ public class FavsController {
             System.err.println("Could not load: " + movie.getPathPoster());
         }
 
-        Rectangle clip = new Rectangle(140, 200);
+        Rectangle clip = new Rectangle(200, 300);
         clip.setArcWidth(15);
         clip.setArcHeight(15);
         poster.setClip(clip);
@@ -91,8 +91,8 @@ public class FavsController {
         StackPane stack = new StackPane();
         
         ImageView poster = new ImageView();
-        poster.setFitWidth(140);
-        poster.setFitHeight(200);
+        poster.setFitWidth(200);
+        poster.setFitHeight(300);
         
         try {
             if (serie.getPathPoster() != null) {
@@ -102,7 +102,7 @@ public class FavsController {
             System.err.println("Series image failed: " + serie.getPathPoster());
         }
 
-        Rectangle clip = new Rectangle(140, 200);
+        Rectangle clip = new Rectangle(200, 300);
         clip.setArcWidth(15);
         clip.setArcHeight(15);
         poster.setClip(clip);
