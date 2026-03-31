@@ -4,39 +4,27 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.geometry.*?>
-<?import javafx.scene.image.*?>
 
-<VBox alignment="CENTER" spacing="30" styleClass="main-container" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="groupna.projectNetflix.controllers.ProfileViewController">
-    <padding>
-        <Insets top="50" bottom="50"/>
-    </padding>
-
-    <Label text="Who's watching?" style="-fx-font-size: 40px; -fx-text-fill: white; -fx-font-weight: bold;"/>
-
-    <HBox alignment="CENTER" spacing="40">
-        <VBox alignment="CENTER" spacing="15" styleClass="profile-card">
-            <StackPane styleClass="profile-avatar-container">
-                <Rectangle width="150" height="150" arcWidth="20" arcHeight="20" fill="#CFB997" stroke="WHITE" strokeWidth="2"/>
-                <Label text="👤" style="-fx-font-size: 60px;"/>
+<StackPane styleClass="main-container" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="groupna.projectNetflix.controllers.ProfileViewController">
+    
+    <VBox alignment="CENTER" spacing="30" maxWidth="450" maxHeight="400" styleClass="movieCard" style="-fx-padding: 40; -fx-background-radius: 20;">
+        
+        <VBox alignment="CENTER" spacing="10">
+            <StackPane>
+                <Circle radius="50" styleClass="profile-circle"/>
+                <Label text="👤" style="-fx-font-size: 50px; -fx-text-fill: -fx-accent;"/>
             </StackPane>
-            <Label text="User Name" style="-fx-font-size: 18px; -fx-text-fill: #E5E5E5;"/>
+            
+            <VBox alignment="CENTER">
+                <Label fx:id="userNameLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: -fx-text-main;"/>
+                <Label fx:id="userEmailLabel" style="-fx-font-size: 14px; -fx-text-fill: -fx-text-muted;"/>
+            </VBox>
         </VBox>
 
-        <VBox alignment="CENTER" spacing="15" styleClass="profile-card">
-            <StackPane styleClass="profile-avatar-container">
-                <Rectangle width="150" height="150" arcWidth="20" arcHeight="20" fill="#2ECC71"/>
-                <Label text="🎈" style="-fx-font-size: 60px;"/>
-            </StackPane>
-            <Label text="Kids" style="-fx-font-size: 18px; -fx-text-fill: #E5E5E5;"/>
-        </VBox>
+        <Separator opacity="0.1" />
 
-        <VBox alignment="CENTER" spacing="15" styleClass="profile-card">
-            <StackPane styleClass="profile-avatar-container">
-                <Rectangle width="150" height="150" arcWidth="20" arcHeight="20" fill="transparent" stroke="#808080" strokeDashArray="10"/>
-                <Label text="+" style="-fx-font-size: 50px; -fx-text-fill: #808080;"/>
-            </StackPane>
-            <Label text="Add Profile" style="-fx-font-size: 18px; -fx-text-fill: #808080;"/>
-        </VBox>
-    </HBox>
-
-</VBox>
+        <Button text="SWITCH ACCOUNT" onAction="#handleSwitchAccount" 
+                styleClass="watchBtn" prefWidth="200" style="-fx-padding: 10; -fx-cursor: hand;"/>
+        
+    </VBox>
+</StackPane>

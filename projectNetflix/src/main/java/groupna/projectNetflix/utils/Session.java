@@ -9,8 +9,7 @@ public class Session {
     private static Session instance;
     private User currentUser;
     
-    private Locale currentLocale = Locale.ENGLISH;
-
+    private Locale currentLocale = Locale.ENGLISH;	
     public Session(User user) {
         this.currentUser = user; //new User(0, "User123", "password", null, null, null, null, null); 
     }
@@ -30,8 +29,6 @@ public class Session {
     public ResourceBundle getBundle() {
         return ResourceBundle.getBundle("groupna.projectNetflix.languages.bundle", currentLocale);
     }
-
-    // Method to change the language globally
     public void setLocale(String langCode) {
         this.currentLocale = new Locale(langCode);
     }

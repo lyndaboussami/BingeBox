@@ -21,6 +21,10 @@ public class User {
 		this.mdp = mdp;
 		this.role = role;
 	}
+	@Override
+	public String toString() {
+		return  nom +" "+prenom; 
+	}
 	public String getNom() {
 		return nom;
 	}

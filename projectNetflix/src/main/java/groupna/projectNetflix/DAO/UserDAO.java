@@ -3,18 +3,16 @@ package groupna.projectNetflix.DAO;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import groupna.projectNetflix.entities.Episode;
+import groupna.projectNetflix.entities.Film;
 import groupna.projectNetflix.entities.Oeuvre;
 import groupna.projectNetflix.entities.Role;
 import groupna.projectNetflix.entities.User;
-import groupna.projectNetflix.entities.Visualisable;
 import groupna.projectNetflix.utils.ConxDB;
 
 public class UserDAO {
@@ -102,26 +100,26 @@ public class UserDAO {
 //---------------------------------------------------------------------------
     public static List<HistoryItem> getUserFullGlobalHistory(int idUser) {
         List<HistoryItem> globalHistory = new ArrayList<>(); 
-        String sqlFilms = "SELECT id_oeuvre, date_visionnage FROM historique_film WHERE id_user = ?";
+        String sqlFilms = "SELECT id_film, date_visionnage, time FROM historique_film WHERE id_user = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sqlFilms)) {
             pstmt.setInt(1, idUser);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    Oeuvre f = FilmDAO.findById(rs.getInt("id_oeuvre"));
+                    Film f = FilmDAO.findById(rs.getInt("id_film")); 
                     if (f != null) {
-                        globalHistory.add(new HistoryItem(f, rs.getTimestamp("date_visionnage")));
+                        globalHistory.add(new HistoryItem(f, rs.getTimestamp("date_visionnage"), rs.getDouble("time")));
                     }
                 }
             }
         } catch (SQLException e) { e.printStackTrace(); }
-        String sqlEpisodes = "SELECT id_episode, date_visionnage FROM historique_episodes WHERE id_user = ?";
+        String sqlEpisodes = "SELECT id_episode, date_visionnage, time FROM historique_episodes WHERE id_user = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sqlEpisodes)) {
             pstmt.setInt(1, idUser);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     Episode ep = EpisodeDAO.getEpisodeById(rs.getInt("id_episode"));
-                    if (ep!=null) {
-                        globalHistory.add(new HistoryItem(ep, rs.getTimestamp("date_visionnage")));
+                    if (ep != null) {
+                        globalHistory.add(new HistoryItem(ep, rs.getTimestamp("date_visionnage"), rs.getDouble("time")));
                     }
                 }
             }
@@ -131,7 +129,7 @@ public class UserDAO {
                 .collect(Collectors.toList());
     }
 //-------------------------------------------------------------------------------------------------
-    public static Map<LocalDate, List<Visualisable>> getHistoryGroupedByDate(int idUser) {
+    /*public static Map<LocalDate, List<Visualisable>> getHistoryGroupedByDate(int idUser) {
         List<HistoryItem> flatHistory = getUserFullGlobalHistory(idUser);
         return flatHistory.stream()
             .collect(Collectors.groupingBy(
@@ -142,7 +140,7 @@ public class UserDAO {
                     Collectors.toList()
                 )
             )).descendingMap();
-    }
+    }*/
 
 //-------------------------------------------------------------------------------------------------
     public static void removeFromCollection(int idUser, int idOeuvre, String tableName) {
@@ -153,9 +151,6 @@ public class UserDAO {
             pstmt.setInt(2, idOeuvre);
             
             int rowsAffected = pstmt.executeUpdate();
-            if (rowsAffected > 0) {
-                //System.out.println("L'élément a été retiré de la table " + tableName);
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -194,25 +189,30 @@ public class UserDAO {
     public static void ajouterAuxFavoris(int idUser, int idOeuvre, String type) {
         String tableName = type.equalsIgnoreCase("film") ? "fav_film" : "fav_serie";
         addToCollection(idUser, idOeuvre, tableName);
-        //System.out.println("[INFO] Ajouté aux favoris (" + tableName + ")");
     }
 //----------------------------------------------------------------------------------------
-    public static void ajouterAHistoriqueFilm(int idUser, int idFilm) {
-        String tableName = "historique_film";
-        addToCollection(idUser, idFilm, tableName);
-        
-        //System.out.println("[INFO] Film ajouté à l'historique (ID Film: " + idFilm + ")");
+    public static void ajouterAHistoriqueFilm(int idUser, int idFilm, double time) {
+        String sql = "INSERT INTO historique_film (id_user, id_film, time) VALUES (?, ?, ?)";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idUser);
+            pstmt.setInt(2, idFilm);
+            pstmt.setDouble(3, time);
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("[Erreur SQL] " + e.getMessage());
+        }
     }
 //----------------------------------------------------------------------------------
-    public static void ajouterAHistoriqueEpisode(int idUser, int idEpisode) {
-        String sql = "INSERT INTO historique_episodes (id_user, id_episode, date_visionnage) VALUES (?, ?, NOW())";
+    public static void ajouterAHistoriqueEpisode(int idUser, int idEpisode, double time) {
+        String sql = "INSERT INTO historique_episodes (id_user, id_episode, time) VALUES (?, ?, ?)";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, idUser);
             pstmt.setInt(2, idEpisode);
-
+            pstmt.setDouble(3, time);
             pstmt.executeUpdate();
-            //System.out.println("[SQL] Nouveau visionnage enregistré pour l'épisode " + idEpisode);
             
         } catch (SQLException e) {
             System.err.println("[Erreur SQL] Impossible d'ajouter le visionnage à l'historique.");
@@ -237,8 +237,6 @@ public class UserDAO {
             System.err.println("[Erreur] Échec de la suppression de l'historique épisodes.");
             e.printStackTrace();
         }
-        
-        //System.out.println("[INFO] Tentative de nettoyage de l'historique terminée pour l'utilisateur " + idUser);
     }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     public static List<User> getAllUsers() {

@@ -42,7 +42,7 @@ public class DataStore {
 	        	    List.of(new Artiste(5, "Patton James")), 
 	        	    List.of(new Artiste(6, "Xavier Grau")), 
 	        	    7.5, "/groupna/projectNetflix/assets/beast.jpg", 
-	        	    LocalTime.of(1, 53), "/movies/beast.mp4", "/trailers/beast_tr.mp4")
+	        	    LocalTime.of(1, 53), "/movies/beast.mp4", "/groupna/projectNetflix/assets/Beast (2026) Movie Trailer.mp4")
 	        );
 
         Map<Saison, List<Episode>> bbSaisons = new HashMap<>();

@@ -97,8 +97,13 @@
 /*hero */
 .hero {
     -fx-background-color: -fx-hero-bg;
-    -fx-min-height: 400px;
-    -fx-max-height: 550px;
+	-fx-min-height: 450px;
+    -fx-max-height: 500px;
+    -fx-overflow-typed: hidden;
+}
+
+.hero .media-view {
+    -fx-alignment: center;
 }
 
 .hero-overlay {
@@ -124,6 +129,28 @@
     -fx-font-size: 15px;
     -fx-line-spacing: 5;
 }
+
+.hero-container {
+    -fx-background-color: -fx-hero-bg;
+}
+
+.hero-container #heroBlurredPoster {
+	-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 50, 0, 0, 0);
+    -fx-opacity: 0.3;
+}
+
+#movieSharpPoster, #seriesSharpPoster {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 15, 0, 0, 5);
+    -fx-background-radius: 10;
+}
+
+.hero-container ImageView {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 25, 0, 0, 10);
+    -fx-border-color: rgba(255,255,255,0.05); /* very faint border */
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+}
+
 /*hero light mode */
 .light-mode .hero {
     -fx-background-color: #111522; 
@@ -289,9 +316,6 @@
 }
 
 
-
-
-
 /*Profile */
 .profile-card {
     -fx-cursor: hand;
@@ -304,13 +328,43 @@
 }
 
 .profile-avatar-container {
-    -fx-background-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 15, 0, 0, 0);
 }
 
+.profile-avatar-container:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-transition: 0.3s;
+}
+.profile-circle {
+    -fx-fill: transparent;
+    -fx-stroke: -fx-accent;
+    -fx-stroke-width: 2;
+    -fx-stroke-dash-array: 10;
+}
 .manage-profile-btn:hover {
     -fx-border-color: white;
     -fx-text-fill: white;
 }
+.profile-container {
+    -fx-alignment: center;
+    -fx-cursor: hand;
+    -fx-padding: 20 0;
+}
+
+.profile-icon {
+    -fx-background-color: transparent;
+    -fx-text-fill: #968d7f;
+    -fx-font-size: 32px;
+    -fx-cursor: hand;
+    -fx-transition: 0.2s;
+}
+
+.profile-container:hover .profile-icon {
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(255,255,255,0.3), 10, 0, 0, 0);
+}
+
 
 /* Search */
 .filter-chip {
@@ -402,6 +456,123 @@
 
 .admin-tabs .tab-header-area .tab {
     -fx-background-color: #1a1a1a;
+    -fx-text-fill: white;
+}
+/*accordion */
+.accordion .titled-pane .header {
+    -fx-background-color: -fx-card-bg;
+}
+
+.accordion .titled-pane .header .label {
+    -fx-text-fill: -fx-text-main;
+}
+
+.accordion .titled-pane .content {
+    -fx-background-color: -fx-primary-bg;
+    -fx-border-color: -fx-card-bg;
+}
+/*TableView*/
+.table-view {
+    -fx-background-color: -fx-primary-bg;
+    -fx-border-color: -fx-card-bg;
+    -fx-background-radius: 10;
+}
+
+.table-view .column-header, .table-view .column-header-background {
+    -fx-background-color: -fx-card-bg;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: -fx-accent; /* Beige headers */
+    -fx-font-weight: bold;
+}
+
+.table-row-cell {
+    -fx-background-color: -fx-primary-bg;
+    -fx-text-fill: -fx-text-main;
+    -fx-border-color: transparent transparent rgba(255,255,255,0.05) transparent;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #1a1f31; /* Subtle alternation */
+}
+
+.table-row-cell:selected {
+    -fx-background-color: -fx-card-bg;
+    -fx-border-color: -fx-accent;
+}
+
+.table-cell {
+    -fx-text-fill: -fx-text-main;
+}
+
+/* Dialog Specific Styles */
+.dialog-pane {
+    -fx-background-color: -fx-primary-bg;
+}
+
+.dialog-pane .label {
+    -fx-text-fill: -fx-text-main;
+}
+
+.dialog-pane .button-bar .button {
+    -fx-background-color: -fx-accent;
+    -fx-text-fill: -fx-primary-bg;
+}
+
+/* Category Tags */
+.category-tag {
+    -fx-background-color: -fx-accent;
+    -fx-background-radius: 20;
+    -fx-padding: 5 10;
+}
+
+/*text areas */
+.text-area {
+    -fx-control-inner-background: #1f2940;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #808080;
+}
+
+/* Styling Chart Content */
+.chart-content {
+    -fx-padding: 10;
+}
+
+.chart-title {
+    -fx-text-fill: -fx-accent;
+    -fx-font-size: 16px;
+}
+
+.axis-label {
+    -fx-text-fill: -fx-text-main;
+}
+
+/* Pie Chart Slices */
+.default-color0.chart-pie { -fx-pie-color: #cfc2b0; }
+.default-color1.chart-pie { -fx-pie-color: #2d3755; }
+.default-color2.chart-pie { -fx-pie-color: #b0a596; }
+
+/* Bar and Line Chart Series colors */
+.chart-series-line { -fx-stroke: -fx-accent; }
+.chart-line-symbol { -fx-background-color: -fx-accent, white; }
+.chart-bar { -fx-bar-fill: -fx-accent; }
+
+/*Chart Label Colors */
+.axis {
+    -fx-tick-label-fill: #cfc2b0;
+    -fx-label-padding: 5;
+}
+
+.axis-label {
+    -fx-text-fill: #cfc2b0;
+}
+
+.chart-legend {
+   -fx-background-color: transparent;
+}
+
+.chart-legend-item {
     -fx-text-fill: white;
 }
 

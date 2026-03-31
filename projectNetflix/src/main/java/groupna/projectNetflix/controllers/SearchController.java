@@ -149,12 +149,12 @@ public class SearchController extends BaseController{
         
         
         ImageView posterView = new ImageView();
-        posterView.setFitWidth(140);
-        posterView.setFitHeight(200);
+        posterView.setFitWidth(200);
+        posterView.setFitHeight(300);
         posterView.setPreserveRatio(false);
         posterView.getStyleClass().add("movie-poster");
 
-        Rectangle clip = new Rectangle(140, 200);
+        Rectangle clip = new Rectangle(200, 300);
         clip.setArcWidth(15);
         clip.setArcHeight(15);
         posterView.setClip(clip);
