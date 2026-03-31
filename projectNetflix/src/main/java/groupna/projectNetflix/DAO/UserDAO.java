@@ -18,7 +18,6 @@ import groupna.projectNetflix.entities.Visualisable;
 import groupna.projectNetflix.utils.ConxDB;
 
 public class UserDAO {
-	/*
     private static Connection conn = ConxDB.getInstance();    
 
     //--------------------------------------------------------------------------------------
@@ -56,10 +55,8 @@ public class UserDAO {
                     String email = rs.getString("email");
                     String mdp = rs.getString("mdp");
                     Role role = Role.valueOf(rs.getString("role"));
-                    Set<Oeuvre> favs = getAllUserFavorites(id);
-                    Map<LocalDate, List<Visualisable>> his =getHistoryGroupedByDate(id);
 
-                    user = new User(id, nom, prenom, email, mdp, role, favs, his);
+                    user = new User(id, nom, prenom, email, mdp, role);
                 }
             }
         } catch (SQLException e) {
@@ -157,53 +154,54 @@ public class UserDAO {
             
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("L'élément a été retiré de la table " + tableName);
+                //System.out.println("L'élément a été retiré de la table " + tableName);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 //--------------------------------------------------------------------------------------------
-    public static Set<Oeuvre> getAllUserFavorites(int idUser) {
-        Set<Oeuvre> oeuvres = new HashSet<>();
-        String sql = "SELECT id_oeuvre FROM fav_film WHERE id_user = ? " +
-                     "UNION " +
-                     "SELECT id_oeuvre FROM fav_serie WHERE id_user = ?";
-
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    public static List<Oeuvre> getAllUserFavorites(int idUser) {
+        List<Oeuvre> oeuvres = new ArrayList<>();
+        String sqlFilms = "SELECT id_oeuvre FROM fav_film WHERE id_user = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sqlFilms)) {
             pstmt.setInt(1, idUser);
-            pstmt.setInt(2, idUser);
-
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    int idO = rs.getInt("id_oeuvre");
-                    Oeuvre o = FilmDAO.findById(idO);
-                    if (o == null) {
-                        o = SerieDAO.findById(idO);
-                    }
-
-                    if (o != null) {
-                        oeuvres.add(o);
-                    }
+                    Oeuvre f = FilmDAO.findById(rs.getInt("id_oeuvre"));
+                    if (f != null) oeuvres.add(f);
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la récupération des favoris : " + e.getMessage());
+            System.err.println("Erreur favoris films : " + e.getMessage());
         }
+        String sqlSeries = "SELECT id_oeuvre FROM fav_serie WHERE id_user = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sqlSeries)) {
+            pstmt.setInt(1, idUser);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Oeuvre s = SerieDAO.findById(rs.getInt("id_oeuvre"));
+                    if (s != null) oeuvres.add(s);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur favoris séries : " + e.getMessage());
+        }
+
         return oeuvres;
     }
 //----------------------------------------------------------------------------------------
     public static void ajouterAuxFavoris(int idUser, int idOeuvre, String type) {
         String tableName = type.equalsIgnoreCase("film") ? "fav_film" : "fav_serie";
         addToCollection(idUser, idOeuvre, tableName);
-        System.out.println("[INFO] Ajouté aux favoris (" + tableName + ")");
+        //System.out.println("[INFO] Ajouté aux favoris (" + tableName + ")");
     }
 //----------------------------------------------------------------------------------------
     public static void ajouterAHistoriqueFilm(int idUser, int idFilm) {
         String tableName = "historique_film";
         addToCollection(idUser, idFilm, tableName);
         
-        System.out.println("[INFO] Film ajouté à l'historique (ID Film: " + idFilm + ")");
+        //System.out.println("[INFO] Film ajouté à l'historique (ID Film: " + idFilm + ")");
     }
 //----------------------------------------------------------------------------------
     public static void ajouterAHistoriqueEpisode(int idUser, int idEpisode) {
@@ -214,12 +212,33 @@ public class UserDAO {
             pstmt.setInt(2, idEpisode);
 
             pstmt.executeUpdate();
-            System.out.println("[SQL] Nouveau visionnage enregistré pour l'épisode " + idEpisode);
+            //System.out.println("[SQL] Nouveau visionnage enregistré pour l'épisode " + idEpisode);
             
         } catch (SQLException e) {
             System.err.println("[Erreur SQL] Impossible d'ajouter le visionnage à l'historique.");
             e.printStackTrace();
         }
+    }
+//-------------------------------------------------------------------------------------------------------
+    public static void clearHistory(int idUser) {
+        String sqlFilms = "DELETE FROM historique_film WHERE id_user = ?";
+        String sqlEpisodes = "DELETE FROM historique_episodes WHERE id_user = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sqlFilms)) {
+            pstmt.setInt(1, idUser);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("[Erreur] Échec de la suppression de l'historique films.");
+            e.printStackTrace();
+        }
+        try (PreparedStatement pstmt = conn.prepareStatement(sqlEpisodes)) {
+            pstmt.setInt(1, idUser);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("[Erreur] Échec de la suppression de l'historique épisodes.");
+            e.printStackTrace();
+        }
+        
+        //System.out.println("[INFO] Tentative de nettoyage de l'historique terminée pour l'utilisateur " + idUser);
     }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     public static List<User> getAllUsers() {
@@ -286,5 +305,5 @@ public class UserDAO {
 
         return stats;
     }
-*/
+
 }

@@ -3,6 +3,8 @@ package groupna.projectNetflix.controllers;
 import groupna.projectNetflix.entities.Film;
 import groupna.projectNetflix.entities.Oeuvre;
 import groupna.projectNetflix.entities.Serie;
+import groupna.projectNetflix.entities.User;
+import groupna.projectNetflix.services.UserService;
 import groupna.projectNetflix.utils.Session;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -14,7 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 
 public class FavsController {
-
+	private UserService userService=new UserService();
 	@FXML private FlowPane favsGrid;
 
     @FXML
@@ -23,7 +25,8 @@ public class FavsController {
     }
     public void renderFavorites() {
         favsGrid.getChildren().clear();
-        var favs = Session.getInstance().getUser().getFavs();
+        User user=Session.getInstance().getUser();
+        var favs = userService.recupererFavoris(user.getId());
 
         if (favs.isEmpty()) {
             favsGrid.getChildren().add(new Label("No favorites yet. Start liking some movies!"));

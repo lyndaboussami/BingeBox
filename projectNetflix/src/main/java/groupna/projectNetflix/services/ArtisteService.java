@@ -6,10 +6,10 @@ import java.util.List;
 
 public class ArtisteService {
     public int enregistrerArtiste(Artiste a) {
-        int idExistant = ArtisteDAO.getIdIfExists(a.getNom(), a.getPrenom());
+        int idExistant = ArtisteDAO.getIdIfExists(a.getFullname());
         
         if (idExistant != -1) {
-            System.out.println("[Service] L'artiste " + a.getNom() + " existe déjà (ID: " + idExistant + ").");
+            System.out.println("[Service] L'artiste " + a.getFullname() + " existe déjà (ID: " + idExistant + ").");
             a.setId(idExistant);
             return idExistant;
         }

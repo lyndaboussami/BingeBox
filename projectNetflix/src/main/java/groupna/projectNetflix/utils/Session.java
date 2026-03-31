@@ -11,16 +11,18 @@ public class Session {
     
     private Locale currentLocale = Locale.ENGLISH;
 
-    private Session() {
-        this.currentUser = new User(0, "User123", "password", null, null, null, null, null); 
-        if (this.currentUser.getFavs() == null) {
-            this.currentUser.setFavs(new HashSet<>());
-        }
+    public Session(User user) {
+        this.currentUser = user; //new User(0, "User123", "password", null, null, null, null, null); 
     }
-
+    public static Session getInstance(User user) {
+        if (instance == null) {
+            instance = new Session(user);
+        }
+        return instance;
+    } 
     public static Session getInstance() {
         if (instance == null) {
-            instance = new Session();
+            instance = new Session(null); 
         }
         return instance;
     }

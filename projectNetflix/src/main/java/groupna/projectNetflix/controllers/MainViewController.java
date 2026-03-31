@@ -55,6 +55,7 @@ public class MainViewController {
     }
     
     public void unlockFullApp() {
+    	
         sidebar.setVisible(true);
         sidebar.setManaged(true);
         
@@ -261,7 +262,7 @@ public class MainViewController {
         	sb.append("🎬 ").append(f.getTitre())
               .append(" (").append(f.getDateDeSortie().getYear()).append(")\n");
             
-            sb.append("⭐ ").append(String.format("%.1f", f.getRate()))
+            sb.append("⭐ ").append(String.format("%.1f", f.getRate()))//--rate--
               .append("/5  |  🕒 ").append(f.getDuree()).append("\n");
             
             if (f.getCat() != null && !f.getCat().isEmpty()) {
@@ -279,7 +280,7 @@ public class MainViewController {
             sb.append("📺 ").append(s.getTitre())
               .append(" (").append(s.getDateDeSortie().getYear()).append(")\n");
             
-            sb.append("⭐ ").append(String.format("%.1f", s.getRate()))
+            sb.append("⭐ ").append(String.format("%.1f", s.getRate()))//--rating--
               .append("/5  |  📂 ").append(seasonCount).append(" Saisons\n");
             
             if (s.getCat() != null && !s.getCat().isEmpty()) {

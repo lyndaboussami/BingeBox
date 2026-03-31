@@ -6,6 +6,8 @@ import java.util.ResourceBundle;
 
 import groupna.projectNetflix.entities.Film;
 import groupna.projectNetflix.entities.Serie;
+import groupna.projectNetflix.services.FilmService;
+import groupna.projectNetflix.services.SerieService;
 import groupna.projectNetflix.utils.Session;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -15,7 +17,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.layout.*;
 
 public class HomeViewController extends BaseController{
-	
+	private FilmService filmService=new FilmService();
+	private SerieService serieService=new SerieService();
     @FXML private StackPane heroSection;
     @FXML private MediaView trailerVideo;
     @FXML private Label heroTitle;
@@ -65,8 +68,8 @@ public class HomeViewController extends BaseController{
     private void loadContent() {
         // Mock Data in the future from Database
 
-    	List<Film> movies = DataStore.getMovies();
-        List<Serie> series = DataStore.getSeries();
+    	List<Film> movies = filmService.getAllFilms();
+        List<Serie> series = serieService.getAllSeries();
         
         movies.forEach(m -> moviesRow.getChildren().add(createCard(m)));
         series.forEach(s -> seriesRow.getChildren().add(createCard(s)));

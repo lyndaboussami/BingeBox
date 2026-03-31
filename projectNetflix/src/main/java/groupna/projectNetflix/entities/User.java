@@ -12,10 +12,7 @@ public class User {
 	private String email;
 	private String mdp;
 	private Role role;
-	private Set<Oeuvre> favs;
-	private Map<LocalDate, List<Visualisable>> his;
-	public User(int id, String nom, String prenom, String email, String mdp, Role role, Set<Oeuvre> favs,
-			Map<LocalDate, List<Visualisable>> his) {
+	public User(int id, String nom, String prenom, String email, String mdp, Role role) {
 		super();
 		this.id = id;
 		this.nom = nom;
@@ -23,8 +20,6 @@ public class User {
 		this.email = email;
 		this.mdp = mdp;
 		this.role = role;
-		this.favs = favs;
-		this.his=his;
 	}
 	public String getNom() {
 		return nom;
@@ -50,12 +45,6 @@ public class User {
 	public void setMdp(String mdp) {
 		this.mdp = mdp;
 	}
-	public Set<Oeuvre> getFavs() {
-		return favs;
-	}
-	public void setFavs(Set<Oeuvre> favs) {
-		this.favs = favs;
-	}
 	public int  getId() {
 		return id;
 	}
@@ -67,11 +56,5 @@ public class User {
 	}
 	public void setRole(Role role) {
 		this.role = role;
-	}
-	public Map<LocalDate, List<Visualisable>> getHis() {
-		return his;
-	}
-	public void setHis(Map<LocalDate, List<Visualisable>> his) {
-		this.his = his;
 	}
 }

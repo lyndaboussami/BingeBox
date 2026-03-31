@@ -9,83 +9,98 @@
 <?import javafx.collections.*?>
 <?import java.lang.String?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:id="rootPane"
-            fx:controller="groupna.projectNetflix.controllers.MainViewController"
-            stylesheets="@../css/style.css"
-            styleClass="root">
+<StackPane fx:id="mainStack" 
+           xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="groupna.projectNetflix.controllers.MainViewController"
+           stylesheets="@../css/style.css"
+           styleClass="root">
 
-	<left>
-        <VBox spacing="25" fx:id="sidebar" styleClass="sidebar">
-            <padding>
-                <Insets top="30" left="15" right="15"/>
-            </padding>
-            
-            <Button onAction="#handleProfile" styleClass="sidebar-profile-btn">
-                <graphic>
-                    <Circle radius="20" fill="#CFB997"/>
-                </graphic>
-            </Button>
-
-            <Region VBox.vgrow="ALWAYS" /> <Button onAction="#handleSearch" styleClass="sidebar-icon-btn" text="🔍" />
-            <Button onAction="#goHome" styleClass="sidebar-icon-btn" text="🏠" />
-            <Button onAction="#openSeries" styleClass="sidebar-icon-btn" text="📺" />
-            <Button onAction="#openMovies" styleClass="sidebar-icon-btn" text="🎬" />
-            <Button onAction="#handleFavorites" styleClass="sidebar-icon-btn" text="🔖" />
-            <Button onAction="#handleHistory" styleClass="sidebar-icon-btn" text="🕒" />
-            
-            <Region VBox.vgrow="ALWAYS" />
-
-            <Button onAction="#handleSettings" styleClass="sidebar-icon-btn" text="⛯" />
-        </VBox>
-    </left>
-    <top>
-	    <HBox fx:id="navbar" alignment="CENTER_LEFT" styleClass="navbar">
-	        <padding>
-	            <Insets top="0" bottom="0" left="25" right="0"/> </padding>
-	
-	        <HBox alignment="CENTER_LEFT" minWidth="200"> 
-	            <Label styleClass="logo" text="BingeBox"/>
-	        </HBox>
-	
-	        <Region HBox.hgrow="ALWAYS" />
-	
-	        <HBox fx:id="navLinksContainer" alignment="CENTER" spacing="25">
-	            <Button fx:id="homeBtn" text="Home" onAction="#goHome" styleClass="navButton"/>
-	            <Button fx:id="moviesBtn" text="Movies" onAction="#openMovies" styleClass="navButton"/>
-	            <Button fx:id="seriesBtn" text="Series" onAction="#openSeries" styleClass="navButton"/>
-	        </HBox>
-	
-	        <Region HBox.hgrow="ALWAYS" />
-	
-	        <HBox alignment="CENTER_RIGHT" spacing="15" minWidth="200">
-	            <ComboBox fx:id="languageSelector" styleClass="language-picker">
-	                <items>
-	                    <FXCollections fx:factory="observableArrayList">
-	                        <String fx:value="🇺🇸 English" />
-	                        <String fx:value="🇫🇷 Français" />
-	                        <String fx:value="🇹🇳 Tunisian" />
-	                    </FXCollections>
-	                </items>
-	                <value>
-	                    <String fx:value="🇺🇸 English" />
-	                </value>
-	            </ComboBox>
+    <BorderPane fx:id="rootPane">
+		<left>
+	        <VBox spacing="25" fx:id="sidebar" styleClass="sidebar">
+	            <padding>
+	                <Insets top="30" left="15" right="15"/>
+	            </padding>
 	            
-	            <Button fx:id="themeToggle" onAction="#handleThemeChange" styleClass="theme-patch">
+	            <Button onAction="#handleProfile" styleClass="sidebar-profile-btn">
 	                <graphic>
-	                    <Label text="🔀" styleClass="theme-label" /> 
+	                    <Circle radius="20" fill="#CFB997"/>
 	                </graphic>
 	            </Button>
 	
-	            <HBox alignment="CENTER_RIGHT" styleClass="window-controls">
-	                <Button onAction="#handleMinimize" text="—" styleClass="control-btn" />
-	                <Button onAction="#handleMaximize" text="▢" styleClass="control-btn" />
-	                <Button onAction="#handleClose" text="✕" styleClass="control-btn, close-btn" />
-	            </HBox>
-	        </HBox>
-	    </HBox>
-	</top>
-    <center/>
-</BorderPane>
+	            <Region VBox.vgrow="ALWAYS" /> <Button onAction="#handleSearch" styleClass="sidebar-icon-btn" text="🔍" />
+	            <Button onAction="#goHome" styleClass="sidebar-icon-btn" text="🏠" />
+	            <Button onAction="#openSeries" styleClass="sidebar-icon-btn" text="📺" />
+	            <Button onAction="#openMovies" styleClass="sidebar-icon-btn" text="🎬" />
+	            <Button onAction="#handleFavorites" styleClass="sidebar-icon-btn" text="🔖" />
+	            <Button onAction="#handleHistory" styleClass="sidebar-icon-btn" text="🕒" />
+	            
+	            <Region VBox.vgrow="ALWAYS" />
+	
+	            <Button onAction="#handleSettings" styleClass="sidebar-icon-btn" text="⛯" />
+	        
+		        <Separator prefWidth="150.0" styleClass="admin-separator" />
+	    
+			    <Label text="BACK OFFICE" styleClass="admin-section-label" />
+			
+			    <Button fx:id="btnManageContent" text="🎬 Manage Content" 
+			            styleClass="admin-nav-button" onAction="#handleAdminNav" />
+			            
+			    <Button fx:id="btnManageUsers" text="👥 User Control" 
+			            styleClass="admin-nav-button" onAction="#handleAdminNav" />
+			            
+			    <Button fx:id="btnAnalytics" text="📊 Performance" 
+			            styleClass="admin-nav-button" onAction="#handleAdminNav" />
+	        </VBox>
+	    </left>
+	    <top>
+		    <HBox fx:id="navbar" alignment="CENTER_LEFT" styleClass="navbar">
+		        <padding>
+		            <Insets top="0" bottom="0" left="25" right="0"/> </padding>
+		
+		        <HBox alignment="CENTER_LEFT" minWidth="200"> 
+		            <Label styleClass="logo" text="BingeBox"/>
+		        </HBox>
+		
+		        <Region HBox.hgrow="ALWAYS" />
+		
+		        <HBox fx:id="navLinksContainer" alignment="CENTER" spacing="25">
+		            <Button fx:id="homeBtn" text="Home" onAction="#goHome" styleClass="navButton"/>
+		            <Button fx:id="moviesBtn" text="Movies" onAction="#openMovies" styleClass="navButton"/>
+		            <Button fx:id="seriesBtn" text="Series" onAction="#openSeries" styleClass="navButton"/>
+		        </HBox>
+		
+		        <Region HBox.hgrow="ALWAYS" />
+		
+		        <HBox alignment="CENTER_RIGHT" spacing="15" minWidth="200">
+		            <ComboBox fx:id="languageSelector" styleClass="language-picker">
+		                <items>
+		                    <FXCollections fx:factory="observableArrayList">
+		                        <String fx:value="🇺🇸 English" />
+		                        <String fx:value="🇫🇷 Français" />
+		                        <String fx:value="🇹🇳 Tunisian" />
+		                    </FXCollections>
+		                </items>
+		                <value>
+		                    <String fx:value="🇺🇸 English" />
+		                </value>
+		            </ComboBox>
+		            
+		            <Button fx:id="themeToggle" onAction="#handleThemeChange" styleClass="theme-patch">
+		                <graphic>
+		                    <Label text="🔀" styleClass="theme-label" /> 
+		                </graphic>
+		            </Button>
+		
+		            <HBox alignment="CENTER_RIGHT" styleClass="window-controls">
+		                <Button onAction="#handleMinimize" text="—" styleClass="control-btn" />
+		                <Button onAction="#handleMaximize" text="▢" styleClass="control-btn" />
+		                <Button onAction="#handleClose" text="✕" styleClass="control-btn, close-btn" />
+		            </HBox>
+		        </HBox>
+		    </HBox>
+		</top>
+	    <center/>
+	</BorderPane>
+</StackPane>

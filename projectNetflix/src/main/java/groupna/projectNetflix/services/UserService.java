@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class UserService {
-	/*
     public User seConnecter(String email, String mdpSaisi) {
         if (email == null || mdpSaisi == null) return null;
         String mdpHache = PasswordHasher.hashPassword(mdpSaisi);
@@ -24,6 +23,11 @@ public class UserService {
         u.setMdp(mdpHache); 
         return UserDAO.save(u);
     }
+//------------------------------------------------------------------------------
+    public User recupererUtilisateurParId(int id) {
+        return UserDAO.findById(id);
+    }
+
     public void ajouterAuxFavoris(int idUser, int idOeuvre, String type) {
         UserDAO.ajouterAuxFavoris(idUser, idOeuvre, type);
     }
@@ -34,7 +38,7 @@ public class UserService {
         UserDAO.removeFromCollection(idUser, idOeuvre, tableName);
     }
 
-    public Set<Oeuvre> recupererFavoris(int idUser) {
+    public List<Oeuvre> recupererFavoris(int idUser) {
         return UserDAO.getAllUserFavorites(idUser);
     }
 
@@ -53,7 +57,11 @@ public class UserService {
     public Map<LocalDate, List<Visualisable>> recupererHistoriqueGroupéParDate(int idUser) {
         return UserDAO.getHistoryGroupedByDate(idUser);
     }
-
+    public void viderHistorique(int idUser) {
+        UserDAO.clearHistory(idUser);
+        
+        System.out.println("[Service] Demande de suppression d'historique traitée pour l'utilisateur : " + idUser);
+    }
     // --- GESTION DES UTILISATEURS (ADMIN) ---
 
     public List<User> recupererTousLesUtilisateurs() {
@@ -63,5 +71,4 @@ public class UserService {
     public int rechercherParEmail(String email) {
         return UserDAO.getIdParEmail(email);
     }
-    */
 }

@@ -18,8 +18,6 @@ public class SettingsViewController extends BaseController{
     @FXML
     private void handleSaveChanges() {
         String newUsername = usernameField.getText();
-        //..
-        //enregistrer les modifications faites dans settings
         
         System.out.println("Saving profile for: " + newUsername);
     }

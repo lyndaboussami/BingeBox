@@ -2,6 +2,7 @@ package groupna.projectNetflix.controllers;
 
 import groupna.projectNetflix.entities.Serie;
 import groupna.projectNetflix.entities.User;
+import groupna.projectNetflix.services.UserService;
 import groupna.projectNetflix.utils.Session;
 import groupna.projectNetflix.entities.Saison;
 import groupna.projectNetflix.entities.Episode;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class SeriesDetailController {
+	private UserService userService=new UserService();
     @FXML private Label seriesTitle;
     @FXML private Label seriesDescription;
     @FXML private Label seriesMeta;
@@ -62,15 +64,17 @@ public class SeriesDetailController {
     }
 
     private void playEpisode(Episode ep, List<Episode> currentSeasonEpisodes) {
+    	User user=Session.getInstance().getUser();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/groupna/projectNetflix/view/VideoPlayerView.fxml"));
             Parent playerView = loader.load();
 
             VideoPlayerController controller = loader.getController();
+            
             int startIndex = currentSeasonEpisodes.indexOf(ep);
             
             controller.loadSeries(currentSeasonEpisodes, startIndex);
-
+            
             StackPane mainStack = (StackPane) seriesTitle.getScene().getRoot();
             mainStack.getChildren().add(playerView);
 
@@ -120,12 +124,10 @@ public class SeriesDetailController {
         row.setStyle("-fx-background-color: -fx-card-bg; -fx-padding: 15; -fx-background-radius: 10;");
         row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
-        // Thumbnail Placeholder
         StackPane thumb = new StackPane(new Label("EP " + ep.getNumero()));
         thumb.setPrefSize(180, 100);
         thumb.setStyle("-fx-background-color: #1a1f31; -fx-background-radius: 5;");
-
-        // Info
+        
         VBox info = new VBox(5);
         Label title = new Label(ep.getNumero() + ". " + ep.getTitre());
         title.setStyle("-fx-text-fill: -fx-text-main; -fx-font-weight: bold; -fx-font-size: 16px;");
@@ -140,7 +142,6 @@ public class SeriesDetailController {
         info.getChildren().addAll(title, desc, duration);
         HBox.setHgrow(info, Priority.ALWAYS);
 
-        // Play Button
         Button playBtn = new Button("▶");
         playBtn.getStyleClass().add("navButton");
 
@@ -158,10 +159,9 @@ public class SeriesDetailController {
 
     private void setupFavLogic(Oeuvre currentMedia) {
         User user = Session.getInstance().getUser();
-
         if (favButton != null) {
 
-        	boolean isAlreadyFav = user.getFavs().contains(currentMedia);
+        	boolean isAlreadyFav = userService.recupererFavoris(user.getId()).contains(currentMedia);
             favButton.setSelected(isAlreadyFav);
             
             updateHeartStyle(isAlreadyFav);
@@ -169,9 +169,9 @@ public class SeriesDetailController {
             favButton.setOnAction(e -> {
                 boolean selected = favButton.isSelected();
                 if (selected) {
-                    user.getFavs().add(currentMedia);
+                    userService.ajouterAuxFavoris(user.getId(), currentMedia.getId(), "serie");
                 } else {
-                    user.getFavs().remove(currentMedia);
+                    userService.retirerDesFavoris(user.getId(), currentMedia.getId(), "serie");
                 }
                 updateHeartStyle(selected);
             });

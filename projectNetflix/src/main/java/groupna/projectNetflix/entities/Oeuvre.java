@@ -2,6 +2,7 @@ package groupna.projectNetflix.entities;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 public class Oeuvre {
 	protected int id;
@@ -80,5 +81,17 @@ public class Oeuvre {
 	}
 	public void setCat(List<Categorie> cat) {
 		this.cat = cat;
+	}
+	@Override
+	public boolean equals(Object obj) {
+	    if (this == obj) return true;
+	    if (obj == null || this.getClass() != obj.getClass()) return false;
+	    Oeuvre other = (Oeuvre) obj;
+	    return id == other.id;
+	}
+
+	@Override
+	public int hashCode() {
+	    return Objects.hash(id, getClass());
 	}
 }
