@@ -26,7 +26,6 @@ public class FilmDAO extends OeuvreDAO {
                     int filmId = rs.getInt("id");
                     String resume = rs.getString("resume");
                     String titre = rs.getString("titre");
-                    double rate = rs.getDouble("rate");
                     String pathTrailer = rs.getString("path_trailer"); 
                     String pathMovie = rs.getString("path_movie");
                     String pathPoster = rs.getString("path_poster"); 
@@ -46,7 +45,6 @@ public class FilmDAO extends OeuvreDAO {
                         dateSortie,
                         acteurs,
                         directeurs,
-                        rate,
                         pathPoster,
                         duree,
                         pathMovie,
@@ -62,17 +60,16 @@ public class FilmDAO extends OeuvreDAO {
 
     public static int save(Film f) {
         int generatedId = 0;
-        String sql = "INSERT INTO films (resume, titre, date_de_sortie, rate, path_poster, duree, path_movie, path_trailer) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO films (resume, titre, date_de_sortie, path_poster, duree, path_movie, path_trailer) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, f.getResume());
             pstmt.setString(2, f.getTitre());
             pstmt.setDate(3, f.getDateDeSortie() != null ? java.sql.Date.valueOf(f.getDateDeSortie()) : null);
-            pstmt.setDouble(4, f.getRate());
-            pstmt.setString(5, f.getPathPoster());
-            pstmt.setTime(6, f.getDuree() != null ? java.sql.Time.valueOf(f.getDuree()) : null);
-            pstmt.setString(7, f.getPathMovie());
-            pstmt.setString(8, f.getPathTrailer());
+            pstmt.setString(4, f.getPathPoster());
+            pstmt.setTime(5, f.getDuree() != null ? java.sql.Time.valueOf(f.getDuree()) : null);
+            pstmt.setString(6, f.getPathMovie());
+            pstmt.setString(7, f.getPathTrailer());
 
             pstmt.executeUpdate();
             try (ResultSet rs = pstmt.getGeneratedKeys()) {

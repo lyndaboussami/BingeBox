@@ -118,7 +118,6 @@ public class AdminMediaController {
 
         DatePicker datePicker = new DatePicker(film != null ? film.getDateDeSortie() : LocalDate.now());
         TextField durationField = new TextField(film != null ? film.getDuree().toString() : "01:30");
-        TextField rateField = new TextField(film != null ? String.valueOf(film.getRate()) : "0.0");
 
         TextField posterPath = new TextField(film != null ? film.getPathPoster() : "");
         TextField moviePath = new TextField(film != null ? film.getPathMovie() : "");
@@ -246,9 +245,6 @@ public class AdminMediaController {
         grid.add(createLabel("Duration:"), 0, r);      
         grid.add(durationField, 1, r++);
 
-        grid.add(createLabel("Rating (0.0):"), 0, r);  
-        grid.add(rateField, 1, r++);
-
         grid.add(createLabel("Categories:"), 0, r);   
         grid.add(new VBox(5, new HBox(5, catCombo, addCatBtn), catTags), 1, r++);
 
@@ -280,7 +276,6 @@ public class AdminMediaController {
                             datePicker.getValue(),
                             new ArrayList<>(selectedActors),
                             new ArrayList<>(selectedDirectors),
-                            Double.parseDouble(rateField.getText()),
                             posterPath.getText(),
                             LocalTime.parse(durationField.getText()),
                             moviePath.getText(),
@@ -365,7 +360,6 @@ public class AdminMediaController {
         TextField titleField = new TextField(serie != null ? serie.getTitre() : "");
         TextArea resumeArea = new TextArea(serie != null ? serie.getResume() : "");
         DatePicker datePicker = new DatePicker(serie != null ? serie.getDateDeSortie() : LocalDate.now());
-        TextField rateField = new TextField(serie != null ? String.valueOf(serie.getRate()) : "0.0");
         TextField posterField = new TextField(serie != null ? serie.getPathPoster() : "");
 
         Button manageSeasonsBtn = new Button("Manage Seasons (" + tempSaisonMap.size() + ")");
@@ -380,7 +374,6 @@ public class AdminMediaController {
         grid.add(createLabel("Resume:"), 0, r); grid.add(resumeArea, 1, r++);
         grid.add(createLabel("Release Date:"), 0, r); grid.add(datePicker, 1, r++);
         grid.add(createLabel("Episodes:"), 0, r); grid.add(manageSeasonsBtn, 1, r++);
-        grid.add(createLabel("Rating:"), 0, r); grid.add(rateField, 1, r++);
         grid.add(createLabel("Poster:"), 0, r); grid.add(posterField, 1, r++);
 
         dialogPane.setContent(new ScrollPane(grid));
@@ -388,7 +381,7 @@ public class AdminMediaController {
             if (btn == saveButtonType) {
                 return new Serie(serie == null ? 0 : serie.getId(), resumeArea.getText(), new ArrayList<>(),
                     titleField.getText(), datePicker.getValue(), new ArrayList<>(), new ArrayList<>(),
-                    Double.parseDouble(rateField.getText()), posterField.getText(), tempSaisonMap);
+                     posterField.getText(), tempSaisonMap);
             }
             return null;
         });

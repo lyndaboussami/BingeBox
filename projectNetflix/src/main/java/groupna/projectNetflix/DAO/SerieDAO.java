@@ -27,7 +27,6 @@ public class SerieDAO extends OeuvreDAO {
                     int serieId = rs.getInt("id");
                     String resume = rs.getString("resume");
                     String titre = rs.getString("titre");
-                    double rate = rs.getDouble("rating");
                     String pathPoster = rs.getString("path_poster"); 
                     
                     LocalDate dateSortie = (rs.getDate("date_de_sortie") != null) 
@@ -46,7 +45,7 @@ public class SerieDAO extends OeuvreDAO {
                     }
                     serie = new Serie(
                         serieId, resume, categories, titre, dateSortie, 
-                        acteurs, directeurs, rate, pathPoster, mapSaisons
+                        acteurs, directeurs, pathPoster, mapSaisons
                     );
                 }
             }
@@ -58,14 +57,13 @@ public class SerieDAO extends OeuvreDAO {
 
     public static int save(Serie s) {
         int generatedId = 0;
-        String sql = "INSERT INTO series (resume, titre, date_de_sortie, rating, path_poster) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO series (resume, titre, date_de_sortie, path_poster) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, s.getResume());
             pstmt.setString(2, s.getTitre());
             pstmt.setDate(3, s.getDateDeSortie() != null ? java.sql.Date.valueOf(s.getDateDeSortie()) : null);
-            pstmt.setDouble(4, s.getRate());
-            pstmt.setString(5, s.getPathPoster());
+            pstmt.setString(4, s.getPathPoster());
 
             pstmt.executeUpdate();
             try (ResultSet rs = pstmt.getGeneratedKeys()) {
