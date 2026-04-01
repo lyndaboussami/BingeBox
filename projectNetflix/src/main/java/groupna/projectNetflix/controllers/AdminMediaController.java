@@ -1,12 +1,18 @@
 package groupna.projectNetflix.controllers;
 
+import groupna.projectNetflix.DAO.FilmDAO;
+import groupna.projectNetflix.DAO.SerieDAO;
 import groupna.projectNetflix.entities.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -24,14 +30,34 @@ import java.util.stream.Collectors;
 public class AdminMediaController {
 
     @FXML private TextField searchField;
-    @FXML private FlowPane movieContainer;
-    @FXML private FlowPane serieContainer;
+    
+    @FXML private TableView<Film> movieTable;
+    @FXML private TableColumn<Film, String> colMovieThumb, colMovieTitle, colMovieDate, colMovieDuration, colMovieActions;
+    
+    @FXML private TableView<Serie> serieTable;
+    @FXML private TableColumn<Serie, String> colSerieThumb, colSerieTitle, colSerieDate, colSerieSeasons, colSerieActions;
+    
+    private ObservableList<Film> masterMovies = FXCollections.observableArrayList();
+    private ObservableList<Serie> masterSeries = FXCollections.observableArrayList();
+    
+    
+    //@FXML private FlowPane movieContainer;
+    //@FXML private FlowPane serieContainer;
 
-    private List<Film> allMovies;
-    private List<Serie> allSeries;
+    //private List<Film> allMovies;
+    //private List<Serie> allSeries;
 
     @FXML
     public void initialize() {
+    	
+    	setupTableColumns();
+        loadDataFromDatabase();
+        
+        searchField.textProperty().addListener((obs, old, newVal) -> {
+            filterTables(newVal);
+        });
+        
+    	/*
         allMovies = DataStore.getMovies();
         allSeries = DataStore.getSeries();
         
@@ -39,17 +65,19 @@ public class AdminMediaController {
         
         searchField.textProperty().addListener((obs, oldVal, newVal) -> {
             filterMedia(newVal);
-        });
+        });*/
     }
 
+    /*
     private void displayMedia(List<Film> movies, List<Serie> series) {
         movieContainer.getChildren().clear();
         serieContainer.getChildren().clear();
 
         movies.forEach(movie -> movieContainer.getChildren().add(createMediaCard(movie)));
         series.forEach(serie -> serieContainer.getChildren().add(createMediaCard(serie)));
-    }
+    }*/
 
+    /*
     private VBox createMediaCard(Oeuvre media) {
         VBox card = new VBox(10);
         card.getStyleClass().add("media-card");
@@ -63,8 +91,20 @@ public class AdminMediaController {
         
         card.getChildren().addAll(title, editBtn);
         return card;
-    }
+    }*/
 
+    private void loadDataFromDatabase() {
+    	List<Film> dbMovies = FilmDAO.findAll();
+    	List<Serie> dbSeries = SerieDAO.findAll();
+    	
+    	masterMovies.setAll(DataStore.getMovies());
+        masterSeries.setAll(DataStore.getSeries());
+        
+        movieTable.setItems(masterMovies);
+        serieTable.setItems(masterSeries);
+    }
+    
+    /*
     private void filterMedia(String query) {
         String lowerCaseQuery = query.toLowerCase();
         
@@ -85,8 +125,203 @@ public class AdminMediaController {
         } else if (media instanceof Serie) {
             showSerieForm((Serie) media);
         }
+    }*/
+
+    private void filterTables(String query) {
+        String lower = query.toLowerCase();
+        
+        FilteredList<Film> filteredMovies = new FilteredList<>(masterMovies, p -> 
+            p.getTitre().toLowerCase().contains(lower));
+        
+        FilteredList<Serie> filteredSeries = new FilteredList<>(masterSeries, p -> 
+            p.getTitre().toLowerCase().contains(lower));
+
+        movieTable.setItems(filteredMovies);
+        serieTable.setItems(filteredSeries);
+    }
+    
+    private void setupTableColumns() {
+
+    	colMovieTitle.setCellValueFactory(new PropertyValueFactory<>("titre"));
+        colMovieDate.setCellValueFactory(new PropertyValueFactory<>("dateDeSortie"));
+        colMovieDuration.setCellValueFactory(new PropertyValueFactory<>("duree"));
+
+        colMovieThumb.setCellFactory(param -> new TableCell<>() {
+            private final ImageView img = new ImageView();
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getTableRow() == null || getTableRow().getItem() == null) {
+                    setGraphic(null);
+                } else {
+                    Film f = getTableRow().getItem();
+                    String path = f.getPathPoster();
+                    
+                    try {
+                        var stream = getClass().getResourceAsStream(path);
+                        if (stream != null) {
+                            img.setImage(new Image(stream));
+                            img.setFitHeight(50); 
+                            img.setPreserveRatio(true);
+                            setGraphic(img);
+                        } else {
+                            System.err.println("Resource not found: " + path);
+                            setGraphic(new Label("No Image")); 
+                        }
+                    } catch (Exception e) {
+                        setGraphic(null);
+                    }
+                }
+            }
+        });
+
+        colMovieActions.setCellFactory(param -> new TableCell<>() {
+            private final Button editBtn = new Button("Edit");
+            private final Button deleteBtn = new Button("Delete");
+            private final HBox container = new HBox(10, editBtn, deleteBtn);
+            
+            {
+                editBtn.getStyleClass().add("admin-edit-btn");
+                deleteBtn.getStyleClass().add("admin-delete-btn");
+
+                editBtn.setOnAction(e -> showMovieForm(getTableView().getItems().get(getIndex())));
+            
+                deleteBtn.setOnAction(e -> handleAdminAction("Delete", () -> {
+                    Film f = getTableRow().getItem();
+                    FilmDAO.delete(f.getId());
+                    getTableView().getItems().remove(f);
+                }));
+            }
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : container);
+            }
+        });
+
+        colSerieTitle.setCellValueFactory(new PropertyValueFactory<>("titre"));
+        colSerieDate.setCellValueFactory(new PropertyValueFactory<>("dateDeSortie"));
+        
+        colSerieSeasons.setCellFactory(param -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getTableRow().getItem() == null) setText(null);
+                else setText(String.valueOf(getTableRow().getItem().getSaisons().size()));
+            }
+        });
+
+        colSerieThumb.setCellFactory(param -> new TableCell<>() {
+            private final ImageView img = new ImageView();
+            
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getTableRow() == null || getTableRow().getItem() == null) {
+                    setGraphic(null);
+                } else {
+                    Serie s = getTableRow().getItem();
+                    String path = s.getPathPoster();
+                    
+                    try {
+                        var stream = getClass().getResourceAsStream(path);
+                        if (stream != null) {
+                            img.setImage(new Image(stream));
+                            img.setFitHeight(50); 
+                            img.setPreserveRatio(true);
+                            setGraphic(img);
+                        } else {
+                            Label placeholder = new Label("No Poster");
+                            placeholder.getStyleClass().add("card-text");
+                            setGraphic(placeholder);
+                        }
+                    } catch (Exception e) {
+                        setGraphic(null);
+                    }
+                }
+            }
+        });
+
+        colSerieActions.setCellFactory(param -> new TableCell<>() {
+            private final Button editBtn = new Button("Edit");
+            private final Button deleteBtn = new Button("Delete");
+            private final HBox container = new HBox(10, editBtn, deleteBtn);
+            {
+                editBtn.getStyleClass().add("admin-edit-btn");
+                deleteBtn.getStyleClass().add("admin-delete-btn");
+
+                editBtn.setOnAction(e -> {
+                    Serie selectedSerie = getTableView().getItems().get(getIndex());
+                    showSerieForm(selectedSerie);
+                });
+            
+                deleteBtn.setOnAction(e -> handleAdminAction("Delete", () -> {
+                    Serie s = getTableRow().getItem();
+                    SerieDAO.delete(s.getId());
+                    getTableView().getItems().remove(s);
+                }));
+            }
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(container);
+                }
+            }
+        });
+    }
+    
+    private void handleAdminAction(String actionType, Runnable onConfirm) {
+        String generatedKey = String.valueOf((int)(Math.random() * 9000) + 1000);
+        
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Admin Verification");
+        alert.setHeaderText(actionType + " Action Requested");
+        alert.setContentText("To confirm this " + actionType + ", please enter the BingeBox Pass Key: " + generatedKey);
+
+        TextField inputField = new TextField();
+        inputField.setPromptText("Enter Pass Key here");
+        alert.getDialogPane().setContent(new VBox(10, new Label("Enter Key: " + generatedKey), inputField));
+
+        alert.getDialogPane().getStylesheets().add(getClass().getResource("/groupna/projectNetflix/css/style.css").toExternalForm());
+        alert.getDialogPane().getStyleClass().add("dialog-pane");
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                if (inputField.getText().equals(generatedKey)) {
+                    onConfirm.run();
+                    showNotification("Success", actionType + " completed successfully.");
+                } else {
+                    showError("Invalid Key", "The Pass Key entered is incorrect. Action cancelled.");
+                }
+            }
+        });
+    }
+    
+    private void showNotification(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        
+        //styleAlert(alert);
+        alert.showAndWait();
     }
 
+    private void showError(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText("Action Failed");
+        alert.setContentText(message);
+        
+        //styleAlert(alert);
+        alert.showAndWait();
+    }
+
+    
     @FXML
     private void showMovieForm() {
         showMovieForm(null);

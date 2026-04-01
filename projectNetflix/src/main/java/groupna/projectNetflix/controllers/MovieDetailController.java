@@ -249,7 +249,7 @@ public class MovieDetailController {
         footer.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
 
         if (comment.isReported()) {
-            Label reportedLabel = new Label("⚠️ Under Review");
+            Label reportedLabel = new Label("🔺Under Review");
             reportedLabel.setStyle("-fx-text-fill: #ff6b6b; -fx-font-style: italic; -fx-font-size: 12px;");
             footer.getChildren().add(reportedLabel);
         } else {
@@ -274,7 +274,6 @@ public class MovieDetailController {
             if (!reason.trim().isEmpty()) {
                 CommentaireService service = new CommentaireService();
                 
-                // Pass the user_id and oeuvre_id (primary keys for comment)
                 boolean success = service.signalerAbus(comment.getId_user(), comment.getId_oeuvre(),"film", reason);
                 
                 if (success) {
