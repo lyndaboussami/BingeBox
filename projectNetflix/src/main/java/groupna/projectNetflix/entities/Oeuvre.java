@@ -2,6 +2,7 @@ package groupna.projectNetflix.entities;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 public class Oeuvre {
 	protected int id;
@@ -11,7 +12,6 @@ public class Oeuvre {
 	protected LocalDate DateDeSortie;
 	protected List<Artiste> acteurs;
 	protected List<Artiste> Directeurs;
-	protected double rate;
 	protected String PathPoster;
 	
 	public String getPathPoster() {
@@ -21,7 +21,7 @@ public class Oeuvre {
 		PathPoster = pathPoster;
 	}
 	public Oeuvre(int id, String resume, List<Categorie> cat, String titre, LocalDate dateDeSortie,
-			List<Artiste> acteurs, List<Artiste> directeurs, double rate, String pathPoster) {
+			List<Artiste> acteurs, List<Artiste> directeurs, String pathPoster) {
 		super();
 		this.id = id;
 		this.resume = resume;
@@ -30,7 +30,6 @@ public class Oeuvre {
 		DateDeSortie = dateDeSortie;
 		this.acteurs = acteurs;
 		Directeurs = directeurs;
-		this.rate = rate;
 		PathPoster = pathPoster;
 	}
 	public String getResume() {
@@ -63,12 +62,6 @@ public class Oeuvre {
 	public void setDirecteurs(List<Artiste> directeurs) {
 		Directeurs = directeurs;
 	}
-	public double getRate() {
-		return rate;
-	}
-	public void setRate(double rate) {
-		this.rate = rate;
-	}
 	public int getId() {
 		return id;
 	}
@@ -80,5 +73,17 @@ public class Oeuvre {
 	}
 	public void setCat(List<Categorie> cat) {
 		this.cat = cat;
+	}
+	@Override
+	public boolean equals(Object obj) {
+	    if (this == obj) return true;
+	    if (obj == null || this.getClass() != obj.getClass()) return false;
+	    Oeuvre other = (Oeuvre) obj;
+	    return id == other.id;
+	}
+
+	@Override
+	public int hashCode() {
+	    return Objects.hash(id, getClass());
 	}
 }

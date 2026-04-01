@@ -10,6 +10,8 @@ import groupna.projectNetflix.entities.Film;
 import groupna.projectNetflix.entities.Oeuvre;
 import groupna.projectNetflix.entities.User;
 import groupna.projectNetflix.services.CommentaireService;
+import groupna.projectNetflix.services.RateService;
+import groupna.projectNetflix.services.UserService;
 import groupna.projectNetflix.utils.Session;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,7 +23,8 @@ import javafx.scene.image.*;
 import javafx.scene.layout.*;
 
 public class MovieDetailController {
-
+	private UserService userService=new UserService();
+	private RateService rateService=new RateService();
 	@FXML private Label movieTitle;
     @FXML private Label movieDescription;
     @FXML private Label movieMeta;
@@ -33,19 +36,27 @@ public class MovieDetailController {
     @FXML private HBox starContainer;
     @FXML private TextField commentField;
     @FXML private VBox commentsContainer;
-
     @FXML private Button trailerButton;
     
     @FXML private ImageView heroBlurredPoster;
     @FXML private ImageView movieSharpPoster;
     
     private int currentRating = 0;
-    
     @FXML
     public void initialize() {
         Object content = MainViewController.getInstance().getSelectedContent();
-        
+        User user =Session.getInstance().getUser();
         if (content instanceof Film movie) {
+        	currentRating=rateService.getNoteUtilisateur(user.getId(),movie.getId(), "film");
+    		
+        	for (int i = 0; i < starContainer.getChildren().size(); i++) {
+                Button star = (Button) starContainer.getChildren().get(i);
+                if (i < currentRating) {
+                    star.setStyle("-fx-text-fill: #ffcc00; -fx-background-color: transparent; -fx-font-size: 24px;"); // Gold
+                } else {
+                    star.setStyle("-fx-text-fill: #555; -fx-background-color: transparent; -fx-font-size: 24px;"); // Grey
+                }
+            }
 
         	String posterPath = movie.getPathPoster();
 
@@ -62,8 +73,6 @@ public class MovieDetailController {
                     System.err.println("Error loading poster: " + posterPath);
                 }
             }
-        	
-        	
             String categories = movie.getCat().stream()
                     .map(Categorie::getLabel)
                     .collect(Collectors.joining(", "));
@@ -72,7 +81,7 @@ public class MovieDetailController {
             movieTitle.setText(movie.getTitre().toUpperCase());
            
             String cast = movie.getActeurs().stream()
-                    .map(a -> a.getPrenom() + " " + a.getNom())
+                    .map(a -> a.getFullname())
                     .collect(Collectors.joining(", "));
             movieCast.setText(cast);
             
@@ -87,7 +96,7 @@ public class MovieDetailController {
     @FXML
     private void handlePlay() {
         Object content = MainViewController.getInstance().getSelectedContent();
-        
+        User user=Session.getInstance().getUser();
         if (content instanceof Film movie) {
             String moviePath = movie.getPathMovie();
 
@@ -107,7 +116,8 @@ public class MovieDetailController {
                 String fullUrl = resource.toExternalForm();
                 
                 // Open the player window
-                openVideoPlayer(fullUrl, movie.getId(), movie.getTitre());
+                openVideoPlayer((Film)content,null, movie.getTitre());
+                //userService.marquerFilmCommeVu(user.getId(), movie.getId());
 
             } catch (Exception e) {
                 System.err.println("Error playing video: " + e.getMessage());
@@ -117,7 +127,7 @@ public class MovieDetailController {
         
     }
     
-    private void openVideoPlayer(String url, int movieId, String title) {
+    private void openVideoPlayer(Film film,String url, String title) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/groupna/projectNetflix/view/VideoPlayerView.fxml"));
             
@@ -125,7 +135,7 @@ public class MovieDetailController {
             Parent playerView = loader.load();
             
             VideoPlayerController controller = loader.getController();
-            controller.loadVideo(url, movieId);
+            controller.loadVideo(film,url, 0);
             
             StackPane mainStack = (StackPane) movieTitle.getScene().getRoot();
                         
@@ -144,20 +154,17 @@ public class MovieDetailController {
     
     private void setupFavLogic(Oeuvre currentMedia) {
         User user = Session.getInstance().getUser();
-
         if (favButton != null) {
-
-        	boolean isAlreadyFav = user.getFavs().contains(currentMedia);
+        	boolean isAlreadyFav = userService.recupererFavoris(user.getId()).contains(currentMedia);
             favButton.setSelected(isAlreadyFav);
-            
             updateHeartStyle(isAlreadyFav);
 
             favButton.setOnAction(e -> {
                 boolean selected = favButton.isSelected();
                 if (selected) {
-                    user.getFavs().add(currentMedia);
+                    userService.ajouterAuxFavoris(user.getId(),currentMedia.getId(), "film");
                 } else {
-                    user.getFavs().remove(currentMedia);
+                    userService.retirerDesFavoris(user.getId(), currentMedia.getId(), "film");
                 }
                 updateHeartStyle(selected);
             });
@@ -174,6 +181,8 @@ public class MovieDetailController {
     
     @FXML
     private void handleRate(ActionEvent event) {
+    	User user = Session.getInstance().getUser();
+    	Film selected=(Film) MainViewController.getInstance().getSelectedContent();
         Button clickedStar = (Button) event.getSource();
         currentRating = Integer.parseInt(clickedStar.getUserData().toString());
         
@@ -185,10 +194,7 @@ public class MovieDetailController {
                 star.setStyle("-fx-text-fill: #555; -fx-background-color: transparent; -fx-font-size: 24px;"); // Grey
             }
         }
-        
-        System.out.println("User rated movie: " + currentRating + " stars.");
-        //RateService.save(rate) (à ajouter dans service)
-
+        rateService.noterContenu(user.getId(), ((Film) selected).getId(), currentRating, "film");
     }
 
     @FXML
@@ -200,12 +206,10 @@ public class MovieDetailController {
             User user = Session.getInstance().getUser();
             Film movie = (Film) MainViewController.getInstance().getSelectedContent();
             
-            Commentaire newComment = new Commentaire(user.getId(), movie.getId(), text, false);
+            Commentaire newComment = new Commentaire(user.getId(), movie.getId(), text, false,null);
             
             CommentaireService service = new CommentaireService();
             boolean success = service.posterCommentaire(user.getId(), movie.getId(), text, "FILM");
-            
-
             if (success) {
             	commentsContainer.getChildren().add(0, createCommentNode(newComment));
                 commentField.clear();
@@ -221,10 +225,10 @@ public class MovieDetailController {
         CommentaireService service = new CommentaireService();
         
         // Fetch comments from DB
-        /*
-        service.getCommentairesByMedia(movieId, "FILM").forEach(comment -> {
+        
+        service.recupererCommentairesOeuvre(movieId, "film").forEach(comment -> {
             commentsContainer.getChildren().add(createCommentNode(comment));
-        });*/
+        });
     }
     
     private VBox createCommentNode(Commentaire comment) {
@@ -232,7 +236,7 @@ public class MovieDetailController {
         commentBox.setStyle("-fx-background-color: #1a1a1a; -fx-padding: 10; -fx-background-radius: 5;");
         
         // à ajouter :a way to get the name from id_user
-        Label userLabel = new Label("User #" + comment.getId_user());
+        Label userLabel = new Label(userService.recupererUtilisateurParId(comment.getId_user()).toString());
         userLabel.setStyle("-fx-text-fill: -fx-text-muted; -fx-font-size: 12px; -fx-font-weight: bold;");
 
         // Content: The actual text
@@ -271,15 +275,14 @@ public class MovieDetailController {
                 CommentaireService service = new CommentaireService();
                 
                 // Pass the user_id and oeuvre_id (primary keys for comment)
-                /*
-                boolean success = service.markAsReported(comment.getId_user(), comment.getId_oeuvre(), reason);
+                boolean success = service.signalerAbus(comment.getId_user(), comment.getId_oeuvre(),"film", reason);
                 
                 if (success) {
                     comment.setReported(true);
                     
                     int index = commentsContainer.getChildren().indexOf(commentBox);
                     commentsContainer.getChildren().set(index, createCommentNode(comment));
-                }*/
+                }
             }
         });
     }
@@ -299,7 +302,7 @@ public class MovieDetailController {
             try {
                 URL resource = getClass().getResource(trailerPath);
                 if (resource != null) {
-                    openVideoPlayer(resource.toExternalForm(), movie.getId(), movie.getTitre() + " - Trailer");
+                    openVideoPlayer((Film)content, null, movie.getTitre() + " - Trailer");
                 } else {
                     showError("File Error", "Trailer file not found on disk.");
                 }

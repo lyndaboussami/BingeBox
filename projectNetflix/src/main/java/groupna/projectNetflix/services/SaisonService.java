@@ -6,10 +6,6 @@ import groupna.projectNetflix.entities.Saison;
 
 public class SaisonService {
 
-    /**
-     * Ajoute une Saison à une série.
-     * @return true si l'ID généré est valide.
-     */
     public boolean addSaison(Saison s, int idSerie) {
         if (s != null && idSerie > 0) {
             int generatedId = SaisonDAO.save(s, idSerie);
@@ -21,25 +17,19 @@ public class SaisonService {
         return false;
     }
 
-    /**
-     * Récupère une Saison par son identifiant unique.
-     */
+    
     public Saison getSaisonById(int idSaison) {
         if (idSaison <= 0) return null;
         return SaisonDAO.findById(idSaison);
     }
 
-    /**
-     * Récupère la liste des saisons d'une série.
-     */
+    
     public List<Saison> getSaisonsBySerie(int idSerie) {
         if (idSerie <= 0) return List.of();
         return SaisonDAO.findAllBySerie(idSerie);
     }
 
-    /**
-     * Met à jour les informations d'une Saison (titre, résumé, etc.).
-     */
+    
     public boolean updateSaison(Saison s) {
         if (s != null && s.getId() > 0) {
             // On suppose que SaisonDAO.update renvoie un boolean ou le nombre de lignes
@@ -48,21 +38,17 @@ public class SaisonService {
         }
         return false;
     }
-
-    /**
-     * Supprime une Saison et tous ses épisodes associés (Cascade).
-     */
     public boolean deleteSaisonCompletement(int idSaison) {
         if (idSaison <= 0) return false;
         return SaisonDAO.deleteSaison(idSaison);
     }
 
-    /**
-     * Compte le nombre de saisons pour une série donnée.
-     */
     public int getNombreDeSaisons(int idSerie) {
         if (idSerie <= 0) return 0;
         List<Saison> saisons = SaisonDAO.findAllBySerie(idSerie);
         return (saisons != null) ? saisons.size() : 0;
+    }
+    public int recupererIdSerie(int idSaison) {
+        return SaisonDAO.getIdSerieBySaison(idSaison);
     }
 }

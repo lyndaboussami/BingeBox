@@ -1,6 +1,7 @@
 package groupna.projectNetflix.controllers;
 
 import groupna.projectNetflix.entities.Film;
+import groupna.projectNetflix.services.FilmService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
@@ -11,14 +12,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MoviesController {
-
+	private FilmService filmService=new FilmService();
     @FXML private VBox categoryRowsContainer;
 
     @FXML
-    public void initialize() {
-
-    	//List<Film> allMovies = movieDAO.findAll(); 
-    	List<Film> allMovies = DataStore.getMovies();
+    public void initialize() { 
+    	List<Film> allMovies = filmService.getAllFilms();
     	
         // Group movies by Category
         Map<String, List<Film>> moviesByCategory = allMovies.stream()

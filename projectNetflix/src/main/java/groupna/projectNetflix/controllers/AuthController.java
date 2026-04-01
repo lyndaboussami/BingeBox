@@ -1,20 +1,19 @@
 package groupna.projectNetflix.controllers;
 
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeMap;
-
-import groupna.projectNetflix.entities.Oeuvre;
 import groupna.projectNetflix.entities.Role;
 import groupna.projectNetflix.entities.User;
-import groupna.projectNetflix.entities.Visualisable;
 import groupna.projectNetflix.services.UserService;
+import groupna.projectNetflix.utils.Session;
 import groupna.projectNetflix.utils.Test;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 public class AuthController extends BaseController{
 	private Test test=new Test();
@@ -71,10 +70,10 @@ public class AuthController extends BaseController{
     	String email = emailField.getText();
         String pass = passwordField.getText();
     	if(isLoginMode) {
-            
-            if (userService.seConnecter(email, pass)!=null) {
+            User user=userService.seConnecter(email, pass);
+            if (user!=null) {
                 System.out.println("Logging in: " + emailField.getText());
-
+                Session.getInstance().setUser(user);;
                 MainViewController.getInstance().unlockFullApp();
             } else {
             	handleAlert("Connexion failed", "please check your email or password.");
@@ -100,7 +99,8 @@ public class AuthController extends BaseController{
     						handleAlert("possword not confirmed", "you have to confirme your password");
     					}
     					else {
-    						int inscrireUtilisateur = userService.inscrireUtilisateur(new User(0, nom, prenom, email, ConfirmPass, Role.USER,new HashSet<Oeuvre>(), new TreeMap<LocalDate, List<Visualisable>>()));
+    						int inscrireUtilisateur = userService.inscrireUtilisateur(new User(0, nom, prenom, email, ConfirmPass, Role.USER));
+    						Session.getInstance().setUser(userService.recupererUtilisateurParId(inscrireUtilisateur));;
     						MainViewController.getInstance().unlockFullApp();
     					}
     				}

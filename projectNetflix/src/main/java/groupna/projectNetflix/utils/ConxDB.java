@@ -7,7 +7,7 @@ public class ConxDB {
 	
 	private static Connection connexion;
 
-    private final String DB_URL = "jdbc:mysql://localhost:3306/projetNetflix";
+    private final String DB_URL = "jdbc:mysql://localhost:3306/projectNetflix";
     private final String USER = "root";
     private final String PASS = "";
 

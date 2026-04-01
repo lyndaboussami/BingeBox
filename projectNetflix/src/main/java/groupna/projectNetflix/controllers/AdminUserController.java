@@ -37,10 +37,10 @@ public class AdminUserController {
 
     private void loadMockData() {
         // Mocking Commentaire(int id_user, int id_oeuvre, String content, boolean reported)
-        masterData.add(new Commentaire(101, 50, "This movie is terrible! Don't watch it.", true));
-        masterData.add(new Commentaire(102, 51, "Spoiler: Everyone dies at the end lol.", true));
-        masterData.add(new Commentaire(105, 50, "Inappropriate language used here.", true));
-        masterData.add(new Commentaire(110, 60, "Selling cheap accounts, click my link!", true));
+        masterData.add(new Commentaire(101, 50, "This movie is terrible! Don't watch it.", true,"jzge"));
+        masterData.add(new Commentaire(102, 51, "Spoiler: Everyone dies at the end lol.", true,"jgdzg"));
+        masterData.add(new Commentaire(105, 50, "Inappropriate language used here.", true,"kdgjeg"));
+        masterData.add(new Commentaire(110, 60, "Selling cheap accounts, click my link!", true,"dgzgdi"));
 
         reportsTable.setItems(masterData);
     }

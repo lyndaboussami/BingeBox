@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import groupna.projectNetflix.entities.Serie;
+import groupna.projectNetflix.services.SerieService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
@@ -12,13 +13,11 @@ import javafx.scene.shape.Rectangle;
 
 public class SeriesController extends BaseController{
 	@FXML private VBox seriesRowsContainer;
-
+	private SerieService serieService=new SerieService();
     @FXML
     public void initialize() {
     	
-        List<Serie> allSeries = DataStore.getSeries();
-
-        // Group by Category
+        List<Serie> allSeries = serieService.getAllSeries();
         Map<String, List<Serie>> seriesByCategory = allSeries.stream()
             .flatMap(s -> s.getCat().stream().map(cat -> Map.entry(cat.getLabel(), s)))
             .collect(Collectors.groupingBy(

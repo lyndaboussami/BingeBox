@@ -11,7 +11,13 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.util.*;
 
+import groupna.projectNetflix.DAO.HistoryItem;
 import groupna.projectNetflix.entities.Episode;
+import groupna.projectNetflix.entities.Film;
+import groupna.projectNetflix.entities.User;
+import groupna.projectNetflix.entities.Visualisable;
+import groupna.projectNetflix.services.UserService;
+import groupna.projectNetflix.utils.Session;
 
 public class VideoPlayerController {
     @FXML private MediaView mediaView;
@@ -21,7 +27,7 @@ public class VideoPlayerController {
     @FXML private Label timeLabel;
 
     private MediaPlayer mediaPlayer;
-    private int currentMovieId;
+    private int currentMovieId=-1;
 
     @FXML private StackPane playerRoot;
     private Runnable onCloseRequest;
@@ -32,14 +38,13 @@ public class VideoPlayerController {
     private Timeline bingeTimer;
     @FXML private VBox nextEpisodeOverlay;
     @FXML private Label countdownLabel;
-    
+    private UserService userService=new UserService();
     // Temporary memory (Static Map) - This replaces DB logic for now
-    private static final Map<Integer, Double> localWatchHistory = new HashMap<>();
+    //private static final Map<Integer, Double> localWatchHistory = new HashMap<>();
 
     
     
     private void initializePlayer(String url) {
-    	
     	if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.dispose();
@@ -85,25 +90,34 @@ public class VideoPlayerController {
         }		
 	}
     
-    public void loadVideo(String url, int movieId) {
-        this.currentMovieId = movieId;
-        initializePlayer(url);
-
-        //resume
-        if (localWatchHistory.containsKey(movieId) && localWatchHistory.get(movieId) > 5.0) {
-            showResumeDialog(localWatchHistory.get(movieId));
-        } else {
-            mediaPlayer.play();
-        }
-
+    public void loadVideo(Visualisable movie,String c,int b) {
+    	if (movie instanceof Film) {
+    	    Film currentFilm = (Film) movie;
+    	    currentMovieId=currentFilm.getId();
+    	    String url = getClass().getResource(currentFilm.getPathMovie()).toExternalForm();
+    	    initializePlayer(url);
+    	    
+    	    User user = Session.getInstance().getUser();
+    	    Optional<HistoryItem> alreadyWatched = userService.recupererHistoriqueComplet(user.getId())
+    	        .stream()
+    	        .filter(a -> a.getContent().equals(currentFilm))
+    	        .findFirst();
+    	    if (alreadyWatched.isPresent() && alreadyWatched.get().getTime() > 5.0) {
+    	        showResumeDialog(alreadyWatched.get().getTime());
+    	    } else {
+    	        mediaPlayer.play();
+    	    }
+    	}else {
+    		initializePlayer(c);
+    		mediaPlayer.play();
+    	}
         mediaPlayer.setOnEndOfMedia(() -> {
-            localWatchHistory.remove(currentMovieId);
-            playPauseBtn.setText("↺");
-        });
-    }
+             playPauseBtn.setText("↺");
+          });
+        }
     
 
-	private void playCurrentEpisode() {
+    private void playCurrentEpisode() {
         if (currentIndex < 0 || currentIndex >= playlist.size()) return;
 
         Episode ep = playlist.get(currentIndex);
@@ -111,16 +125,28 @@ public class VideoPlayerController {
 
         initializePlayer(url);
         nextEpisodeOverlay.setVisible(false);
-
-        //binge wtch
+        User user = Session.getInstance().getUser();
+        Optional<HistoryItem> alreadyWatched = userService.recupererHistoriqueComplet(user.getId())
+            .stream()
+            .filter(a -> {
+                Object content = a.getContent();
+                if (content instanceof Episode ) {
+                    return ((Episode) content).getId() == ep.getId();
+                }
+                return false; 
+            })
+            .findFirst();
+        if (alreadyWatched.isPresent() && alreadyWatched.get().getTime() > 5.0) {
+            showResumeDialog(alreadyWatched.get().getTime());
+        } else {
+            mediaPlayer.play();
+            playPauseBtn.setText("⏸");
+        }
         mediaPlayer.setOnEndOfMedia(() -> {
             if (currentIndex < playlist.size() - 1) {
                 startBingeCountdown();
             }
         });
-
-        mediaPlayer.play();
-        playPauseBtn.setText("⏸");
     }
     
     public void setOnCloseRequest(Runnable callback) {
@@ -185,10 +211,9 @@ public class VideoPlayerController {
     }
 
     public void stopVideo() {
-        if (mediaPlayer != null) {
-        	
-            // SAVE TO MEMORY (Replace DB logic )
-            localWatchHistory.put(currentMovieId, mediaPlayer.getCurrentTime().toSeconds());
+    	User user=Session.getInstance().getUser();
+        if (mediaPlayer != null && currentMovieId!=-1) {
+            userService.marquerFilmCommeVu(user.getId(), currentMovieId, mediaPlayer.getCurrentTime().toSeconds());
             
             mediaPlayer.stop();
             mediaPlayer.dispose();

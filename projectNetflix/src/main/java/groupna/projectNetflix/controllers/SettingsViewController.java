@@ -1,5 +1,7 @@
 package groupna.projectNetflix.controllers;
 
+import groupna.projectNetflix.entities.User;
+import groupna.projectNetflix.utils.Session;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -17,12 +19,12 @@ public class SettingsViewController extends BaseController {
 
     @FXML
     public void initialize() {
-        // User currentUser = SessionManager.getInstance().getCurrentUser();
-        // if (currentUser != null) {
-        //    firstNameField.setText(currentUser.getFirstName());
-        //    lastNameField.setText(currentUser.getLastName());
-        //    emailField.setText(currentUser.getEmail());
-        // }
+         User currentUser = Session.getInstance().getUser();
+         if (currentUser != null) {
+            firstNameField.setText(currentUser.getPrenom());
+            lastNameField.setText(currentUser.getNom());
+            emailField.setText(currentUser.getEmail());
+         }
     }
 
     @FXML

@@ -23,36 +23,44 @@ public class UserService {
         u.setMdp(mdpHache); 
         return UserDAO.save(u);
     }
+//------------------------------------------------------------------------------
+    public User recupererUtilisateurParId(int id) {
+        return UserDAO.findById(id);
+    }
+
     public void ajouterAuxFavoris(int idUser, int idOeuvre, String type) {
         UserDAO.ajouterAuxFavoris(idUser, idOeuvre, type);
     }
 
     public void retirerDesFavoris(int idUser, int idOeuvre, String type) {
-        // Le DAO gère le choix de la table selon le type
         String tableName = type.equalsIgnoreCase("film") ? "fav_film" : "fav_serie";
         UserDAO.removeFromCollection(idUser, idOeuvre, tableName);
     }
 
-    public Set<Oeuvre> recupererFavoris(int idUser) {
+    public List<Oeuvre> recupererFavoris(int idUser) {
         return UserDAO.getAllUserFavorites(idUser);
     }
 
     // --- GESTION DE L'HISTORIQUE ---
-    public void marquerFilmCommeVu(int idUser, int idFilm) {
-        UserDAO.ajouterAHistoriqueFilm(idUser, idFilm);
+    public void marquerFilmCommeVu(int idUser, int idFilm,double time) {
+        UserDAO.ajouterAHistoriqueFilm(idUser, idFilm,time);
     }
 
-    public void marquerEpisodeCommeVu(int idUser, int idEpisode) {
-        UserDAO.ajouterAHistoriqueEpisode(idUser, idEpisode);
+    public void marquerEpisodeCommeVu(int idUser, int idEpisode,double time) {
+        UserDAO.ajouterAHistoriqueEpisode(idUser, idEpisode,time);
     }
     
     public List<HistoryItem> recupererHistoriqueComplet(int idUser) {
         return UserDAO.getUserFullGlobalHistory(idUser);
     }
-    public Map<LocalDate, List<Visualisable>> recupererHistoriqueGroupéParDate(int idUser) {
+    /*public Map<LocalDate, List<Visualisable>> recupererHistoriqueGroupéParDate(int idUser) {
         return UserDAO.getHistoryGroupedByDate(idUser);
+    }*/
+    public void viderHistorique(int idUser) {
+        UserDAO.clearHistory(idUser);
+        
+        System.out.println("[Service] Demande de suppression d'historique traitée pour l'utilisateur : " + idUser);
     }
-
     // --- GESTION DES UTILISATEURS (ADMIN) ---
 
     public List<User> recupererTousLesUtilisateurs() {

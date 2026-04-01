@@ -43,7 +43,23 @@ public class EpisodeDAO {
         }
         return generatedId;
     }
+    public static int getIdSaisonByEpisode(int idEpisode) {
+        int idSaison = -1;
+        String sql = "SELECT id_saison FROM episodes WHERE id = ?";
 
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idEpisode);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    idSaison = rs.getInt("id_saison");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("[Erreur SQL] Impossible de trouver l'id_saison pour l'épisode " + idEpisode);
+            e.printStackTrace();
+        }
+        return idSaison;
+    }
     public static Episode getEpisodeBySeasonAndNumber(int idSaison, int numeroEpisode) {
         Episode ep = null;
         String sql = "SELECT * FROM episodes WHERE id_saison = ? AND numero = ?";

@@ -105,7 +105,23 @@ public class SaisonDAO {
             e.printStackTrace();
         }
     }
+    public static int getIdSerieBySaison(int idSaison) {
+        int idSerie = -1;
+        String sql = "SELECT id_serie FROM saisons WHERE id = ?";
 
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idSaison);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    idSerie = rs.getInt("id_serie");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("[Erreur SQL] Impossible de trouver l'id_serie pour la saison " + idSaison);
+            e.printStackTrace();
+        }
+        return idSerie;
+    }
     public static boolean deleteSaison(int idSaison) {
         String sql = "DELETE FROM saisons WHERE id = ?";
 

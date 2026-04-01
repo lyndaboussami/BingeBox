@@ -9,9 +9,9 @@ public class Serie extends Oeuvre{
 	private Map<Saison,List<Episode>> saisons;
 	
 	public Serie(int id, String resume, List<Categorie> cat, String titre, LocalDate dateDeSortie,
-			List<Artiste> acteurs, List<Artiste> directeurs, double rate, String pathPoster,
+			List<Artiste> acteurs, List<Artiste> directeurs, String pathPoster,
 			Map<Saison, List<Episode>> saisons) {
-		super(id, resume, cat, titre, dateDeSortie, acteurs, directeurs, rate, pathPoster);
+		super(id, resume, cat, titre, dateDeSortie, acteurs, directeurs, pathPoster);
 		this.saisons = saisons;
 	}
 
@@ -26,8 +26,7 @@ public class Serie extends Oeuvre{
 	@Override
 	public String toString() {
 		return "Serie [saisons=" + saisons + ", id=" + id + ", resume=" + resume + ", cat=" + cat + ", titre=" + titre
-				+ ", DateDeSortie=" + DateDeSortie + ", acteurs=" + acteurs + ", Directeurs=" + Directeurs + ", rate="
-				+ rate + ", PathPoster=" + PathPoster + "]";
+				+ ", DateDeSortie=" + DateDeSortie + ", acteurs=" + acteurs + ", Directeurs=" + Directeurs  + ", PathPoster=" + PathPoster + "]";
 	}
 
 }

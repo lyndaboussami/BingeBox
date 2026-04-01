@@ -118,7 +118,6 @@ public class AdminMediaController {
 
         DatePicker datePicker = new DatePicker(film != null ? film.getDateDeSortie() : LocalDate.now());
         TextField durationField = new TextField(film != null ? film.getDuree().toString() : "01:30");
-        TextField rateField = new TextField(film != null ? String.valueOf(film.getRate()) : "0.0");
 
         TextField posterPath = new TextField(film != null ? film.getPathPoster() : "");
         TextField moviePath = new TextField(film != null ? film.getPathMovie() : "");
@@ -144,8 +143,6 @@ public class AdminMediaController {
         ObservableList<Categorie> allCategories = FXCollections.observableArrayList(Categorie.values());
         
         catCombo.setItems(allCategories);
-        
-        //shows the Label instead of the Enum Name (Comedy not COMEDIE)
         catCombo.setCellFactory(lv -> new ListCell<Categorie>() {
             @Override
             protected void updateItem(Categorie item, boolean empty) {
@@ -169,8 +166,6 @@ public class AdminMediaController {
             
             if (input != null && !input.trim().isEmpty()) {
                 String finalInput = input.trim();
-                
-                //Enum constant that matches the Label (ignoring case)
                 Categorie matchedCat = null;
                 for (Categorie c : Categorie.values()) {
                     if (c.getLabel().equalsIgnoreCase(finalInput) || c.name().equalsIgnoreCase(finalInput)) {
@@ -178,8 +173,6 @@ public class AdminMediaController {
                         break;
                     }
                 }
-
-                //if match not found + not already in selection list -> add it
                 if (matchedCat != null) {
                     if (!selectedCats.contains(matchedCat)) {
                         selectedCats.add(matchedCat);
@@ -215,20 +208,9 @@ public class AdminMediaController {
         	String input = actorInput.getText();
             if(!actorInput.getText().isEmpty()) {
             	
-            	String[] parts = input.split(" ", 2);
-                String firstName = parts[0];
-                String lastName = (parts.length > 1) ? parts[1] : "";
-            	
-                Artiste newArtist = new Artiste(
-                        0,                 // ID 0 for new
-                        lastName,          // nom
-                        firstName,         // prenom
-                        "No bio added",    // bio
-                        new ArrayList<>()  // oeuvreMajeurs
-                    );
+                Artiste newArtist = new Artiste(0,input);
                 
-                if (selectedActors.stream().noneMatch(a -> 
-                a.getNom().equalsIgnoreCase(lastName) && a.getPrenom().equalsIgnoreCase(firstName))) {
+                if (selectedActors.stream().noneMatch(a -> a.getFullname().equals(input))) {
                 selectedActors.add(newArtist);
                 updateTags(selectedActors, actorTags);
                 actorInput.clear();
@@ -240,23 +222,12 @@ public class AdminMediaController {
         	String input = directorInput.getText();
             if(!directorInput.getText().isEmpty()) {
             	
-            	String[] parts = input.split(" ", 2);
-                String firstName = parts[0];
-                String lastName = (parts.length > 1) ? parts[1] : "";
-            	
-                Artiste newArtist = new Artiste(
-                        0,                 // ID 0 for new
-                        lastName,          // nom
-                        firstName,         // prenom
-                        "No bio added",    // bio
-                        new ArrayList<>()  // oeuvreMajeurs
-                    );
+            	Artiste newArtist = new Artiste(0,input);
                 
-                if (selectedDirectors.stream().noneMatch(a -> 
-                a.getNom().equalsIgnoreCase(lastName) && a.getPrenom().equalsIgnoreCase(firstName))) {
+                if (selectedDirectors.stream().noneMatch(a -> a.getFullname().equals(input))) {
                 selectedDirectors.add(newArtist);
-                updateTags(selectedDirectors, directorTags);
-                directorInput.clear();
+                updateTags(selectedDirectors, actorTags);
+                actorInput.clear();
                 }
             }
         });
@@ -273,9 +244,6 @@ public class AdminMediaController {
 
         grid.add(createLabel("Duration:"), 0, r);      
         grid.add(durationField, 1, r++);
-
-        grid.add(createLabel("Rating (0.0):"), 0, r);  
-        grid.add(rateField, 1, r++);
 
         grid.add(createLabel("Categories:"), 0, r);   
         grid.add(new VBox(5, new HBox(5, catCombo, addCatBtn), catTags), 1, r++);
@@ -308,7 +276,6 @@ public class AdminMediaController {
                             datePicker.getValue(),
                             new ArrayList<>(selectedActors),
                             new ArrayList<>(selectedDirectors),
-                            Double.parseDouble(rateField.getText()),
                             posterPath.getText(),
                             LocalTime.parse(durationField.getText()),
                             moviePath.getText(),
@@ -346,7 +313,7 @@ public class AdminMediaController {
                 displayName = ((Categorie) item).getLabel();
             } else if (item instanceof Artiste) {
                 Artiste a = (Artiste) item;
-                displayName = a.getPrenom() + " " + a.getNom();
+                displayName = a.getFullname();
             } else {
                 displayName = item.toString();
             }
@@ -393,7 +360,6 @@ public class AdminMediaController {
         TextField titleField = new TextField(serie != null ? serie.getTitre() : "");
         TextArea resumeArea = new TextArea(serie != null ? serie.getResume() : "");
         DatePicker datePicker = new DatePicker(serie != null ? serie.getDateDeSortie() : LocalDate.now());
-        TextField rateField = new TextField(serie != null ? String.valueOf(serie.getRate()) : "0.0");
         TextField posterField = new TextField(serie != null ? serie.getPathPoster() : "");
 
         Button manageSeasonsBtn = new Button("Manage Seasons (" + tempSaisonMap.size() + ")");
@@ -408,7 +374,6 @@ public class AdminMediaController {
         grid.add(createLabel("Resume:"), 0, r); grid.add(resumeArea, 1, r++);
         grid.add(createLabel("Release Date:"), 0, r); grid.add(datePicker, 1, r++);
         grid.add(createLabel("Episodes:"), 0, r); grid.add(manageSeasonsBtn, 1, r++);
-        grid.add(createLabel("Rating:"), 0, r); grid.add(rateField, 1, r++);
         grid.add(createLabel("Poster:"), 0, r); grid.add(posterField, 1, r++);
 
         dialogPane.setContent(new ScrollPane(grid));
@@ -416,7 +381,7 @@ public class AdminMediaController {
             if (btn == saveButtonType) {
                 return new Serie(serie == null ? 0 : serie.getId(), resumeArea.getText(), new ArrayList<>(),
                     titleField.getText(), datePicker.getValue(), new ArrayList<>(), new ArrayList<>(),
-                    Double.parseDouble(rateField.getText()), posterField.getText(), tempSaisonMap);
+                     posterField.getText(), tempSaisonMap);
             }
             return null;
         });

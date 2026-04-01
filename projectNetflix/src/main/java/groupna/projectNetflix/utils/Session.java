@@ -9,18 +9,19 @@ public class Session {
     private static Session instance;
     private User currentUser;
     
-    private Locale currentLocale = Locale.ENGLISH;
-
-    private Session() {
-        this.currentUser = new User(0, "ben foulen", "foulen", "foulenbenfoulen@gmail.com", null, null, null, null); 
-        if (this.currentUser.getFavs() == null) {
-            this.currentUser.setFavs(new HashSet<>());
-        }
+    private Locale currentLocale = Locale.ENGLISH;	
+    public Session(User user) {
+        this.currentUser = user; //new User(0, "User123", "password", null, null, null, null, null); 
     }
-
+    public static Session getInstance(User user) {
+        if (instance == null) {
+            instance = new Session(user);
+        }
+        return instance;
+    } 
     public static Session getInstance() {
         if (instance == null) {
-            instance = new Session();
+            instance = new Session(null); 
         }
         return instance;
     }
@@ -28,8 +29,6 @@ public class Session {
     public ResourceBundle getBundle() {
         return ResourceBundle.getBundle("groupna.projectNetflix.languages.bundle", currentLocale);
     }
-
-    // Method to change the language globally
     public void setLocale(String langCode) {
         this.currentLocale = new Locale(langCode);
     }
