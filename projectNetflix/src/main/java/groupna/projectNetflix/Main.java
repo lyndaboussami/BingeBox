@@ -9,13 +9,13 @@ import java.util.*;
 
 public class Main {
 
-    /*public static void main(String[] args) {
+    public static void main(String[] args) {
     	for(Film f:DataStore.getMovies()) {
     		FilmDAO.save(f);
     	}
     	for(Serie s:DataStore.getSeries()) {
     		SerieDAO.save(s);
     	}
-    }*/
+    }
     
 }
