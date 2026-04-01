@@ -1,7 +1,6 @@
 package groupna.projectNetflix.DAO;
 
 public class HistoryItem {
-	/*
     private Object content;
     private java.sql.Timestamp dateVisionnage;
 
@@ -11,8 +10,8 @@ public class HistoryItem {
     }
     public Object getContent() { return content; }
     public java.sql.Timestamp getDateVisionnage() { return dateVisionnage; }
-	 */
-    
+
+    /*
     private String displayName; // e.g., "Inception" or "The Boys - S01E03"
     private String posterPath;
     private String watchedDate;
@@ -45,6 +44,6 @@ public class HistoryItem {
 
 	public void setWatchedDate(String watchedDate) {
 		this.watchedDate = watchedDate;
-	}
+	}*/
     
 }
