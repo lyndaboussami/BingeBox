@@ -18,7 +18,6 @@ import groupna.projectNetflix.entities.Visualisable;
 import groupna.projectNetflix.utils.ConxDB;
 
 public class UserDAO {
-	/*
     private static Connection conn = ConxDB.getInstance();    
 
     //--------------------------------------------------------------------------------------
@@ -286,5 +285,4 @@ public class UserDAO {
 
         return stats;
     }
-*/
 }
