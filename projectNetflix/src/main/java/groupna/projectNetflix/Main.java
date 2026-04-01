@@ -8,7 +8,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 public class Main {
-
+	/*
     public static void main(String[] args) {
     	for(Film f:DataStore.getMovies()) {
     		FilmDAO.save(f);
@@ -17,5 +17,5 @@ public class Main {
     		SerieDAO.save(s);
     	}
     }
-    
+    */
 }

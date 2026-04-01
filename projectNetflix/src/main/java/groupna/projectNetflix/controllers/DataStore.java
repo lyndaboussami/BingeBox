@@ -14,6 +14,7 @@ import groupna.projectNetflix.entities.Film;
 import groupna.projectNetflix.entities.Saison;
 import groupna.projectNetflix.entities.Serie;
 
+
 public class DataStore {
     private static List<Film> movies = new ArrayList<>();
     private static List<Serie> series = new ArrayList<>();
@@ -27,7 +28,7 @@ public class DataStore {
                List.of(new Artiste(1, "Leonardo DiCaprio")),
                List.of(new Artiste(2, "Christopher Nolan")),
                 "/groupna/projectNetflix/assets/inception.jpg",
-               LocalTime.of(2, 28), "/groupna/projectNetflix/assets/inception.mp4", "/assets/inception_tr.mp4"),
+               LocalTime.of(2, 28), "/groupna/projectNetflix/assets/Beast (2026) Movie Trailer.mp4", "/assets/inception_tr.mp4"),
            
             new Film(2,
                "The lives of two mob hitmen, a boxer, and a gangster's wife intertwine.",
@@ -45,7 +46,7 @@ public class DataStore {
                List.of(new Artiste(5, "Patton James")),
                List.of(new Artiste(6, "Xavier Grau")),
                 "/groupna/projectNetflix/assets/beast.jpg",
-               LocalTime.of(1, 53), "/movies/beast.mp4", "/trailers/beast_tr.mp4"),
+               LocalTime.of(1, 53), "/groupna/projectNetflix/assets/Beast (2026) Movie Trailer.mp4", "/groupna/projectNetflix/assets/Beast (2026) Movie Trailer.mp4"),
 
             new Film(4,
                "A teenage hustler and a young man obsessed with alien abductions cross paths.",
