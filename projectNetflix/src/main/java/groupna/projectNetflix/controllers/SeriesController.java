@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import groupna.projectNetflix.entities.Serie;
+import groupna.projectNetflix.services.SerieService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
@@ -12,13 +13,11 @@ import javafx.scene.shape.Rectangle;
 
 public class SeriesController extends BaseController{
 	@FXML private VBox seriesRowsContainer;
-
+	private SerieService serieService=new SerieService();
     @FXML
     public void initialize() {
     	
-        List<Serie> allSeries = DataStore.getSeries();
-
-        // Group by Category
+        List<Serie> allSeries = serieService.getAllSeries();
         Map<String, List<Serie>> seriesByCategory = allSeries.stream()
             .flatMap(s -> s.getCat().stream().map(cat -> Map.entry(cat.getLabel(), s)))
             .collect(Collectors.groupingBy(
@@ -62,8 +61,8 @@ public class SeriesController extends BaseController{
         StackPane stack = new StackPane();
         
         ImageView poster = new ImageView();
-        poster.setFitWidth(140);
-        poster.setFitHeight(200);
+        poster.setFitWidth(200);
+        poster.setFitHeight(300);
         
         try {
             if (serie.getPathPoster() != null) {
@@ -73,7 +72,7 @@ public class SeriesController extends BaseController{
             System.err.println("Series image failed: " + serie.getPathPoster());
         }
 
-        Rectangle clip = new Rectangle(140, 200);
+        Rectangle clip = new Rectangle(200, 300);
         clip.setArcWidth(15);
         clip.setArcHeight(15);
         poster.setClip(clip);

@@ -2,6 +2,7 @@ package groupna.projectNetflix.controllers;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -14,7 +15,6 @@ import groupna.projectNetflix.entities.Film;
 import groupna.projectNetflix.entities.Oeuvre;
 import groupna.projectNetflix.entities.Serie;
 import groupna.projectNetflix.services.FilmService;
-import groupna.projectNetflix.services.OeuvreService;
 import groupna.projectNetflix.services.SerieService;
 import groupna.projectNetflix.utils.Session;
 import javafx.collections.FXCollections;
@@ -39,13 +39,13 @@ public class SearchController extends BaseController{
 
     @FXML private FlowPane genreFilterContainer;
     
-    private List<Oeuvre> allMedia = new ArrayList<>();
+    private Set<Oeuvre> allMedia = new HashSet<>();
     
-    //private final FilmService filmService = new FilmService();
-    //private final SerieService serieService = new SerieService();
+    private final FilmService filmService = new FilmService();
+    private final SerieService serieService = new SerieService();
     
-	List<Film> movies = DataStore.getMovies();
-    List<Serie> series = DataStore.getSeries();
+	List<Film> movies = filmService.getAllFilms();
+    List<Serie> series = serieService.getAllSeries();
     
     @FXML
     public void initialize() {
@@ -63,7 +63,6 @@ public class SearchController extends BaseController{
     }
 
     private void populateDynamicFilters() {
-    	
     	if (genreFilterContainer == null) {
             System.err.println("Error: genreFilterContainer was not injected. Check SearchView.fxml fx:id.");
             return; 
@@ -99,7 +98,6 @@ public class SearchController extends BaseController{
     
     @FXML
     private void updateSearchResults() {
-    	
     	String query = searchField.getText().toLowerCase();
         String selectedYear = yearFilter.getValue();
         
@@ -151,12 +149,12 @@ public class SearchController extends BaseController{
         
         
         ImageView posterView = new ImageView();
-        posterView.setFitWidth(140);
-        posterView.setFitHeight(200);
+        posterView.setFitWidth(200);
+        posterView.setFitHeight(300);
         posterView.setPreserveRatio(false);
         posterView.getStyleClass().add("movie-poster");
 
-        Rectangle clip = new Rectangle(140, 200);
+        Rectangle clip = new Rectangle(200, 300);
         clip.setArcWidth(15);
         clip.setArcHeight(15);
         posterView.setClip(clip);

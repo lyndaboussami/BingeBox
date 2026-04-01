@@ -2,23 +2,31 @@ package groupna.projectNetflix.controllers;
 
 import groupna.projectNetflix.DAO.HistoryItem;
 import groupna.projectNetflix.entities.*;
-import groupna.projectNetflix.services.FilmService;
+import groupna.projectNetflix.services.EpisodeService;
+import groupna.projectNetflix.services.SaisonService;
 import groupna.projectNetflix.services.SerieService;
+import groupna.projectNetflix.services.UserService;
+import groupna.projectNetflix.utils.Session;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.image.*;
+
 import java.util.List;
 
 public class HistoryController extends BaseController {
+	private UserService userService=new UserService();
+	private SerieService serieService=new SerieService();
+	private EpisodeService episodeService=new EpisodeService();
+	private SaisonService saisonService=new SaisonService();
     @FXML private VBox historyContainer;
     @FXML private Label emptyLabel;
 
     //private final FilmService filmService = new FilmService();
     //private final SerieService serieService = new SerieService();
     
-	List<Film> allFilms = DataStore.getMovies();
-    List<Serie> allSeries = DataStore.getSeries();
+	//List<Film> allFilms = DataStore.getMovies();
+    //List<Serie> allSeries = DataStore.getSeries();
     
 
     @FXML
@@ -27,25 +35,27 @@ public class HistoryController extends BaseController {
     }
 
     private void loadHistory() {
+    	User user=Session.getInstance().getUser();
         historyContainer.getChildren().clear();
-        
-        if (allFilms.isEmpty() && allSeries.isEmpty()) {
+        List<HistoryItem> His=userService.recupererHistoriqueComplet(user.getId());
+        if (His.isEmpty()) {
             emptyLabel.setVisible(true);
         } else {
             emptyLabel.setVisible(false);
+            for(HistoryItem item:His) {
+            	if(item.getContent() instanceof Film) {
+            		Film f=(Film) item.getContent();
+            		historyContainer.getChildren().add(createHistoryRow(f.getTitre(), f.getPathPoster(),item.getDateVisionnage().toString(), "Movie"));
+            	}
+            	else {
+            		Episode e=(Episode) item.getContent();
+            		int idSaison=saisonService.getSaisonById(episodeService.recupererIdSaison(e.getId())).getId();
+            		int numSaison=saisonService.getSaisonById(episodeService.recupererIdSaison(e.getId())).getNum();
+            		String TitreSerie=serieService.getSerieById(saisonService.recupererIdSerie(idSaison)).getTitre();
+            		String detail=TitreSerie+"S"+numSaison+"Ep"+e.getNumero();
+            		historyContainer.getChildren().add(createHistoryRow(detail, e.getPathMiniaure(), item.getDateVisionnage().toString(), "Series"));
+            	}
             
-            // Add a Movie to history
-            if (!allFilms.isEmpty()) {
-                Film f = allFilms.get(0);
-                historyContainer.getChildren().add(createHistoryRow(f.getTitre(), f.getPathPoster(), "Yesterday", "Movie"));
-            }
-
-            // Add a Series Episode to history
-            if (!allSeries.isEmpty()) {
-                Serie s = allSeries.get(0);
-                // Example: Showing Season 1, Episode 1
-                String detail = s.getTitre() + " - S01E01"; 
-                historyContainer.getChildren().add(createHistoryRow(detail, s.getPathPoster(), "2 hours ago", "Series"));
             }
         }
     }
@@ -87,8 +97,9 @@ public class HistoryController extends BaseController {
 
     @FXML
     private void clearHistory() {
+    	User user=Session.getInstance().getUser();
         historyContainer.getChildren().clear();
         emptyLabel.setVisible(true);
-        //DB delete logic here later
+        userService.viderHistorique(user.getId());
     }
 }

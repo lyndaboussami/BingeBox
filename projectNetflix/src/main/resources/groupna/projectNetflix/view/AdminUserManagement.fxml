@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="20" styleClass="main-container" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="groupna.projectNetflix.controllers.AdminUserController">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Label text="User Moderation" styleClass="heroTitle" style="-fx-font-size: 26px;"/>
+        <Region HBox.hgrow="ALWAYS" />
+        <TextField fx:id="commentSearchField" promptText="Search by user or content..." prefWidth="300" styleClass="search-bar"/>
+    </HBox>
+
+    <VBox spacing="10" VBox.vgrow="ALWAYS">
+        <Label text="Reported Comments" styleClass="categoryTitle" style="-fx-padding: 0;"/>
+        
+        <TableView fx:id="reportsTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colUser" text="User ID" prefWidth="100"/>
+                <TableColumn fx:id="colOeuvre" text="Media ID" prefWidth="100"/> <TableColumn fx:id="colComment" text="Content" prefWidth="400"/>
+            </columns>
+            <placeholder>
+                <Label text="No reported comments." styleClass="card-text"/>
+            </placeholder>
+        </TableView>
+
+        <HBox spacing="15" alignment="CENTER_RIGHT">
+            <Button text="Keep" onAction="#handleKeepComment" styleClass="navButton" style="-fx-background-color: #2e7d32;"/>
+            <Button text="Delete" onAction="#handleDeleteComment" styleClass="watchBtn"/>
+        </HBox>
+    </VBox>
+</VBox>

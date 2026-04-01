@@ -53,7 +53,8 @@ public class CommentaireDAO {
                         rs.getInt("id_user"),
                         rs.getInt(idCol),
                         rs.getString("content"),
-                        rs.getBoolean("reported")
+                        rs.getBoolean("reported"),
+                        rs.getString("raison")
                     ));
                 }
             }
@@ -63,14 +64,15 @@ public class CommentaireDAO {
         return liste;
     }
 
-    public static boolean reportCommentaire(int idUser, int idOeuvre, String type) {
+    public static boolean reportCommentaire(int idUser, int idOeuvre, String type,String raison) {
         String table = getTableName(type);
         String idCol = getIdColumnName(type);
         
-        String sql = "UPDATE " + table + " SET reported = true WHERE id_user = ? AND " + idCol + " = ?";
+        String sql = "UPDATE " + table + " SET reported = true ,raison=? WHERE id_user = ? AND " + idCol + " = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, idUser);
-            pstmt.setInt(2, idOeuvre);
+            pstmt.setInt(2, idUser);
+            pstmt.setInt(3, idOeuvre);
+            pstmt.setNString(1,raison);
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -106,7 +108,8 @@ public class CommentaireDAO {
                     rs.getInt("id_user"),
                     rs.getInt("id_oeuvre"),
                     rs.getString("content"),
-                    rs.getBoolean("reported")
+                    rs.getBoolean("reported"),
+                    rs.getString("raison")
                 ));
             }
         } catch (SQLException e) {

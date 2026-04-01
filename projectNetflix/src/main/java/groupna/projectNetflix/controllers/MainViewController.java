@@ -1,7 +1,6 @@
 package groupna.projectNetflix.controllers;
 
-import java.io.IOException;
-
+import groupna.projectNetflix.services.RateService;
 import groupna.projectNetflix.utils.Session;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -23,7 +22,7 @@ public class MainViewController {
     @FXML private VBox sidebar;
     @FXML private HBox navLinksContainer;
     @FXML private Label heroTitle, heroDesc, selectionTitle, recommendedTitle;
-    
+    private String lastPage = "HomeView.fxml";
     private static MainViewController instance;
     
     public MainViewController() {
@@ -33,7 +32,7 @@ public class MainViewController {
     public static MainViewController getInstance() {
         return instance;
     }
-    
+        
     @FXML
     public void initialize() {
     	
@@ -55,6 +54,7 @@ public class MainViewController {
     }
     
     public void unlockFullApp() {
+    	
         sidebar.setVisible(true);
         sidebar.setManaged(true);
         
@@ -160,8 +160,16 @@ public class MainViewController {
         stage.setMaximized(!stage.isMaximized());
     }
     
-    private void loadPage(String fxml) {
+    public void loadPage(String fxml) {
+
         try {
+        	
+        	if (!fxml.equals("MovieDetailView.fxml") && 
+                    !fxml.equals("SeriesDetailView.fxml") && 
+                    !fxml.equals("ProfileView.fxml")) {
+                    
+                    this.lastPage = fxml;
+        	}
         	FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/groupna/projectNetflix/view/" + fxml)
                 );
@@ -171,6 +179,17 @@ public class MainViewController {
                 Node node = loader.load();
 
                 rootPane.setCenter(node);
+                
+                if (fxml.equals("HomeView.fxml") || fxml.equals("MoviesView.fxml") || fxml.equals("SeriesView.fxml")) {
+                	if (sidebar != null) {
+                        sidebar.setVisible(true);
+                        sidebar.setManaged(true);
+                    }
+                    if (navLinksContainer != null) {
+                        navLinksContainer.setVisible(true);
+                        navLinksContainer.setManaged(true);
+                    }
+                }
 
         } catch (Exception e) {
             System.err.println("Error loading FXML: " + fxml);
@@ -178,6 +197,10 @@ public class MainViewController {
         }
     }
 	
+    public void goBack() {
+        loadPage(lastPage);
+    }
+    
 	@FXML
 	private void handleThemeChange(ActionEvent event) {
 	    Parent root = themeToggle.getScene().getRoot();
@@ -210,11 +233,6 @@ public class MainViewController {
     @FXML
     private void handleSearch(ActionEvent event) {
         loadPage("SearchView.fxml");
-    }
-    
-    @FXML
-    private void handleProfile(ActionEvent event) {
-        loadPage("ProfileView.fxml");
     }
 
     @FXML
@@ -251,7 +269,7 @@ public class MainViewController {
     public void showDetails(javafx.scene.input.MouseEvent event) {
         Node card = (Node) event.getSource();
         Object data = card.getUserData();
-
+        RateService rating= new RateService();
         if (data == null) return;
 
         StringBuilder sb = new StringBuilder();
@@ -261,7 +279,7 @@ public class MainViewController {
         	sb.append("🎬 ").append(f.getTitre())
               .append(" (").append(f.getDateDeSortie().getYear()).append(")\n");
             
-            sb.append("⭐ ").append(String.format("%.1f", f.getRate()))
+            sb.append("⭐ ").append(String.format("%.1f", rating.getMoyenneOeuvre(f.getId(),"film")))//--rate--
               .append("/5  |  🕒 ").append(f.getDuree()).append("\n");
             
             if (f.getCat() != null && !f.getCat().isEmpty()) {
@@ -279,7 +297,7 @@ public class MainViewController {
             sb.append("📺 ").append(s.getTitre())
               .append(" (").append(s.getDateDeSortie().getYear()).append(")\n");
             
-            sb.append("⭐ ").append(String.format("%.1f", s.getRate()))
+            sb.append("⭐ ").append(String.format("%.1f", rating.getMoyenneOeuvre(s.getId(),"serie")))//--rating--
               .append("/5  |  📂 ").append(seasonCount).append(" Saisons\n");
             
             if (s.getCat() != null && !s.getCat().isEmpty()) {
@@ -320,7 +338,31 @@ public class MainViewController {
         }
         return resume;
     }
+    
+    public void hideNavigation() {
+        if (sidebar != null) {
+            sidebar.setVisible(false);
+            sidebar.setManaged(false);
+        }
+        if (navLinksContainer != null) {
+            navLinksContainer.setVisible(false);
+            navLinksContainer.setManaged(false);
+        }
+    }
 
+    private boolean isViewingProfile = false;
+
+    @FXML
+    private void handleProfileClick(MouseEvent event) {
+        if (isViewingProfile) {
+            loadPage("HomeView.fxml");
+            isViewingProfile = false;
+        } else {
+            loadPage("ProfileView.fxml");
+            isViewingProfile = true;
+        }
+    }
+    
     @FXML
     public void hideDetails(MouseEvent event) {
     }
@@ -339,7 +381,7 @@ public class MainViewController {
             loadPage("AdminUserManagement.fxml");
         }
         else if (clickedButton == btnAnalytics) {
-            loadPage("AdminUserManagement.fxml");
+            loadPage("AdminPerformanceView.fxml");
         }
     }
 }

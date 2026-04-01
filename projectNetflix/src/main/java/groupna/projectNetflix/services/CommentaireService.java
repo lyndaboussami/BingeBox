@@ -12,7 +12,7 @@ public class CommentaireService {
             return false;
         }
 
-        Commentaire nouveauCom = new Commentaire(idUser, idOeuvre, contenu, false);
+        Commentaire nouveauCom = new Commentaire(idUser, idOeuvre, contenu, false,null);
         return CommentaireDAO.save(nouveauCom, type);
     }
 //---------------------------------------------------------------------------------------
@@ -20,8 +20,8 @@ public class CommentaireService {
         return CommentaireDAO.findAllByOeuvre(idOeuvre, type);
     }
 //-------------------------------------------------------------------------------------------
-    public boolean signalerAbus(int idUser, int idOeuvre, String type) {
-        return CommentaireDAO.reportCommentaire(idUser, idOeuvre, type);
+    public boolean signalerAbus(int idUser, int idOeuvre, String type,String raison) {
+        return CommentaireDAO.reportCommentaire(idUser, idOeuvre, type,raison);
     }
 //----------------------------------------------------------------------------------------------
     public boolean supprimerCommentaire(int idUser, int idOeuvre, String type) {

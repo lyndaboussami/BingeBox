@@ -48,4 +48,7 @@ public class EpisodeService {
     public int getVues(int idEpisode) {
     	return EpisodeDAO.getNombreVuesEpisode(idEpisode);
     }
+    public int recupererIdSaison(int idEpisode) {
+        return EpisodeDAO.getIdSaisonByEpisode(idEpisode);
+    }
 }

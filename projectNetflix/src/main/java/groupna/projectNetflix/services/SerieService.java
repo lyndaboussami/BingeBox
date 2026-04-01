@@ -42,13 +42,4 @@ public class SerieService {
         if (serieId <= 0) return 0;
         return SaisonDAO.findAllBySerie(serieId).size();
     }
-    public double getAverageRating() {
-        List<Serie> series = SerieDAO.findAll();
-        if (series == null || series.isEmpty()) return 0.0;
-        
-        return series.stream()
-                .mapToDouble(Serie::getRate)
-                .average()
-                .orElse(0.0);
-    }
 }

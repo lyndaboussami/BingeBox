@@ -1,6 +1,7 @@
 package groupna.projectNetflix.controllers;
 
 import groupna.projectNetflix.entities.Film;
+import groupna.projectNetflix.services.FilmService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
@@ -11,14 +12,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MoviesController {
-
+	private FilmService filmService=new FilmService();
     @FXML private VBox categoryRowsContainer;
 
     @FXML
-    public void initialize() {
-
-    	//List<Film> allMovies = movieDAO.findAll(); 
-    	List<Film> allMovies = DataStore.getMovies();
+    public void initialize() { 
+    	List<Film> allMovies = filmService.getAllFilms();
     	
         // Group movies by Category
         Map<String, List<Film>> moviesByCategory = allMovies.stream()
@@ -66,8 +65,8 @@ public class MoviesController {
         StackPane imageStack = new StackPane();
         
         ImageView poster = new ImageView();
-        poster.setFitWidth(140);
-        poster.setFitHeight(200);
+        poster.setFitWidth(200);
+        poster.setFitHeight(300);
         
         try {
             if (movie.getPathPoster() != null) {
@@ -77,7 +76,7 @@ public class MoviesController {
             System.err.println("Could not load: " + movie.getPathPoster());
         }
 
-        Rectangle clip = new Rectangle(140, 200);
+        Rectangle clip = new Rectangle(200, 300);
         clip.setArcWidth(15);
         clip.setArcHeight(15);
         poster.setClip(clip);

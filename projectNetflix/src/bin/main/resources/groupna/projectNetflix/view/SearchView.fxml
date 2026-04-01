@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.*?>
@@ -21,22 +20,17 @@
 
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <Label text="Format:" style="-fx-text-fill: #f2f0f0;"/>
-                <ToggleButton fx:id="filterMovies" text="Movies" styleClass="filter-chip"/>
-                <ToggleButton fx:id="filterSeries" text="Series" styleClass="filter-chip"/>
+                <ToggleButton fx:id="filterMovies" text="Movies" styleClass="filter-chip" onAction="#updateSearchResults"/>
+                <ToggleButton fx:id="filterSeries" text="Series" styleClass="filter-chip" onAction="#updateSearchResults"/>
                 
                 <Separator orientation="VERTICAL" prefHeight="20" opacity="0.3"/>
                 
                 <Label text="Year:" style="-fx-text-fill: #f2f0f0;"/>
-                <ComboBox fx:id="yearFilter" promptText="All Years" styleClass="language-picker"/>
+                <ComboBox fx:id="yearFilter" promptText="All Years" styleClass="language-picker" onAction="#updateSearchResults"/>
             </HBox>
 
-            <FlowPane hgap="10" vgap="10" alignment="CENTER_LEFT">
-    			<Label text="Genres:" style="-fx-text-fill: #f2f0f0;"/>
-                <ToggleButton text="Action" styleClass="filter-chip"/>
-                <ToggleButton text="Comedy" styleClass="filter-chip"/>
-                <ToggleButton text="Sci-Fi" styleClass="filter-chip"/>
-                <ToggleButton text="Drama" styleClass="filter-chip"/>
-                <ToggleButton text="Horror" styleClass="filter-chip"/>
+            <FlowPane fx:id="genreFilterContainer" hgap="10" vgap="10" alignment="CENTER_LEFT">
+                <Label text="Genres:" style="-fx-text-fill: #f2f0f0;"/>
             </FlowPane>
         </VBox>
 
@@ -44,15 +38,9 @@
 
         <VBox spacing="15">
             <Label fx:id="resultsCountLabel" text="Explore all titles" style="-fx-font-size: 20px; -fx-text-fill: white;"/>
-            
             <FlowPane fx:id="resultsPane" hgap="20" vgap="25">
-                <VBox styleClass="movieCard">
-                    <Rectangle width="140" height="200" styleClass="poster-placeholder"/>
-                    <Label text="Search Result 1" styleClass="card-text"/>
-                </VBox>
                 </FlowPane>
         </VBox>
-
         <Region prefHeight="50"/>
     </VBox>
 </ScrollPane>

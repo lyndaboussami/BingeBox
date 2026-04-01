@@ -13,34 +13,43 @@ import groupna.projectNetflix.utils.ConxDB;
 
 public class OeuvreDAO {
     protected static Connection conn = ConxDB.getInstance();
-    protected static ArtisteDAO artiste=new ArtisteDAO();
+
+    // Gestion des Catégories
     protected static void saveCategories(int productionId, List<Categorie> categories, String tableName, String idColumnName) {
+        if (categories == null || categories.isEmpty()) return;
+        
         String sql = "INSERT INTO " + tableName + " (" + idColumnName + ", id_categorie) " +
                      "VALUES (?, (SELECT id FROM categories WHERE nom = ?))";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             for (Categorie cat : categories) {
                 pstmt.setInt(1, productionId);
-                pstmt.setString(2, cat.name());
+                pstmt.setString(2, cat.name()); // Utilise le nom de l'Enum (ex: ACTION)
                 pstmt.addBatch();
             }
             pstmt.executeBatch();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Erreur saveCategories : " + e.getMessage());
         }
     }
+
+    // Gestion des Artistes (Adaptée à la nouvelle classe Artiste avec fullname)
     protected static void saveArtistes(int productionId, List<Artiste> artistes, String tableName, String idColumnName) {
         if (artistes == null || artistes.isEmpty()) return;
+        
         String sqlLiaison = "INSERT IGNORE INTO " + tableName + " (" + idColumnName + ", id_artiste) VALUES (?, ?)";
 
         try (PreparedStatement pstmtLiaison = conn.prepareStatement(sqlLiaison)) {
-            conn.setAutoCommit(false);
+            conn.setAutoCommit(false); // Transaction pour la sécurité
 
             for (Artiste a : artistes) {
-                int artisteId = ArtisteDAO.getIdIfExists(a.getNom(), a.getPrenom());
+                // Utilisation de la méthode corrigée avec fullname
+                int artisteId = ArtisteDAO.getIdIfExists(a.getFullname());
+                
                 if (artisteId <= 0) {
                     artisteId = ArtisteDAO.save(a);
                 }
+                
                 if (artisteId > 0) {
                     pstmtLiaison.setInt(1, productionId);
                     pstmtLiaison.setInt(2, artisteId);
@@ -57,6 +66,8 @@ public class OeuvreDAO {
             try { conn.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
         }
     }
+
+    // Récupération des Artistes (Adaptée àfullname)
     public static List<Artiste> getArtistes(int productionId, String tableLiaison, String colIdProduction) {
         List<Artiste> artistes = new ArrayList<>();
         String sql = "SELECT a.* FROM artistes a " +
@@ -68,15 +79,10 @@ public class OeuvreDAO {
             
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    int idArtiste = rs.getInt("id");
-                    List<String> oeuvresList = ArtisteDAO.findOeuvresByArtiste(idArtiste);
-
+                    // Création de l'artiste avec les nouvelles propriétés (id, fullname)
                     Artiste a = new Artiste(
-                        idArtiste,
-                        rs.getString("nom"),
-                        rs.getString("prenom"),
-                        rs.getString("bio"),
-                        oeuvresList
+                        rs.getInt("id"),
+                        rs.getString("fullname")
                     );
                     artistes.add(a);
                 }
@@ -86,6 +92,8 @@ public class OeuvreDAO {
         }
         return artistes;
     }
+
+    // Récupération des Catégories
     public static List<Categorie> getCategoriesByProduction(int productionId, String tableLiaison, String colIdProduction) {
         List<Categorie> categories = new ArrayList<>();
         String sql = "SELECT c.nom FROM categories c " +
@@ -101,18 +109,18 @@ public class OeuvreDAO {
                     try {
                         categories.add(Categorie.valueOf(nomCat.toUpperCase()));
                     } catch (IllegalArgumentException e) {
-                        System.err.println("Attention : La catégorie '" + nomCat + "' n'existe pas dans l'Enum Java.");
+                        System.err.println("Attention : La catégorie '" + nomCat + "' n'existe pas dans l'Enum.");
                     }
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la récupération des catégories : " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("Erreur getCategoriesByProduction : " + e.getMessage());
         }
         return categories;
     }
+
+    // Recherche d'existence
     public static int findIDifExisted(String titre, String dateSortie, String resume, String tableName) {
-        int id = -1;
         String sql = "SELECT id FROM " + tableName + " WHERE titre = ? AND date_de_sortie = ? AND resume = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -122,14 +130,12 @@ public class OeuvreDAO {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    id = rs.getInt("id");
+                    return rs.getInt("id");
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la vérification de l'existence de l'œuvre dans " + tableName);
-            e.printStackTrace();
+            System.err.println("Erreur findIDifExisted dans " + tableName + " : " + e.getMessage());
         }
-        
-        return id;
+        return -1;
     }
 }

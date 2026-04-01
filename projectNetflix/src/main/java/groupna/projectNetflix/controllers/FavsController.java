@@ -3,6 +3,8 @@ package groupna.projectNetflix.controllers;
 import groupna.projectNetflix.entities.Film;
 import groupna.projectNetflix.entities.Oeuvre;
 import groupna.projectNetflix.entities.Serie;
+import groupna.projectNetflix.entities.User;
+import groupna.projectNetflix.services.UserService;
 import groupna.projectNetflix.utils.Session;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -14,7 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 
 public class FavsController {
-
+	private UserService userService=new UserService();
 	@FXML private FlowPane favsGrid;
 
     @FXML
@@ -23,7 +25,8 @@ public class FavsController {
     }
     public void renderFavorites() {
         favsGrid.getChildren().clear();
-        var favs = Session.getInstance().getUser().getFavs();
+        User user=Session.getInstance().getUser();
+        var favs = userService.recupererFavoris(user.getId());
 
         if (favs.isEmpty()) {
             favsGrid.getChildren().add(new Label("No favorites yet. Start liking some movies!"));
@@ -48,8 +51,8 @@ public class FavsController {
         StackPane imageStack = new StackPane();
         
         ImageView poster = new ImageView();
-        poster.setFitWidth(140);
-        poster.setFitHeight(200);
+        poster.setFitWidth(200);
+        poster.setFitHeight(300);
         
         try {
             if (movie.getPathPoster() != null) {
@@ -59,7 +62,7 @@ public class FavsController {
             System.err.println("Could not load: " + movie.getPathPoster());
         }
 
-        Rectangle clip = new Rectangle(140, 200);
+        Rectangle clip = new Rectangle(200, 300);
         clip.setArcWidth(15);
         clip.setArcHeight(15);
         poster.setClip(clip);
@@ -91,8 +94,8 @@ public class FavsController {
         StackPane stack = new StackPane();
         
         ImageView poster = new ImageView();
-        poster.setFitWidth(140);
-        poster.setFitHeight(200);
+        poster.setFitWidth(200);
+        poster.setFitHeight(300);
         
         try {
             if (serie.getPathPoster() != null) {
@@ -102,7 +105,7 @@ public class FavsController {
             System.err.println("Series image failed: " + serie.getPathPoster());
         }
 
-        Rectangle clip = new Rectangle(140, 200);
+        Rectangle clip = new Rectangle(200, 300);
         clip.setArcWidth(15);
         clip.setArcHeight(15);
         poster.setClip(clip);

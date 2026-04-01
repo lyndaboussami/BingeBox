@@ -1,11 +1,24 @@
 package groupna.projectNetflix.controllers;
 
 import groupna.projectNetflix.entities.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class AdminMediaController {
@@ -81,36 +94,423 @@ public class AdminMediaController {
     
     private void showMovieForm(Film film) {
         Dialog<Film> dialog = new Dialog<>();
-        dialog.setTitle(film == null ? "Add New Movie" : "Edit Movie");
+        dialog.setTitle(film == null ? "BingeBox | Add Movie" : "BingeBox | Edit " + film.getTitre());
         
-        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+        DialogPane dialogPane = dialog.getDialogPane();
+        dialogPane.getStylesheets().add(getClass().getResource("/groupna/projectNetflix/css/style.css").toExternalForm());
+        
+        dialogPane.getStyleClass().add("auth-card");
 
-        VBox grid = new VBox(10);
-        TextField title = new TextField(film != null ? film.getTitre() : "");
-        TextField duration = new TextField(film != null ? film.getDuree().toString() : "");
-        DatePicker date = new DatePicker(film != null ? film.getDateDeSortie() : null);
+        ButtonType saveButtonType = new ButtonType("Confirm", ButtonBar.ButtonData.OK_DONE);
+        dialogPane.getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
 
-        grid.getChildren().addAll(new Label("Title:"), title, new Label("Duration (HH:MM):"), duration, new Label("Release Date:"), date);
-        dialog.getDialogPane().setContent(grid);
 
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == saveButtonType) {
-                // Logic to update DataStore and refresh UI
-                return film; 
+        GridPane grid = new GridPane();
+        grid.setHgap(15); grid.setVgap(15);
+        grid.setPadding(new Insets(20));
+        grid.setStyle("-fx-background-color: -fx-primary-bg;");
+
+        TextField titleField = new TextField(film != null ? film.getTitre() : "");
+        titleField.setPromptText("Enter Movie Title");
+        
+        TextArea resumeArea = new TextArea(film != null ? film.getResume() : "");
+        resumeArea.setPrefRowCount(3); resumeArea.setWrapText(true);
+
+        DatePicker datePicker = new DatePicker(film != null ? film.getDateDeSortie() : LocalDate.now());
+        TextField durationField = new TextField(film != null ? film.getDuree().toString() : "01:30");
+
+        TextField posterPath = new TextField(film != null ? film.getPathPoster() : "");
+        TextField moviePath = new TextField(film != null ? film.getPathMovie() : "");
+        TextField trailerPath = new TextField(film != null ? film.getPathTrailer() : "");
+
+        //categories (tag system)
+        ObservableList<Categorie> selectedCats = FXCollections.observableArrayList();
+        if (film != null) selectedCats.addAll(film.getCat());
+        
+        FlowPane catTags = new FlowPane(5, 5);
+        catTags.setPrefWidth(300);
+        updateTags(selectedCats, catTags);
+
+        ComboBox<Categorie> catCombo = new ComboBox<>();
+        catCombo.setPromptText("Select Category");
+        catCombo.setEditable(true);
+        
+        ObservableList<String> allCategoryLabels = FXCollections.observableArrayList();
+        for (Categorie c : Categorie.values()) {
+            allCategoryLabels.add(c.getLabel());
+        }
+
+        ObservableList<Categorie> allCategories = FXCollections.observableArrayList(Categorie.values());
+        
+        catCombo.setItems(allCategories);
+        catCombo.setCellFactory(lv -> new ListCell<Categorie>() {
+            @Override
+            protected void updateItem(Categorie item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty ? null : item.getLabel());
+            }
+        });
+        catCombo.setButtonCell(new ListCell<Categorie>() {
+            @Override
+            protected void updateItem(Categorie item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty ? null : item.getLabel());
+            }
+        });
+        
+        Button addCatBtn = new Button("+");
+        addCatBtn.getStyleClass().add("watchBtn");
+        
+        addCatBtn.setOnAction(e -> {
+            String input = catCombo.getEditor().getText();
+            
+            if (input != null && !input.trim().isEmpty()) {
+                String finalInput = input.trim();
+                Categorie matchedCat = null;
+                for (Categorie c : Categorie.values()) {
+                    if (c.getLabel().equalsIgnoreCase(finalInput) || c.name().equalsIgnoreCase(finalInput)) {
+                        matchedCat = c;
+                        break;
+                    }
+                }
+                if (matchedCat != null) {
+                    if (!selectedCats.contains(matchedCat)) {
+                        selectedCats.add(matchedCat);
+                        updateTags(selectedCats, catTags);
+                        catCombo.getEditor().clear();
+                    }
+                }
+            }
+        });
+
+        //artistes
+        
+        ObservableList<Artiste> selectedActors = FXCollections.observableArrayList();
+        ObservableList<Artiste> selectedDirectors = FXCollections.observableArrayList();
+        if (film != null) {
+            selectedActors.addAll(film.getActeurs());
+            selectedDirectors.addAll(film.getDirecteurs());
+        }
+        
+        FlowPane actorTags = new FlowPane(5, 5);
+        updateTags(selectedActors, actorTags);
+        TextField actorInput = new TextField();
+        Button addActorBtn = new Button("+ Actor");
+        addActorBtn.getStyleClass().add("watchBtn");
+
+        FlowPane directorTags = new FlowPane(5, 5);
+        updateTags(selectedDirectors, directorTags);
+        TextField directorInput = new TextField();
+        Button addDirectorBtn = new Button("+ Director");
+        addDirectorBtn.getStyleClass().add("watchBtn");
+
+        addActorBtn.setOnAction(e -> { 
+        	String input = actorInput.getText();
+            if(!actorInput.getText().isEmpty()) {
+            	
+                Artiste newArtist = new Artiste(0,input);
+                
+                if (selectedActors.stream().noneMatch(a -> a.getFullname().equals(input))) {
+                selectedActors.add(newArtist);
+                updateTags(selectedActors, actorTags);
+                actorInput.clear();
+                }
+            }
+        });
+        
+        addDirectorBtn.setOnAction(e -> { 
+        	String input = directorInput.getText();
+            if(!directorInput.getText().isEmpty()) {
+            	
+            	Artiste newArtist = new Artiste(0,input);
+                
+                if (selectedDirectors.stream().noneMatch(a -> a.getFullname().equals(input))) {
+                selectedDirectors.add(newArtist);
+                updateTags(selectedDirectors, actorTags);
+                actorInput.clear();
+                }
+            }
+        });
+        int r = 0;
+
+        grid.add(createLabel("Title:"), 0, r);        
+        grid.add(titleField, 1, r++);
+
+        grid.add(createLabel("Resume:"), 0, r);       
+        grid.add(resumeArea, 1, r++);
+
+        grid.add(createLabel("Release Date:"), 0, r);  
+        grid.add(datePicker, 1, r++);
+
+        grid.add(createLabel("Duration:"), 0, r);      
+        grid.add(durationField, 1, r++);
+
+        grid.add(createLabel("Categories:"), 0, r);   
+        grid.add(new VBox(5, new HBox(5, catCombo, addCatBtn), catTags), 1, r++);
+
+        grid.add(createLabel("Actors:"), 0, r);       
+        grid.add(new VBox(5, new HBox(5, actorInput, addActorBtn), actorTags), 1, r++);
+
+        grid.add(createLabel("Directors:"), 0, r);    
+        grid.add(new VBox(5, new HBox(5, directorInput, addDirectorBtn), directorTags), 1, r++);
+
+        grid.add(createLabel("Poster Path:"), 0, r);   
+        grid.add(posterPath, 1, r++);
+
+        grid.add(createLabel("Movie Path:"), 0, r);    
+        grid.add(moviePath, 1, r++);
+
+        grid.add(createLabel("Trailer Path:"), 0, r);  
+        grid.add(trailerPath, 1, r++);
+        
+        dialogPane.setContent(new ScrollPane(grid));
+        
+        dialog.setResultConverter(btn -> {
+            if (btn == saveButtonType) {
+                try {
+                	return new Film(
+                            film == null ? 0 : film.getId(),
+                            resumeArea.getText(),
+                            new ArrayList<>(selectedCats),
+                            titleField.getText(),
+                            datePicker.getValue(),
+                            new ArrayList<>(selectedActors),
+                            new ArrayList<>(selectedDirectors),
+                            posterPath.getText(),
+                            LocalTime.parse(durationField.getText()),
+                            moviePath.getText(),
+                            trailerPath.getText()
+                        );
+                } catch (Exception ex) {
+                    new Alert(Alert.AlertType.ERROR, "Invalid data format!").show();
+                    return null;
+                }
+            }
+            return null;
+        });
+
+        dialog.showAndWait().ifPresent(newFilm -> {
+            // DAO.save(newFilm);
+            System.out.println("Saving film: " + newFilm.getTitre());
+        });
+    }
+
+    private Label createLabel(String text) {
+        Label l = new Label(text);
+        l.getStyleClass().add("label");
+        return l;
+    }
+
+    private <T> void updateTags(ObservableList<T> items, FlowPane container) {
+        container.getChildren().clear();
+        for (T item : items) {
+        	HBox tag = new HBox(5);
+            tag.setAlignment(Pos.CENTER);
+            tag.setStyle("-fx-background-color: -fx-accent; -fx-background-radius: 15; -fx-padding: 2 8;");
+            
+            String displayName;
+            if (item instanceof Categorie) {
+                displayName = ((Categorie) item).getLabel();
+            } else if (item instanceof Artiste) {
+                Artiste a = (Artiste) item;
+                displayName = a.getFullname();
+            } else {
+                displayName = item.toString();
+            }
+            
+            Label name = new Label(displayName);
+            name.setStyle("-fx-text-fill: -fx-primary-bg; -fx-font-weight: bold;");
+            
+            Button remove = new Button("×");
+            remove.setStyle("-fx-background-color: transparent; -fx-text-fill: -fx-primary-bg; -fx-cursor: hand; -fx-padding: 0;");
+            remove.setOnAction(e -> {
+                items.remove(item);
+                updateTags(items, container);
+            });
+            
+            tag.getChildren().addAll(name, remove);
+            container.getChildren().add(tag);
+        }
+    }
+    
+    @FXML
+    private void showSerieForm() {
+        showSerieForm(null);
+    }
+
+    private void showSerieForm(Serie serie) {
+        Dialog<Serie> dialog = new Dialog<>();
+        dialog.setTitle(serie == null ? "BingeBox | Add New Series" : "BingeBox | Edit " + serie.getTitre());
+        DialogPane dialogPane = dialog.getDialogPane();
+        var css = getClass().getResource("/groupna/projectNetflix/css/style.css");
+        if (css != null) dialogPane.getStylesheets().add(css.toExternalForm());
+        dialogPane.getStyleClass().add("auth-card");
+
+        ButtonType saveButtonType = new ButtonType("Save Series", ButtonBar.ButtonData.OK_DONE);
+        dialogPane.getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+
+        Map<Saison, List<Episode>> tempSaisonMap = (serie != null) 
+            ? new LinkedHashMap<>(serie.getSaisons()) : new LinkedHashMap<>();
+
+        GridPane grid = new GridPane();
+        grid.setHgap(15); grid.setVgap(10);
+        grid.setPadding(new Insets(20));
+        grid.setStyle("-fx-background-color: -fx-primary-bg;");
+
+        TextField titleField = new TextField(serie != null ? serie.getTitre() : "");
+        TextArea resumeArea = new TextArea(serie != null ? serie.getResume() : "");
+        DatePicker datePicker = new DatePicker(serie != null ? serie.getDateDeSortie() : LocalDate.now());
+        TextField posterField = new TextField(serie != null ? serie.getPathPoster() : "");
+
+        Button manageSeasonsBtn = new Button("Manage Seasons (" + tempSaisonMap.size() + ")");
+        manageSeasonsBtn.getStyleClass().add("watchBtn");
+        manageSeasonsBtn.setOnAction(e -> {
+            showSeasonManager(tempSaisonMap);
+            manageSeasonsBtn.setText("Manage Seasons (" + tempSaisonMap.size() + ")");
+        });
+
+        int r = 0;
+        grid.add(createLabel("Title:"), 0, r); grid.add(titleField, 1, r++);
+        grid.add(createLabel("Resume:"), 0, r); grid.add(resumeArea, 1, r++);
+        grid.add(createLabel("Release Date:"), 0, r); grid.add(datePicker, 1, r++);
+        grid.add(createLabel("Episodes:"), 0, r); grid.add(manageSeasonsBtn, 1, r++);
+        grid.add(createLabel("Poster:"), 0, r); grid.add(posterField, 1, r++);
+
+        dialogPane.setContent(new ScrollPane(grid));
+        dialog.setResultConverter(btn -> {
+            if (btn == saveButtonType) {
+                return new Serie(serie == null ? 0 : serie.getId(), resumeArea.getText(), new ArrayList<>(),
+                    titleField.getText(), datePicker.getValue(), new ArrayList<>(), new ArrayList<>(),
+                     posterField.getText(), tempSaisonMap);
             }
             return null;
         });
         dialog.showAndWait();
     }
 
-    @FXML
-    private void showSerieForm() {
-        showMovieForm(null);
+    private void showSeasonManager(Map<Saison, List<Episode>> saisonMap) {
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("BingeBox | Seasons Manager");
+        
+        DialogPane dp = dialog.getDialogPane();
+        dp.getStylesheets().add(getClass().getResource("/groupna/projectNetflix/css/style.css").toExternalForm());
+        
+        dp.getStyleClass().add("auth-card"); 
+        dp.setPrefSize(600, 500);
+        
+        
+        VBox layout = new VBox(15);
+        layout.setPadding(new Insets(20));
+        layout.setAlignment(Pos.TOP_CENTER);
+        
+        Accordion accordion = new Accordion();
+
+        VBox.setVgrow(accordion, Priority.ALWAYS);
+        
+        updateSeasonAccordion(accordion, saisonMap);
+
+        Button addSeasonBtn = new Button("+ Add New Season");
+        addSeasonBtn.getStyleClass().add("watchBtn");
+        addSeasonBtn.setPrefWidth(200);
+        
+        addSeasonBtn.setOnAction(e -> {
+            Saison newSaison = new Saison(0, saisonMap.size() + 1, LocalDate.now(), "Season " + (saisonMap.size() + 1), "", "");
+            saisonMap.put(newSaison, new ArrayList<>());
+            updateSeasonAccordion(accordion, saisonMap);
+        });
+
+        layout.getChildren().addAll(createLabel("Manage Your Seasons"), accordion, addSeasonBtn);
+        
+        ScrollPane scrollPane = new ScrollPane(layout);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        scrollPane.getStyleClass().add("scroll");
+        
+        dp.setContent(scrollPane);
+        dp.getButtonTypes().add(new ButtonType("Done", ButtonBar.ButtonData.OK_DONE));
+        dialog.showAndWait();
     }
-    
-    private void showSerieForm(Serie serie) {
-        // Similar to showMovieForm, but adds a section for Seasons management
-        System.out.println("Opening Serie/Season Management Form...");
+
+    private void updateSeasonAccordion(Accordion accordion, Map<Saison, List<Episode>> saisonMap) {
+        accordion.getPanes().clear();
+        saisonMap.forEach((saison, episodes) -> {
+            VBox content = new VBox(10);
+            for (Episode ep : episodes) {
+                Label epLabel = new Label("E" + ep.getNumero() + ": " + ep.getTitre());
+                epLabel.getStyleClass().add("card-text");
+                content.getChildren().add(epLabel);
+            }
+            Button addEpBtn = new Button("+ Add Episode");
+            addEpBtn.setOnAction(e -> showEpisodeDialog(episodes, accordion, saisonMap));
+            content.getChildren().add(addEpBtn);
+            accordion.getPanes().add(new TitledPane("S" + saison.getNum() + ": " + saison.getTitre(), content));
+        });
+    }
+
+    private void showEpisodeDialog(List<Episode> episodes, Accordion accordion, Map<Saison, List<Episode>> saisonMap) {
+        Dialog<Episode> epDialog = new Dialog<>();
+        epDialog.setTitle("BingeBox | New Episode");
+        
+        DialogPane dp = epDialog.getDialogPane();
+        
+        dp.getStylesheets().add(getClass().getResource("/groupna/projectNetflix/css/style.css").toExternalForm());
+        dp.getStyleClass().add("auth-card");
+        
+        ButtonType saveBtn = new ButtonType("Add Episode", ButtonBar.ButtonData.OK_DONE);
+        dp.getButtonTypes().addAll(saveBtn, ButtonType.CANCEL);
+        
+        GridPane grid = new GridPane();
+        grid.setHgap(15); 
+        grid.setVgap(12);
+        grid.setPadding(new Insets(20));
+        
+        TextField title = new TextField();
+        title.getStyleClass().add("auth-field");
+        
+        TextArea resume = new TextArea();
+        resume.setPrefRowCount(3);
+        resume.setWrapText(true);
+        
+        TextField duration = new TextField("00:45:00");
+        duration.getStyleClass().add("auth-field");
+        
+        TextField path = new TextField();
+        path.getStyleClass().add("auth-field");
+        
+        TextField thumb = new TextField();
+        thumb.getStyleClass().add("auth-field");
+
+        grid.add(new Label("Title:"), 0, 0); grid.add(title, 1, 0);
+        grid.add(new Label("Resume:"), 0, 1); grid.add(resume, 1, 1);
+        grid.add(new Label("Duration:"), 0, 2); grid.add(duration, 1, 2);
+        grid.add(new Label("Path:"), 0, 3); grid.add(path, 1, 3);
+        grid.add(new Label("Thumb:"), 0, 4); grid.add(thumb, 1, 4);
+
+        dp.setContent(grid);
+        
+        epDialog.setResultConverter(b -> {
+            if (b == saveBtn) {
+                try {
+                    return new Episode(
+                        episodes.size() + 1, 
+                        0, 
+                        resume.getText(), 
+                        title.getText(), 
+                        LocalTime.parse(duration.getText()), 
+                        path.getText(), 
+                        thumb.getText()
+                    );
+                } catch (Exception ex) {
+                    new Alert(Alert.AlertType.ERROR, "Invalid Time Format (HH:mm:ss)").show();
+                    return null;
+                }
+            }
+            return null;
+        });
+        
+        epDialog.showAndWait().ifPresent(newEp -> {
+            episodes.add(newEp);
+            updateSeasonAccordion(accordion, saisonMap);
+        });
     }
 }
