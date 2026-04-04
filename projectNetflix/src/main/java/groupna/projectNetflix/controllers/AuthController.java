@@ -67,12 +67,13 @@ public class AuthController extends BaseController{
 
     @FXML
     private void handleSubmit() {
-    	String email = emailField.getText();
-        String pass = passwordField.getText();
     	if(isLoginMode) {
+    		//emailField.clear();
+    		//passwordField.clear();
+    		String email = emailField.getText();
+            String pass = passwordField.getText();
             User user=userService.seConnecter(email, pass);
             if (user!=null) {
-                System.out.println("Logging in: " + emailField.getText());
                 Session.getInstance().setUser(user);;
                 MainViewController.getInstance().unlockFullApp();
             } else {
@@ -80,32 +81,35 @@ public class AuthController extends BaseController{
             }
     	}
     	else {
+    		//emailField.clear();
+    		//passwordField.clear();
+    		String email = emailField.getText();
+            String pass = passwordField.getText();
     		String nom=lastNameField.getText();
     		String prenom=firstNameField.getText();
     		String ConfirmPass=confirmPasswordField.getText();
-    		if(!test.testName(nom)||!test.testName(prenom)) {
-    			handleAlert("short username", "your firstname or lastname is too short.");
+    		if (!test.testName(nom) || !test.testName(prenom)) {
+    		    handleAlert("short username", "your firstname or lastname is too short.");
+    		    return;
     		}
-    		else {
-    			if(!test.testEmail(email)) {
-    				handleAlert("email incorrect ", "please enter a valid email");
-    			}
-    			else {
-    				if(!test.testPassword(pass)) {
-    					handleAlert("password not valide", "your password has to be at least 8 characters with letters,numbers and symboles");
-    				}
-    				else {
-    					if(!pass.equals(ConfirmPass)) {
-    						handleAlert("possword not confirmed", "you have to confirme your password");
-    					}
-    					else {
-    						int inscrireUtilisateur = userService.inscrireUtilisateur(new User(0, nom, prenom, email, ConfirmPass, Role.USER));
-    						Session.getInstance().setUser(userService.recupererUtilisateurParId(inscrireUtilisateur));;
-    						MainViewController.getInstance().unlockFullApp();
-    					}
-    				}
-    			}
+
+    		if (!test.testEmail(email)) {
+    		    handleAlert("email incorrect", "please enter a valid email");
+    		    return;
     		}
+
+    		if (!test.testPassword(pass)) {
+    		    handleAlert("password not valide", "your password has to be at least 8 characters with letters, numbers and symboles");
+    		    return;
+    		}
+
+    		if (!pass.equals(ConfirmPass)) {
+    		    handleAlert("password not confirmed", "you have to confirme your password");
+    		    return;
+    		}
+    		int inscrireUtilisateur = userService.inscrireUtilisateur(new User(0, nom, prenom, email, ConfirmPass, Role.USER));
+    		Session.getInstance().setUser(userService.recupererUtilisateurParId(inscrireUtilisateur));
+    		MainViewController.getInstance().unlockFullApp();
     	}
     }
     @FXML

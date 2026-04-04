@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<ScrollPane fitToWidth="true" styleClass="scroll" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="groupna.projectNetflix.controllers.AdminPerformanceController">
+    <content>
+        <VBox spacing="30" styleClass="main-container">
+            <padding>
+                <Insets top="30" right="30" bottom="30" left="30"/>
+            </padding>
+
+            <VBox spacing="5">
+                <Label text="BingeBox Analytics" styleClass="heroTitle" style="-fx-font-size: 28px;"/>
+                <Label text="Real-time platform performance and business insights" styleClass="card-text"/>
+            </VBox>
+
+            <GridPane hgap="25" vgap="25">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="400" />
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="400" />
+                </columnConstraints>
+                
+                <VBox styleClass="auth-card" GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="10">
+                    <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+                    <Label text="Movies by Category" styleClass="categoryTitle" style="-fx-padding: 0;"/>
+                    <PieChart fx:id="categoryPieChart" legendSide="BOTTOM" />
+                </VBox>
+
+                <VBox styleClass="auth-card" GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="10">
+                    <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+                    <Label text="Top 5 Most Viewed" styleClass="categoryTitle" style="-fx-padding: 0;"/>
+                    <BarChart fx:id="viewsBarChart" animated="true">
+                        <xAxis><CategoryAxis label="Movie Title" side="BOTTOM" /></xAxis>
+                        <yAxis><NumberAxis label="Views" side="LEFT" /></yAxis>
+                    </BarChart>
+                </VBox>
+
+                <VBox styleClass="auth-card" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2" spacing="10">
+                    <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+                    <Label text="User Registrations (Last 7 Days)" styleClass="categoryTitle" style="-fx-padding: 0;"/>
+                    <LineChart fx:id="registrationLineChart">
+                        <xAxis><CategoryAxis label="Date" side="BOTTOM" /></xAxis>
+                        <yAxis><NumberAxis label="New Users" side="LEFT" /></yAxis>
+                    </LineChart>
+                </VBox>
+            </GridPane>
+        </VBox>
+    </content>
+</ScrollPane>

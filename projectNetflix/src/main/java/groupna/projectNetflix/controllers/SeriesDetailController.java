@@ -65,7 +65,7 @@ public class SeriesDetailController {
             Parent playerView = loader.load();
             VideoPlayerController controller = loader.getController();
             
-            controller.loadVideo(null,fullUrl, 0); 
+            controller.loadVideo(0,0.0,fullUrl); 
 
             StackPane mainStack = (StackPane) seriesTitle.getScene().getRoot();
             mainStack.getChildren().add(playerView);
@@ -145,6 +145,7 @@ public class SeriesDetailController {
 
             controller.setOnCloseRequest(() -> {
                 controller.stopVideo();
+                userService.marquerEpisodeCommeVu(user.getId(), controller.getCurrentIdEpisode(), controller.getTime());
                 mainStack.getChildren().remove(playerView);
             });
 

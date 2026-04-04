@@ -27,8 +27,8 @@
 		            
 		            <HBox spacing="15" alignment="CENTER_LEFT">
 		                <ToggleButton fx:id="favButton" styleClass="fav-button" text="❤" />
-		                <Button fx:id="playButton" text="▶ Play Movie" styleClass="watchBtn" prefWidth="180" />
-		                <Button fx:id="trailerButton" text="🎬 Play Trailer" styleClass="watchBtn" 
+		                <Button fx:id="playButton" text="▶ Play Movie" onAction="#handlePlay" styleClass="watchBtn" prefWidth="180" />
+		                <Button fx:id="trailerButton" text="🎬 Play Trailer" onAction="#handlePlayTrailer" styleClass="watchBtn" 
 		                        style="-fx-background-color: rgba(255,255,255,0.2);" prefWidth="180" />
 		            </HBox>
 		

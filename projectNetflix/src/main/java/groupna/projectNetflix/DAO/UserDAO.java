@@ -100,12 +100,12 @@ public class UserDAO {
 //---------------------------------------------------------------------------
     public static List<HistoryItem> getUserFullGlobalHistory(int idUser) {
         List<HistoryItem> globalHistory = new ArrayList<>(); 
-        String sqlFilms = "SELECT id_film, date_visionnage, time FROM historique_film WHERE id_user = ?";
+        String sqlFilms = "SELECT id_oeuvre, date_visionnage, time FROM historique_film WHERE id_user = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sqlFilms)) {
             pstmt.setInt(1, idUser);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    Film f = FilmDAO.findById(rs.getInt("id_film")); 
+                    Film f = FilmDAO.findById(rs.getInt("id_oeuvre")); 
                     if (f != null) {
                         globalHistory.add(new HistoryItem(f, rs.getTimestamp("date_visionnage"), rs.getDouble("time")));
                     }
@@ -192,7 +192,7 @@ public class UserDAO {
     }
 //----------------------------------------------------------------------------------------
     public static void ajouterAHistoriqueFilm(int idUser, int idFilm, double time) {
-        String sql = "INSERT INTO historique_film (id_user, id_film, time) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO historique_film (id_user, id_oeuvre, time) VALUES (?, ?, ?)";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, idUser);

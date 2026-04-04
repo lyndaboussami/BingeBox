@@ -23,11 +23,10 @@
 	                <Insets top="30" left="15" right="15"/>
 	            </padding>
 	            
-	            <Button onAction="#handleProfile" styleClass="sidebar-profile-btn">
-	                <graphic>
-	                    <Circle radius="20" fill="#CFB997"/>
-	                </graphic>
-	            </Button>
+				<StackPane styleClass="profile-container" onMouseClicked="#handleProfileClick">
+				    <padding><Insets top="20" bottom="20"/></padding>
+				    <Label text="👤" styleClass="profile-icon" />
+				</StackPane>
 	
 	            <Region VBox.vgrow="ALWAYS" /> <Button onAction="#handleSearch" styleClass="sidebar-icon-btn" text="🔍" />
 	            <Button onAction="#goHome" styleClass="sidebar-icon-btn" text="🏠" />

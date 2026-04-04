@@ -23,7 +23,7 @@ public class User {
 	}
 	@Override
 	public String toString() {
-		return  nom +" "+prenom; 
+		return  prenom +" "+nom; 
 	}
 	public String getNom() {
 		return nom;

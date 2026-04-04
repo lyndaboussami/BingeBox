@@ -134,7 +134,9 @@ public class DataStore {
         Map<Saison, List<Episode>> bbSaisons = new HashMap<>();
         List<Episode> s1Episodes = new ArrayList<>();
         Saison s1 = new Saison(1, 1, LocalDate.of(2008, 1, 20), "Season 1", "Walter White starts cooking.", "/trailers/bb_s1.mp4");
-        s1Episodes.add(new Episode(1, 101, "Pilot episode.", "Pilot", LocalTime.of(0, 58), "/groupna/projectNetflix/assets/inception.mp4"));
+        s1Episodes.add(new Episode(1, 101, "Pilot episode.", "Pilot", LocalTime.of(0, 58), "/groupna/projectNetflix/assets/Beast (2026) Movie Trailer.mp4"));
+        Episode ep=new Episode(2, 101, "Pilot episode.", "Pilot", LocalTime.of(0, 58), "/groupna/projectNetflix/assets/Beast (2026) Movie Trailer.mp4");
+        s1Episodes.add(ep);
         bbSaisons.put(s1, s1Episodes);
 
         Map<Saison, List<Episode>> fpSaisons = new HashMap<>();

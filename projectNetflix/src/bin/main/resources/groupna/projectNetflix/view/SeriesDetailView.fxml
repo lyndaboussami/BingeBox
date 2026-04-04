@@ -2,33 +2,50 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
 
-<ScrollPane fitToWidth="true" styleClass="inner-scroll" 
+<ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="inner-scroll" 
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
             fx:controller="groupna.projectNetflix.controllers.SeriesDetailController">
-    <VBox spacing="30" styleClass="main-container">
-        <StackPane prefHeight="350" style="-fx-background-color: -fx-hero-bg;">
-             <VBox alignment="BOTTOM_LEFT" spacing="10" styleClass="hero-overlay">
-                <padding><Insets left="50" bottom="30"/></padding>
-                <Label fx:id="seriesTitle" text="SERIES NAME" styleClass="heroTitle" />
-                <ToggleButton fx:id="favButton" styleClass="fav-button" text="❤" />
-                <Label fx:id="seriesMeta" text="Seasons • Year" style="-fx-text-fill: -fx-text-main;" />
-            	<Label fx:id="seriesDescription" 
-			           wrapText="true" 
-			           maxWidth="800"
-			           text="Loading description..." 
-			           style="-fx-text-fill: -fx-text-muted; -fx-font-size: 14px; -fx-line-spacing: 5;"/>
-            </VBox>
-        </StackPane>
+    <VBox spacing="0" styleClass="main-container">
+        <StackPane prefHeight="450" styleClass="hero-container">
+            <ImageView fx:id="heroBlurredPoster" opacity="0.3" 
+                       pickOnBounds="false" mouseTransparent="true" managed="false" />
 
-        <VBox spacing="30" style="-fx-padding: 0 50 50 50;">
-            <HBox spacing="20" alignment="CENTER_LEFT">
-                <Label text="Episodes" styleClass="categoryTitle" style="-fx-padding: 0;"/>
-                <ComboBox fx:id="seasonSelector" styleClass="language-picker" prefWidth="150" />
+            <Region style="-fx-background-color: linear-gradient(to right, #111522 30%, rgba(17,21,34,0.6) 100%);" />
+
+            <HBox spacing="35" alignment="CENTER_LEFT" style="-fx-padding: 50;">
+                <ImageView fx:id="seriesSharpPoster" fitHeight="320" fitWidth="215" 
+                           preserveRatio="true" />
+
+                <VBox spacing="15" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                    <Label fx:id="seriesTitle" text="SERIES NAME" styleClass="heroTitle" />
+                    
+                    <HBox spacing="15" alignment="CENTER_LEFT">
+                        <ToggleButton fx:id="favButton" styleClass="fav-button" text="❤" />
+                        <Button fx:id="trailerButton" text="🎬 Play Season Trailer" 
+                                styleClass="watchBtn" 
+                                style="-fx-background-color: rgba(255,255,255,0.2);" 
+                                onAction="#handlePlayTrailer" />
+                    </HBox>
+
+                    <Label fx:id="seriesMeta" text="Seasons • Year" style="-fx-text-fill: -fx-text-main;" />
+                    <Label fx:id="seriesDescription" wrapText="true" maxWidth="600"
+                           style="-fx-text-fill: -fx-text-muted; -fx-font-size: 14px;"/>
+                </VBox>
             </HBox>
 
-            <VBox fx:id="episodeListContainer" spacing="15">
-                </VBox>
+            <HBox alignment="TOP_LEFT" style="-fx-padding: 20;" pickOnBounds="false">
+                <Button text="← Back" onAction="#handleBack" styleClass="navButton" />
+            </HBox>
+        </StackPane>
+
+        <VBox spacing="25" style="-fx-padding: 40 50;">
+            <HBox spacing="20" alignment="CENTER_LEFT">
+                <Label text="Episodes" styleClass="categoryTitle" />
+                <ComboBox fx:id="seasonSelector" styleClass="language-picker" prefWidth="150" />
+            </HBox>
+            <VBox fx:id="episodeListContainer" spacing="15" />
         </VBox>
     </VBox>
 </ScrollPane>

@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.*?>
-
+<?import javafx.scene.image.*?>
 <ScrollPane fitToWidth="true" 
             styleClass="inner-scroll" 
             xmlns="http://javafx.com/javafx/21" 
@@ -11,20 +11,35 @@
             fx:controller="groupna.projectNetflix.controllers.MovieDetailController">
     
     <VBox spacing="0" styleClass="main-container">
-        <StackPane prefHeight="450" style="-fx-background-color: -fx-hero-bg;">
-            <VBox alignment="BOTTOM_LEFT" spacing="15" styleClass="hero-overlay">
-                <padding><Insets left="50" bottom="50"/></padding>
-                <Label fx:id="movieCategories" text="Categories" styleClass="meta-tag" />
-                <Label fx:id="movieMeta" text="2026 • 1h 53m" styleClass="meta-tag" />
-            	<Label fx:id="movieTitle" text="Title Placeholder" styleClass="heroTitle" />
-                <ToggleButton fx:id="favButton" styleClass="fav-button" text="❤" />
-				<Button fx:id="playButton" 
-				        text="▶ Play Movie" 
-				        styleClass="watchBtn" 
-				        prefWidth="200" 
-				        prefHeight="45" 
-				        onAction="#handlePlay" />            </VBox>
-        </StackPane>
+        <StackPane prefHeight="450" styleClass="hero-container">
+		    <ImageView fx:id="heroBlurredPoster" opacity="0.3" 
+		               pickOnBounds="false" mouseTransparent="true" managed="false" />
+		
+		    <Region style="-fx-background-color: linear-gradient(to right, #111522 30%, rgba(17,21,34,0.6) 100%);" />
+		
+		    <HBox spacing="40" alignment="CENTER_LEFT" style="-fx-padding: 0 50;">
+		        <ImageView fx:id="movieSharpPoster" fitHeight="320" fitWidth="215" 
+		                   preserveRatio="true" />
+				
+		        <VBox spacing="15" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+		            <Label fx:id="movieCategories" text="Action, Sci-Fi" styleClass="meta-tag" />
+		            <Label fx:id="movieTitle" text="INCEPTION" styleClass="heroTitle" />
+		            
+		            <HBox spacing="15" alignment="CENTER_LEFT">
+		                <ToggleButton fx:id="favButton" styleClass="fav-button" text="❤" />
+		                <Button fx:id="playButton" text="▶ Play Movie" onAction="#handlePlay" styleClass="watchBtn" prefWidth="180" />
+		                <Button fx:id="trailerButton" text="🎬 Play Trailer" onAction="#handlePlayTrailer" styleClass="watchBtn" 
+		                        style="-fx-background-color: rgba(255,255,255,0.2);" prefWidth="180" />
+		            </HBox>
+		
+		            <Label fx:id="movieMeta" text="2010 • 2h 28m" style="-fx-text-fill: -fx-text-main;" />
+		        </VBox>
+		    </HBox>
+		
+		    <HBox alignment="TOP_LEFT" style="-fx-padding: 20;" pickOnBounds="false">
+		        <Button text="← Back" onAction="#handleBack" styleClass="navButton" />
+		    </HBox>
+		</StackPane>
 
         <VBox spacing="25" style="-fx-padding: 40 50;">
             <VBox spacing="10">

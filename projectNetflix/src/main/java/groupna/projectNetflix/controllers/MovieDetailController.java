@@ -2,13 +2,16 @@ package groupna.projectNetflix.controllers;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import groupna.projectNetflix.DAO.HistoryItem;
 import groupna.projectNetflix.entities.Categorie;
 import groupna.projectNetflix.entities.Commentaire;
 import groupna.projectNetflix.entities.Film;
 import groupna.projectNetflix.entities.Oeuvre;
 import groupna.projectNetflix.entities.User;
+import groupna.projectNetflix.entities.Visualisable;
 import groupna.projectNetflix.services.CommentaireService;
 import groupna.projectNetflix.services.RateService;
 import groupna.projectNetflix.services.UserService;
@@ -32,6 +35,7 @@ public class MovieDetailController {
     @FXML private Label movieCast;
 
     @FXML private ToggleButton favButton;
+    @FXML private Button playButton;
 
     @FXML private HBox starContainer;
     @FXML private TextField commentField;
@@ -96,10 +100,16 @@ public class MovieDetailController {
     @FXML
     private void handlePlay() {
         Object content = MainViewController.getInstance().getSelectedContent();
-        User user=Session.getInstance().getUser();
-        if (content instanceof Film movie) {
-            String moviePath = movie.getPathMovie();
-
+        if (content instanceof Film ) {
+        	Film film = (Film) content;
+        	int idFilm=film.getId();
+        	String moviePath = film.getPathMovie();
+            User user = Session.getInstance().getUser();
+    	    Optional<HistoryItem> alreadyWatched = userService.recupererHistoriqueComplet(user.getId())
+    	        .stream()
+    	        .filter(a -> a.getContent() instanceof Film&&a.getContent().equals(film))
+    	        .findFirst();
+    	    double time = alreadyWatched.isPresent() ? alreadyWatched.get().getTime() : 0.0;
             if (moviePath == null || moviePath.isEmpty()) {
                 System.err.println("Error: No path defined for this movie in the database.");
                 return;
@@ -116,7 +126,7 @@ public class MovieDetailController {
                 String fullUrl = resource.toExternalForm();
                 
                 // Open the player window
-                openVideoPlayer((Film)content,null, movie.getTitre());
+                openVideoPlayer(idFilm,time,fullUrl, film.getTitre());
                 //userService.marquerFilmCommeVu(user.getId(), movie.getId());
 
             } catch (Exception e) {
@@ -126,16 +136,15 @@ public class MovieDetailController {
         }
         
     }
-    
-    private void openVideoPlayer(Film film,String url, String title) {
+    private void openVideoPlayer(int idFilm,double time,String url, String title) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/groupna/projectNetflix/view/VideoPlayerView.fxml"));
             
-            
+            User user=Session.getInstance().getUser();
             Parent playerView = loader.load();
             
             VideoPlayerController controller = loader.getController();
-            controller.loadVideo(film,url, 0);
+            controller.loadVideo(idFilm,time,url);
             
             StackPane mainStack = (StackPane) movieTitle.getScene().getRoot();
                         
@@ -143,6 +152,7 @@ public class MovieDetailController {
             
             controller.setOnCloseRequest(() -> {
                 controller.stopVideo();
+                userService.marquerFilmCommeVu(user.getId(), idFilm, controller.getTime());
                 mainStack.getChildren().remove(playerView);            });
             
         } catch (IOException e) {
@@ -209,7 +219,7 @@ public class MovieDetailController {
             Commentaire newComment = new Commentaire(user.getId(), movie.getId(), text, false,null);
             
             CommentaireService service = new CommentaireService();
-            boolean success = service.posterCommentaire(user.getId(), movie.getId(), text, "FILM");
+            boolean success = service.posterCommentaire(user.getId(), movie.getId(), text, "film");
             if (success) {
             	commentsContainer.getChildren().add(0, createCommentNode(newComment));
                 commentField.clear();
@@ -300,9 +310,9 @@ public class MovieDetailController {
             }
 
             try {
-                URL resource = getClass().getResource(trailerPath);
+                /*URL*/String resource = getClass().getResource(trailerPath).toExternalForm();
                 if (resource != null) {
-                    openVideoPlayer((Film)content, null, movie.getTitre() + " - Trailer");
+                    openVideoPlayer(0,0.0,resource, movie.getTitre() + " - Trailer");
                 } else {
                     showError("File Error", "Trailer file not found on disk.");
                 }
