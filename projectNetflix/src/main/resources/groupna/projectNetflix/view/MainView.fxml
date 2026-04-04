@@ -18,9 +18,9 @@
 
     <BorderPane fx:id="rootPane">
 		<left>
-	        <VBox spacing="25" fx:id="sidebar" styleClass="sidebar">
+	        <VBox spacing="20" fx:id="sidebar" styleClass="sidebar" prefWidth="70" minWidth="70">
 	            <padding>
-	                <Insets top="30" left="15" right="15"/>
+	                <Insets top="30" left="10" right="10"/>
 	            </padding>
 	            
 				<StackPane styleClass="profile-container" onMouseClicked="#handleProfileClick">
@@ -32,7 +32,7 @@
 	            <Button onAction="#goHome" styleClass="sidebar-icon-btn" text="🏠" />
 	            <Button onAction="#openSeries" styleClass="sidebar-icon-btn" text="📺" />
 	            <Button onAction="#openMovies" styleClass="sidebar-icon-btn" text="🎬" />
-	            <Button onAction="#handleFavorites" styleClass="sidebar-icon-btn" text="🔖" />
+	            <Button onAction="#handleFavorites" styleClass="sidebar-icon-btn" text="❤" />
 	            <Button onAction="#handleHistory" styleClass="sidebar-icon-btn" text="🕒" />
 	            
 	            <Region VBox.vgrow="ALWAYS" />
@@ -40,16 +40,14 @@
 	            <Button onAction="#handleSettings" styleClass="sidebar-icon-btn" text="⛯" />
 	        
 		        <Separator prefWidth="150.0" styleClass="admin-separator" />
-	    
-			    <Label text="BACK OFFICE" styleClass="admin-section-label" />
-			
-			    <Button fx:id="btnManageContent" text="🎬 Manage Content" 
+	    			
+			    <Button fx:id="btnManageContent" text="🛠️" 
 			            styleClass="admin-nav-button" onAction="#handleAdminNav" />
 			            
-			    <Button fx:id="btnManageUsers" text="👥 User Control" 
+			    <Button fx:id="btnManageUsers" text="👥" 
 			            styleClass="admin-nav-button" onAction="#handleAdminNav" />
 			            
-			    <Button fx:id="btnAnalytics" text="📊 Performance" 
+			    <Button fx:id="btnAnalytics" text="📊" 
 			            styleClass="admin-nav-button" onAction="#handleAdminNav" />
 	        </VBox>
 	    </left>

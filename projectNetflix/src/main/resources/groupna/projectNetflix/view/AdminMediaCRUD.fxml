@@ -2,6 +2,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.image.*?>
 
 <VBox spacing="20" style="-fx-background-color: -fx-primary-bg;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="groupna.projectNetflix.controllers.AdminMediaController">
     <padding>
@@ -9,34 +10,54 @@
     </padding>
     
     <HBox alignment="CENTER_LEFT" spacing="20">
-        <Label text="BingeBox Back-Office" style="-fx-font-size: 26px; -fx-text-fill: -fx-text-main; -fx-font-weight: bold;"/>
+        <VBox>
+            <Label text="BingeBox Back-Office" style="-fx-font-size: 26px; -fx-text-fill: -fx-text-main; -fx-font-weight: bold;"/>
+            <Label text="Content Management Dashboard" styleClass="heroTitle"/>
+        </VBox>
         <Region HBox.hgrow="ALWAYS" />
-        <TextField fx:id="searchField" promptText="Search movie or series..." prefWidth="300" styleClass="search-bar"/>
+        <TextField fx:id="searchField" promptText="🔍 Search by title, genre, or ID..." prefWidth="350" styleClass="search-bar"/>
     </HBox>
 
-    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;" VBox.vgrow="ALWAYS">
-        <VBox spacing="30">
-            
-            <VBox spacing="10">
-                <HBox alignment="CENTER_LEFT" spacing="15">
-                    <Label text="🎬 Movies" style="-fx-font-size: 20px; -fx-text-fill: -fx-text-main; -fx-font-weight: bold;"/>
-                    <Button text="+ Add Movie" onAction="#showMovieForm" styleClass="watchBtn"/>
+    <TabPane styleClass="admin-table" VBox.vgrow="ALWAYS" tabClosingPolicy="UNAVAILABLE">
+        
+        <Tab text="🎬 Movies" styleClass="navButton">
+            <VBox spacing="10" style="-fx-padding: 15 0 0 0;">
+                <HBox alignment="CENTER_RIGHT">
+                    <Button text="+ Add New Movie" onAction="#showMovieForm" styleClass="watchBtn"/>
                 </HBox>
-                <FlowPane fx:id="movieContainer" hgap="20" vgap="20">
-                    </FlowPane>
+                <TableView fx:id="movieTable" VBox.vgrow="ALWAYS" styleClass="admin-table">
+                	<columnResizePolicy>
+				        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+				    </columnResizePolicy>
+                    <columns>
+                        <TableColumn fx:id="colMovieThumb" text="Poster" prefWidth="80" />
+                        <TableColumn fx:id="colMovieTitle" text="Title" prefWidth="250" />
+                        <TableColumn fx:id="colMovieDate" text="Release" prefWidth="120" />
+                        <TableColumn fx:id="colMovieDuration" text="Duration" prefWidth="100" />
+                        <TableColumn fx:id="colMovieActions" text="Actions" prefWidth="150" />
+                    </columns>
+                </TableView>
             </VBox>
+        </Tab>
 
-            <Separator opacity="0.2"/>
-
-            <VBox spacing="10">
-                <HBox alignment="CENTER_LEFT" spacing="15">
-                    <Label text="📺 TV Series" style="-fx-font-size: 20px; -fx-text-fill: -fx-text-main; -fx-font-weight: bold;"/>
-                    <Button text="+ Add Series" onAction="#showSerieForm" styleClass="watchBtn"/>
+        <Tab text="📺 TV Series" styleClass="navButton">
+            <VBox spacing="10" style="-fx-padding: 15 0 0 0;">
+                <HBox alignment="CENTER_RIGHT">
+                    <Button text="+ Add New Series" onAction="#showSerieForm" styleClass="watchBtn"/>
                 </HBox>
-                <FlowPane fx:id="serieContainer" hgap="20" vgap="20">
-                    </FlowPane>
+                <TableView fx:id="serieTable" VBox.vgrow="ALWAYS" styleClass="admin-table">
+                    <columnResizePolicy>
+				        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+				    </columnResizePolicy>
+                    <columns>
+                        <TableColumn fx:id="colSerieThumb" text="Poster" prefWidth="80" />
+                        <TableColumn fx:id="colSerieTitle" text="Title" prefWidth="250" />
+                        <TableColumn fx:id="colSerieDate" text="Release" prefWidth="120" />
+                        <TableColumn fx:id="colSerieSeasons" text="Seasons" prefWidth="100" />
+                        <TableColumn fx:id="colSerieActions" text="Actions" prefWidth="150" />
+                    </columns>
+                </TableView>
             </VBox>
-
-        </VBox>
-    </ScrollPane>
+        </Tab>
+    </TabPane>
 </VBox>

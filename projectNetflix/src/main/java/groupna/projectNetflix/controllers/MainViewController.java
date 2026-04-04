@@ -1,5 +1,7 @@
 package groupna.projectNetflix.controllers;
 
+import groupna.projectNetflix.entities.Role;
+import groupna.projectNetflix.entities.User;
 import groupna.projectNetflix.services.RateService;
 import groupna.projectNetflix.utils.Session;
 import javafx.application.Platform;
@@ -55,11 +57,22 @@ public class MainViewController {
     
     public void unlockFullApp() {
     	
+    	User currentUser = Session.getInstance().getUser();
+    	
         sidebar.setVisible(true);
         sidebar.setManaged(true);
         
         navLinksContainer.setVisible(true);
         navLinksContainer.setManaged(true);
+        
+        boolean isAdmin = (currentUser.getRole() == Role.ADMIN);
+        
+        btnManageContent.setVisible(isAdmin);
+        btnManageContent.setManaged(isAdmin);
+        btnManageUsers.setVisible(isAdmin);
+        btnManageUsers.setManaged(isAdmin);
+        btnAnalytics.setVisible(isAdmin);
+        btnAnalytics.setManaged(isAdmin);
         
         loadPage("HomeView.fxml");
     }
