@@ -97,7 +97,7 @@ public class AuthController extends BaseController{
     		    handleAlert("email incorrect", "please enter a valid email");
     		    return;
     		}
-    		if(userService.rechercherParEmail(email) !=-1) {
+    		if(userService.rechercherParEmail(email) !=0) {
     			handleAlert("User already exists", "User with this email already exists");
     		    return;
     		}
