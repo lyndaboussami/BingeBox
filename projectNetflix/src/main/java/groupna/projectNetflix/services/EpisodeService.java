@@ -51,4 +51,9 @@ public class EpisodeService {
     public int recupererIdSaison(int idEpisode) {
         return EpisodeDAO.getIdSaisonByEpisode(idEpisode);
     }
+    public void updateEpisode(Episode ep) {
+        if (ep != null && ep.getId() > 0) {
+            EpisodeDAO.updateEpisode(ep);
+        }
+    }
 }

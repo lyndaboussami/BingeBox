@@ -3,6 +3,10 @@ package groupna.projectNetflix.controllers;
 import groupna.projectNetflix.DAO.FilmDAO;
 import groupna.projectNetflix.DAO.SerieDAO;
 import groupna.projectNetflix.entities.*;
+import groupna.projectNetflix.services.EpisodeService;
+import groupna.projectNetflix.services.FilmService;
+import groupna.projectNetflix.services.SaisonService;
+import groupna.projectNetflix.services.SerieService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -39,7 +43,10 @@ public class AdminMediaController {
     private ObservableList<Film> masterMovies = FXCollections.observableArrayList();
     private ObservableList<Serie> masterSeries = FXCollections.observableArrayList();
     
-    
+    private FilmService filmService=new FilmService();
+    private SerieService serieService=new SerieService();
+    private EpisodeService episodeService=new EpisodeService();
+    private SaisonService saisonService=new SaisonService();
     //@FXML private FlowPane movieContainer;
     //@FXML private FlowPane serieContainer;
 
@@ -93,11 +100,11 @@ public class AdminMediaController {
     }*/
 
     private void loadDataFromDatabase() {
-    	List<Film> dbMovies = FilmDAO.findAll();
-    	List<Serie> dbSeries = SerieDAO.findAll();
+    	List<Film> dbMovies = filmService.getAllFilms();
+    	List<Serie> dbSeries = serieService.getAllSeries();
     	
-    	masterMovies.setAll(DataStore.getMovies());
-        masterSeries.setAll(DataStore.getSeries());
+    	masterMovies.setAll(dbMovies/*DataStore.getMovies()*/);
+        masterSeries.setAll(dbSeries/*DataStore.getSeries()*/);
         
         movieTable.setItems(masterMovies);
         serieTable.setItems(masterSeries);
@@ -187,7 +194,7 @@ public class AdminMediaController {
             
                 deleteBtn.setOnAction(e -> handleAdminAction("Delete", () -> {
                     Film f = getTableRow().getItem();
-                    FilmDAO.delete(f.getId());
+                    filmService.deleteFilm(f.getId());
                     getTableView().getItems().remove(f);
                 }));
             }
@@ -524,7 +531,7 @@ public class AdminMediaController {
         dialog.showAndWait().ifPresent(newFilm -> {
         	handleAdminAction(film == null ? "Add" : "Update", () -> {
                 if (film == null) {
-                    FilmDAO.save(newFilm); 
+                    filmService.addFilm(newFilm); 
                     masterMovies.add(newFilm);
                 }
                 /*else {

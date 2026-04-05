@@ -97,6 +97,10 @@ public class AuthController extends BaseController{
     		    handleAlert("email incorrect", "please enter a valid email");
     		    return;
     		}
+    		if(userService.rechercherParEmail(email) !=-1) {
+    			handleAlert("User already exists", "User with this email already exists");
+    		    return;
+    		}
 
     		if (!test.testPassword(pass)) {
     		    handleAlert("password not valide", "your password has to be at least 8 characters with letters, numbers and symboles");

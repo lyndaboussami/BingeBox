@@ -3,7 +3,9 @@ package groupna.projectNetflix.services;
 import java.util.List;
 import groupna.projectNetflix.DAO.SerieDAO;
 import groupna.projectNetflix.DAO.SaisonDAO;
+import groupna.projectNetflix.DAO.EpisodeDAO;
 import groupna.projectNetflix.DAO.OeuvreDAO;
+import groupna.projectNetflix.entities.Episode;
 import groupna.projectNetflix.entities.Serie;
 
 public class SerieService {
@@ -42,4 +44,20 @@ public class SerieService {
         if (serieId <= 0) return 0;
         return SaisonDAO.findAllBySerie(serieId).size();
     }
+    public void updateSerie(Serie s) {
+        if (s != null && s.getId() > 0) {
+            SerieDAO.update(s);
+            if (s.getSaisons() != null) {
+                s.getSaisons().forEach((saison, episodes) -> {
+                    SaisonDAO.update(saison);
+                    if (episodes != null) {
+                        for (Episode ep : episodes) {
+                            EpisodeDAO.updateEpisode(ep);
+                        }
+                    }
+                });
+            }
+        }
+    }
+
 }

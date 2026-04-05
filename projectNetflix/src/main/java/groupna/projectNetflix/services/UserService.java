@@ -53,9 +53,16 @@ public class UserService {
     public List<HistoryItem> recupererHistoriqueComplet(int idUser) {
         return UserDAO.getUserFullGlobalHistory(idUser);
     }
-    /*public Map<LocalDate, List<Visualisable>> recupererHistoriqueGroupéParDate(int idUser) {
-        return UserDAO.getHistoryGroupedByDate(idUser);
-    }*/
+    public void updateUser(User u) {
+        if (u != null && u.getId() > 0) {
+            UserDAO.update(u);
+        }
+    }
+    public void updateUserPassword(User user) {
+    	String mdpHache = PasswordHasher.hashPassword(user.getMdp());
+        user.setMdp(mdpHache);
+        UserDAO.update(user);
+    }
     public void viderHistorique(int idUser) {
         UserDAO.clearHistory(idUser);
         

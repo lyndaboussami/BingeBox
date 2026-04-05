@@ -129,4 +129,19 @@ public class SerieDAO extends OeuvreDAO {
             return false;
         }
     }
+    public static void update(Serie s) {
+        String sql = "UPDATE series SET resume = ?, titre = ?, date_de_sortie = ?, path_poster = ? WHERE id = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, s.getResume());
+            pstmt.setString(2, s.getTitre());
+            pstmt.setDate(3, s.getDateDeSortie() != null ? java.sql.Date.valueOf(s.getDateDeSortie()) : null);
+            pstmt.setString(5, s.getPathPoster());
+            pstmt.setInt(6, s.getId());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

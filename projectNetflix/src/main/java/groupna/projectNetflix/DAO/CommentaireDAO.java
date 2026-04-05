@@ -54,7 +54,8 @@ public class CommentaireDAO {
                         rs.getInt(idCol),
                         rs.getString("content"),
                         rs.getBoolean("reported"),
-                        rs.getString("raison")
+                        rs.getString("raison"),
+                        rs.getInt("id")
                     ));
                 }
             }
@@ -64,14 +65,12 @@ public class CommentaireDAO {
         return liste;
     }
 
-    public static boolean reportCommentaire(int idUser, int idOeuvre, String type,String raison) {
+    public static boolean reportCommentaire(int idComment,String type,String raison) {
         String table = getTableName(type);
-        String idCol = getIdColumnName(type);
         
-        String sql = "UPDATE " + table + " SET reported = true ,raison=? WHERE id_user = ? AND " + idCol + " = ?";
+        String sql = "UPDATE " + table + " SET reported = true ,raison=? WHERE id= ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(2, idUser);
-            pstmt.setInt(3, idOeuvre);
+            pstmt.setInt(2, idComment);
             pstmt.setNString(1,raison);
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -79,15 +78,24 @@ public class CommentaireDAO {
             return false;
         }
     }
-
-    public static boolean delete(int idUser, int idOeuvre, String type) {
+    public static boolean validCommentaire(int idComment,String type) {
         String table = getTableName(type);
-        String idCol = getIdColumnName(type);
         
-        String sql = "DELETE FROM " + table + " WHERE id_user = ? AND " + idCol + " = ?";
+        String sql = "UPDATE " + table + " SET reported = false ,raison=NULL WHERE id= ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, idUser);
-            pstmt.setInt(2, idOeuvre);
+            pstmt.setInt(1, idComment);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public static boolean delete(int idComment, String type) {
+        String table = getTableName(type);
+        
+        String sql = "DELETE FROM " + table + " WHERE id = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idComment);
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -109,7 +117,8 @@ public class CommentaireDAO {
                     rs.getInt("id_oeuvre"),
                     rs.getString("content"),
                     rs.getBoolean("reported"),
-                    rs.getString("raison")
+                    rs.getString("raison"),
+                    rs.getInt("id")
                 ));
             }
         } catch (SQLException e) {

@@ -178,4 +178,19 @@ public class EpisodeDAO {
         }
         return totalVues;
     }
+    public static void updateEpisode(Episode ep) {
+        String sql = "UPDATE episodes SET titre = ?, numero = ?, duree = ?, resume = ?, path_ep = ?, path_miniature = ? WHERE id = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, ep.getTitre());
+            pstmt.setInt(2, ep.getNumero());
+            pstmt.setTime(3, ep.getDuree() != null ? java.sql.Time.valueOf(ep.getDuree()) : null);
+            pstmt.setString(4, ep.getResume());
+            pstmt.setString(5, ep.getPathEp());
+            pstmt.setString(6, ep.getPathMiniaure());
+            pstmt.setInt(7, ep.getId());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

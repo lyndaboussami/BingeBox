@@ -1,15 +1,19 @@
 package groupna.projectNetflix.controllers;
 
 import groupna.projectNetflix.entities.User;
+import groupna.projectNetflix.services.UserService;
 import groupna.projectNetflix.utils.Session;
+import groupna.projectNetflix.utils.Test;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 public class SettingsViewController extends BaseController {
-
+	private UserService userService=new UserService();
+	private User currentUser = Session.getInstance().getUser();
     @FXML private TextField firstNameField;
     @FXML private TextField lastNameField;
     @FXML private TextField emailField;
+    private Test test=new Test();
     
     @FXML private PasswordField oldPasswordField;
     @FXML private PasswordField newPasswordField;
@@ -19,7 +23,6 @@ public class SettingsViewController extends BaseController {
 
     @FXML
     public void initialize() {
-         User currentUser = Session.getInstance().getUser();
          if (currentUser != null) {
             firstNameField.setText(currentUser.getPrenom());
             lastNameField.setText(currentUser.getNom());
@@ -33,14 +36,20 @@ public class SettingsViewController extends BaseController {
         String lName = lastNameField.getText().trim();
         String email = emailField.getText().trim();
 
-        if (fName.isEmpty() || lName.isEmpty() || email.isEmpty()) {
-            showStatus("All personal information fields are required.", true);
+        if (!test.testName(lName)||!test.testName(fName)) {
+            showStatus("your firstname and lastname must contain at least 2 characters", true);
             return;
         }
-
-        // userService.updateProfile(userId, fName, lName, email);
-        
+        if(!test.testEmail(email)) {
+        	showStatus("please entre a valid email", true);
+        }
+        currentUser.setNom(lName);
+        currentUser.setPrenom(fName);
+        currentUser.setEmail(email);
+        userService.updateUser(currentUser);
+        int id= currentUser.getId();
         showStatus("Profile updated successfully!", false);
+        Session.getInstance().setUser(userService.recupererUtilisateurParId(id));
     }
 
     @FXML
@@ -59,16 +68,18 @@ public class SettingsViewController extends BaseController {
             return;
         }
 
-        if (newPass.length() < 6) {
-            showStatus("New password must be at least 6 characters.", true);
+        if (!test.testPassword(newPass)) {
+            showStatus("New password must be at least 8 characters with letters,numbers and symboles", true);
             return;
         }
 
-        // boolean isOldPassCorrect = userService.verifyPassword(userId, oldPass);
-        boolean isOldPassCorrect = true;
+        boolean isOldPassCorrect = userService.seConnecter(currentUser.getEmail(), oldPass)!=null;
 
         if (isOldPassCorrect) {
-            // userService.updatePassword(userId, newPass);
+            currentUser.setMdp(newPass);
+            userService.updateUserPassword(currentUser);
+            int id=currentUser.getId();
+            Session.getInstance().setUser(userService.recupererUtilisateurParId(id));
             showStatus("Password updated securely.", false);
             clearPasswordFields();
         } else {

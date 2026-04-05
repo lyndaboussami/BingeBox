@@ -209,15 +209,18 @@ public class MovieDetailController {
     private void handlePostComment() {
     	try {
     		String text = commentField.getText();
-            if (text == null || text.trim().isEmpty()) return;
+            if (text == null || text.trim().isEmpty()) {
+            	showError("comment invalide", "you can't post an empty comment");
+            	return;
+            }
 
             User user = Session.getInstance().getUser();
             Film movie = (Film) MainViewController.getInstance().getSelectedContent();
             
-            Commentaire newComment = new Commentaire(user.getId(), movie.getId(), text, false,null);
+            Commentaire newComment = new Commentaire(user.getId(), movie.getId(), text, false,null,0);
             
             CommentaireService service = new CommentaireService();
-            boolean success = service.posterCommentaire(user.getId(), movie.getId(), text, "film");
+            boolean success = service.posterCommentaire(newComment, "film");
             if (success) {
             	commentsContainer.getChildren().add(0, createCommentNode(newComment));
                 commentField.clear();
@@ -240,7 +243,7 @@ public class MovieDetailController {
     private VBox createCommentNode(Commentaire comment) {
         VBox commentBox = new VBox(8);
         commentBox.setStyle("-fx-background-color: #1a1a1a; -fx-padding: 10; -fx-background-radius: 5;");
-        
+        User user=Session.getInstance().getUser();
         // à ajouter :a way to get the name from id_user
         Label userLabel = new Label(userService.recupererUtilisateurParId(comment.getId_user()).toString());
         userLabel.setStyle("-fx-text-fill: -fx-text-muted; -fx-font-size: 12px; -fx-font-weight: bold;");
@@ -259,11 +262,13 @@ public class MovieDetailController {
             reportedLabel.setStyle("-fx-text-fill: #ff6b6b; -fx-font-style: italic; -fx-font-size: 12px;");
             footer.getChildren().add(reportedLabel);
         } else {
-            Button reportBtn = new Button("Report");
-            reportBtn.getStyleClass().add("navButton");
-            reportBtn.setStyle("-fx-font-size: 11px; -fx-cursor: hand; -fx-text-fill: -fx-text-muted;");
-            reportBtn.setOnAction(e -> handleReportClick(comment, commentBox));
-            footer.getChildren().add(reportBtn);
+        	if(comment.getId_user()!=user.getId()) {
+        		Button reportBtn = new Button("Report");
+                reportBtn.getStyleClass().add("navButton");
+                reportBtn.setStyle("-fx-font-size: 11px; -fx-cursor: hand; -fx-text-fill: -fx-text-muted;");
+                reportBtn.setOnAction(e -> handleReportClick(comment, commentBox));
+                footer.getChildren().add(reportBtn);
+        	}
         }
 
         commentBox.getChildren().addAll(userLabel, contentLabel, footer);
@@ -280,7 +285,7 @@ public class MovieDetailController {
             if (!reason.trim().isEmpty()) {
                 CommentaireService service = new CommentaireService();
                 
-                boolean success = service.signalerAbus(comment.getId_user(), comment.getId_oeuvre(),"film", reason);
+                boolean success = service.signalerAbus(comment.getId(),"film", reason);
                 
                 if (success) {
                     comment.setReported(true);

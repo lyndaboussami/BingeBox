@@ -1,18 +1,20 @@
 package groupna.projectNetflix.entities;
 
 public class Commentaire {
+	private int id;
 	private int id_user;
 	private int id_oeuvre;
 	private boolean reported;
 	private String content;
 	private String raison;
-	public Commentaire(int id_user, int id_oeuvre, String content,boolean reported,String raison) {
+	public Commentaire(int id_user, int id_oeuvre, String content,boolean reported,String raison,int id) {
 		super();
 		this.id_user = id_user;
 		this.id_oeuvre = id_oeuvre;
 		this.content = content;
 		this.reported=reported;
 		this.raison=raison;
+		this.id=id;
 	}
 	public int getId_user() {
 		return id_user;
@@ -43,6 +45,12 @@ public class Commentaire {
 	}
 	public void setRaison(String raison) {
 		this.raison = raison;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 	

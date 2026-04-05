@@ -156,4 +156,20 @@ public class FilmDAO extends OeuvreDAO {
         }
         return totalVues;
     }
+    public static void update(Film f) {
+        String sql = "UPDATE films SET resume = ?, titre = ?, date_de_sortie = ?, path_poster = ?, duree = ?, path_movie = ?, path_trailer = ? WHERE id = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, f.getResume());
+            pstmt.setString(2, f.getTitre());
+            pstmt.setDate(3, f.getDateDeSortie() != null ? java.sql.Date.valueOf(f.getDateDeSortie()) : null);
+            pstmt.setString(5, f.getPathPoster());
+            pstmt.setTime(6, f.getDuree() != null ? java.sql.Time.valueOf(f.getDuree()) : null);
+            pstmt.setString(7, f.getPathMovie());
+            pstmt.setString(8, f.getPathTrailer());
+            pstmt.setInt(9, f.getId());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

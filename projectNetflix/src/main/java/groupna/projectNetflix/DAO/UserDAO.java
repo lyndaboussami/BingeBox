@@ -238,6 +238,23 @@ public class UserDAO {
             e.printStackTrace();
         }
     }
+//----------------------------------------------------------------------------------------------------
+    public static void update(User u) {
+        String sql = "UPDATE user SET nom = ?, prenom = ?, email = ?, mdp = ?, role = ? WHERE id = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, u.getNom());
+            pstmt.setString(2, u.getPrenom());
+            pstmt.setString(3, u.getEmail());
+            pstmt.setString(4, u.getMdp());
+            pstmt.setString(5, u.getRole().name());
+            pstmt.setInt(6, u.getId());
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     public static List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
