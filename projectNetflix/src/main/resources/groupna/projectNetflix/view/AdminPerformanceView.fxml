@@ -5,47 +5,76 @@
 <?import javafx.geometry.Insets?>
 
 <ScrollPane fitToWidth="true" styleClass="scroll" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="groupna.projectNetflix.controllers.AdminPerformanceController">
-    <content>
-        <VBox spacing="30" styleClass="main-container">
-            <padding>
-                <Insets top="30" right="30" bottom="30" left="30"/>
-            </padding>
-
-            <VBox spacing="5">
-                <Label text="BingeBox Analytics" styleClass="heroTitle" style="-fx-font-size: 28px;"/>
-                <Label text="Real-time platform performance and business insights" styleClass="card-text"/>
-            </VBox>
-
-            <GridPane hgap="25" vgap="25">
-                <columnConstraints>
-                    <ColumnConstraints hgrow="ALWAYS" minWidth="400" />
-                    <ColumnConstraints hgrow="ALWAYS" minWidth="400" />
-                </columnConstraints>
-                
-                <VBox styleClass="auth-card" GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="10">
-                    <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
-                    <Label text="Movies by Category" styleClass="categoryTitle" style="-fx-padding: 0;"/>
-                    <PieChart fx:id="categoryPieChart" legendSide="BOTTOM" />
-                </VBox>
-
-                <VBox styleClass="auth-card" GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="10">
-                    <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
-                    <Label text="Top 5 Most Viewed" styleClass="categoryTitle" style="-fx-padding: 0;"/>
-                    <BarChart fx:id="viewsBarChart" animated="true">
-                        <xAxis><CategoryAxis label="Movie Title" side="BOTTOM" /></xAxis>
-                        <yAxis><NumberAxis label="Views" side="LEFT" /></yAxis>
-                    </BarChart>
-                </VBox>
-
-                <VBox styleClass="auth-card" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2" spacing="10">
-                    <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
-                    <Label text="User Registrations (Last 7 Days)" styleClass="categoryTitle" style="-fx-padding: 0;"/>
-                    <LineChart fx:id="registrationLineChart">
-                        <xAxis><CategoryAxis label="Date" side="BOTTOM" /></xAxis>
-                        <yAxis><NumberAxis label="New Users" side="LEFT" /></yAxis>
-                    </LineChart>
-                </VBox>
-            </GridPane>
-        </VBox>
-    </content>
+    <VBox spacing="25" styleClass="main-container">
+	    <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+	
+	    <HBox alignment="CENTER_LEFT">
+	        <VBox>
+	            <Label text="Executive Dashboard" styleClass="heroTitle" style="-fx-font-size: 26px;"/>
+	        </VBox>
+	        <Region HBox.hgrow="ALWAYS" />
+	    </HBox>
+	
+	    <HBox spacing="20">
+	        <VBox styleClass="auth-card" HBox.hgrow="ALWAYS" alignment="CENTER" prefHeight="80">
+	            <Label text="Total Movies" styleClass="card-text" style="-fx-font-size: 12px;"/>
+	            <Label text="1,284" styleClass="heroTitle" style="-fx-font-size: 22px;"/>
+	        </VBox>
+	        <VBox styleClass="auth-card" HBox.hgrow="ALWAYS" alignment="CENTER" prefHeight="80">
+	            <Label text="Active Series" styleClass="card-text" style="-fx-font-size: 12px;"/>
+	            <Label text="452" styleClass="heroTitle" style="-fx-font-size: 22px;"/>
+	        </VBox>
+	        <VBox styleClass="auth-card" HBox.hgrow="ALWAYS" alignment="CENTER" prefHeight="80">
+	            <Label text="Avg. Rating" styleClass="card-text" style="-fx-font-size: 12px;"/>
+	            <Label text="4.2 ★" styleClass="heroTitle" style="-fx-font-size: 22px;"/>
+	        </VBox>
+	    </HBox>
+	
+	    <GridPane hgap="20" vgap="20">
+	        <columnConstraints>
+	            <ColumnConstraints percentWidth="50" />
+	            <ColumnConstraints percentWidth="50" />
+	        </columnConstraints>
+	
+	        <VBox styleClass="auth-card" GridPane.columnIndex="0" GridPane.rowIndex="0" prefHeight="300">
+	            <Label text="Movie Categories" styleClass="categoryTitle" style="-fx-font-size: 16px;"/>
+	            <PieChart fx:id="movieCategoryChart" legendVisible="false" />
+	        </VBox>
+	
+	        <VBox styleClass="auth-card" GridPane.columnIndex="1" GridPane.rowIndex="0" prefHeight="300">
+	            <Label text="Series Categories" styleClass="categoryTitle" style="-fx-font-size: 16px;"/>
+	            <PieChart fx:id="seriesCategoryChart" legendVisible="false" />
+	        </VBox>
+	
+	        <VBox styleClass="auth-card" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2" prefHeight="250">
+	            <Label text="Weekly Login Traffic" styleClass="categoryTitle" style="-fx-font-size: 16px;"/>
+	            <LineChart fx:id="loginLineChart" animated="false" createSymbols="false">
+	                <xAxis><CategoryAxis side="BOTTOM" /></xAxis>
+	                <yAxis><NumberAxis side="LEFT" /></yAxis>
+	            </LineChart>
+	        </VBox>
+	
+	        <VBox styleClass="auth-card" GridPane.columnIndex="0" GridPane.rowIndex="2">
+	            <Label text="Top Rated Content" styleClass="categoryTitle" style="-fx-font-size: 16px;"/>
+	            <TableView fx:id="topRatedTable" prefHeight="200">
+				    <columns>
+				        <TableColumn fx:id="colRatedTitle" text="Movie Title" />
+				        <TableColumn fx:id="colRatedStars" text="Avg Stars" />
+				    </columns>
+				    <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
+				</TableView>
+	        </VBox>
+	
+	        <VBox styleClass="auth-card" GridPane.columnIndex="1" GridPane.rowIndex="2">
+	            <Label text="Trending (Most Viewed)" styleClass="categoryTitle" style="-fx-font-size: 16px;"/>
+	            <TableView fx:id="topViewedTable" prefHeight="200">
+				    <columns>
+				        <TableColumn fx:id="colViewedTitle" text="Movie Title" />
+				        <TableColumn fx:id="colViewedCount" text="Total Views" />
+				    </columns>
+				    <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
+				</TableView>
+	        </VBox>
+	    </GridPane>
+	</VBox>
 </ScrollPane>

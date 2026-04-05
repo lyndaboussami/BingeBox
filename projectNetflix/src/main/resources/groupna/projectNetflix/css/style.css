@@ -54,10 +54,10 @@
 
 .navbar {
     -fx-background-color: -fx-nav-bg;
-    -fx-min-height: 60px; /* Force a height so it can't disappear */
+    -fx-min-height: 60px;
     -fx-pref-height: 60px;
     -fx-alignment: CENTER;
-    -fx-cursor: default; /* 'move' for a visual hint */
+    -fx-cursor: default;
 }
 
 .logo {
@@ -152,7 +152,7 @@
 
 .hero-container ImageView {
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 25, 0, 0, 10);
-    -fx-border-color: rgba(255,255,255,0.05); /* very faint border */
+    -fx-border-color: rgba(255,255,255,0.05);
     -fx-border-width: 1;
     -fx-border-radius: 10;
 }
@@ -207,11 +207,11 @@
 }
 
 .poster-placeholder {
-    -fx-fill: #1a1f31; /* Navy */
+    -fx-fill: #1a1f31;
 }
 
 .light-mode .poster-placeholder {
-    -fx-fill: #d6ccbd; /* Beige */
+    -fx-fill: #d6ccbd;
 }
 
 
@@ -257,7 +257,7 @@
 
 /*detail oeuvre */
 .meta-tag {
-    -fx-background-color: rgba(207, 185, 151, 0.1); /* Transparent beige */
+    -fx-background-color: rgba(207, 185, 151, 0.1);
     -fx-text-fill: -fx-text-main;
     -fx-padding: 5 10;
     -fx-background-radius: 5;
@@ -265,12 +265,12 @@
 }
 
 .episode-row:hover {
-    -fx-background-color: #1a1f31; /* Darker navy hover */
+    -fx-background-color: #1a1f31;
     -fx-cursor: hand;
 }
 
 .light-mode .episode-row:hover {
-    -fx-background-color: #d6ccbd; /* Darker beige hover */
+    -fx-background-color: #d6ccbd;
 }
 /*fav heart */
 .fav-button {
@@ -316,8 +316,8 @@
 .control-btn {
     -fx-background-color: transparent;
     -fx-text-fill: -fx-text-main;
-    -fx-min-width: 45; /* Standard Windows width */
-    -fx-min-height: 32; /* Standard Windows height */
+    -fx-min-width: 45;
+    -fx-min-height: 32;
     -fx-font-size: 12px;
     -fx-background-radius: 0;
     -fx-cursor: hand;
@@ -404,32 +404,32 @@
 
 /* Auth Screen Specifics */
 .auth-container {
-    -fx-background-color: -fx-primary-bg; /* Navy Blue #111522 */
+    -fx-background-color: -fx-primary-bg;
 }
 
 .auth-card {
-    -fx-background-color: -fx-card-bg;    /* #2d3755 */
+    -fx-background-color: -fx-card-bg;
     -fx-background-radius: 15;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 20, 0, 0, 10);
 }
 
 .auth-field {
-    -fx-background-color: #1a1f31;        /* Darker Navy for inputs */
-    -fx-text-fill: -fx-text-main;         /* Beige */
+    -fx-background-color: #1a1f31;
+    -fx-text-fill: -fx-text-main;
     -fx-prompt-text-fill: -fx-text-muted;
     -fx-background-radius: 5;
-    -fx-border-color: transparent transparent -fx-accent transparent; /* Beige bottom border */
+    -fx-border-color: transparent transparent -fx-accent transparent;
     -fx-border-width: 0 0 2 0;
 }
 
 .auth-field:focused {
     -fx-background-color: #242c45;
-    -fx-border-color: -fx-text-main;      /* Bright Beige on focus */
+    -fx-border-color: -fx-text-main;
 }
 
 .auth-submit-btn {
-    -fx-background-color: -fx-accent;    /* Beige */
-    -fx-text-fill: -fx-button-text;      /* Navy Blue */
+    -fx-background-color: -fx-accent;
+    -fx-text-fill: -fx-button-text;
     -fx-font-weight: bold;
     -fx-background-radius: 5;
     -fx-cursor: hand;
@@ -742,6 +742,21 @@ tab-pane .tab-header-area .tab-header-background {
 
 .chart-legend-item {
     -fx-text-fill: white;
+}
+
+
+.compact-table {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+
+.compact-table .column-header-background {
+    -fx-background-color: rgba(245, 245, 220, 0.05);
+}
+
+.chart-series-line {
+    -fx-stroke: #f5f5dc; /* Beige trend line */
+    -fx-stroke-width: 3px;
 }
 
 /*----------- */

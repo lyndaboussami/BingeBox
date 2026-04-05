@@ -1,6 +1,5 @@
 package groupna.projectNetflix.controllers;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -69,7 +68,6 @@ public class SearchController extends BaseController{
         }
         if (allMedia.isEmpty()) return;
 
-        // Extract years, sort them descending, and remove duplicates
         Set<String> uniqueYears = allMedia.stream()
                 .map(m -> String.valueOf(m.getDateDeSortie().getYear()))
                 .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.reverseOrder())));
@@ -79,7 +77,6 @@ public class SearchController extends BaseController{
         yearFilter.setItems(yearOptions);
         yearFilter.getSelectionModel().selectFirst();
 
-        // Extract all categories used across all films/series
         Set<String> uniqueGenres = allMedia.stream()
                 .flatMap(m -> m.getCat().stream())
                 .map(Categorie::getLabel)
@@ -101,13 +98,11 @@ public class SearchController extends BaseController{
     	String query = searchField.getText().toLowerCase();
         String selectedYear = yearFilter.getValue();
         
-        // Get list of selected genres from the ToggleButtons
         List<String> selectedGenres = genreFilterContainer.getChildren().stream()
                 .filter(node -> node instanceof ToggleButton && ((ToggleButton) node).isSelected())
                 .map(node -> ((ToggleButton) node).getText())
                 .toList();
 
-        // Filter the master list
         List<Oeuvre> filteredResults = allMedia.stream()
             .filter(m -> query.isEmpty() || m.getTitre().toLowerCase().contains(query))
             .filter(m -> selectedYear == null || selectedYear.equals("All Years") || 
@@ -180,7 +175,6 @@ public class SearchController extends BaseController{
         try {
             title = bundle.getString(titleKey);
         } catch (MissingResourceException e) {
-            //if the key is missing -> object's default title
             title = (data instanceof Film f) ? f.getTitre() : ((Serie)data).getTitre();
         }
 

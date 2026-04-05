@@ -41,7 +41,7 @@
 	        
 		        <Separator prefWidth="150.0" styleClass="admin-separator" />
 	    			
-			    <Button fx:id="btnManageContent" text="🛠️" 
+			    <Button fx:id="btnManageContent" text="🛠" 
 			            styleClass="admin-nav-button" onAction="#handleAdminNav" />
 			            
 			    <Button fx:id="btnManageUsers" text="👥" 

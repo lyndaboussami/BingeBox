@@ -13,9 +13,7 @@ import java.util.*;
 
 import groupna.projectNetflix.DAO.HistoryItem;
 import groupna.projectNetflix.entities.Episode;
-import groupna.projectNetflix.entities.Film;
 import groupna.projectNetflix.entities.User;
-import groupna.projectNetflix.entities.Visualisable;
 import groupna.projectNetflix.services.UserService;
 import groupna.projectNetflix.utils.Session;
 
@@ -41,7 +39,7 @@ public class VideoPlayerController {
     private UserService userService=new UserService();
     private double time;
     private int currentIdEpisode;
-    // Temporary memory (Static Map) - This replaces DB logic for now
+
     //private static final Map<Integer, Double> localWatchHistory = new HashMap<>();
 
     
@@ -149,7 +147,7 @@ public class VideoPlayerController {
     @FXML
     private void handleClosePlayer() {
         if (onCloseRequest != null) {
-            onCloseRequest.run(); // This executes the code in MovieDetailController
+            onCloseRequest.run();
         }
     }
 
@@ -163,7 +161,7 @@ public class VideoPlayerController {
             progressBar.setValue(progress);
         }
 
-        // Update Time Label (00:00 / 00:00)
+        // Update Time Label
         timeLabel.setText(formatTime(currentTime) + " / " + formatTime(mediaPlayer.getTotalDuration()));
     }
 

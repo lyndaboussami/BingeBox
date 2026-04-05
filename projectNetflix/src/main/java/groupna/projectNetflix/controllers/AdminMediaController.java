@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class AdminMediaController {
 
@@ -307,7 +306,6 @@ public class AdminMediaController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         
-        //styleAlert(alert);
         alert.showAndWait();
     }
 
@@ -317,7 +315,6 @@ public class AdminMediaController {
         alert.setHeaderText("Action Failed");
         alert.setContentText(message);
         
-        //styleAlert(alert);
         alert.showAndWait();
     }
 
@@ -525,8 +522,18 @@ public class AdminMediaController {
         });
 
         dialog.showAndWait().ifPresent(newFilm -> {
-            // DAO.save(newFilm);
-            System.out.println("Saving film: " + newFilm.getTitre());
+        	handleAdminAction(film == null ? "Add" : "Update", () -> {
+                if (film == null) {
+                    FilmDAO.save(newFilm); 
+                    masterMovies.add(newFilm);
+                }
+                /*else {
+                    FilmDAO.update(newFilm);
+                    int index = masterMovies.indexOf(film);
+                    if (index != -1) masterMovies.set(index, newFilm);
+                }*/
+                movieTable.refresh();
+            });
         });
     }
 
@@ -620,7 +627,20 @@ public class AdminMediaController {
             }
             return null;
         });
-        dialog.showAndWait();
+        dialog.showAndWait().ifPresent(newSerie -> {
+            handleAdminAction(serie == null ? "Add" : "Update", () -> {
+                if (serie == null) {
+                    SerieDAO.save(newSerie);
+                    masterSeries.add(newSerie);
+                } 
+                /*else {
+                    SerieDAO.update(newSerie);
+                    int index = masterSeries.indexOf(serie);
+                    if (index != -1) masterSeries.set(index, newSerie);
+                }*/
+                serieTable.refresh();
+            });
+        });
     }
 
     private void showSeasonManager(Map<Saison, List<Episode>> saisonMap) {

@@ -96,9 +96,9 @@ public class CommentaireDAO {
     }
     public static List<Commentaire> findReported() {
         List<Commentaire> reportedList = new ArrayList<>();
-        String sql = "SELECT id_user, id_movie AS id_oeuvre, content, reported FROM film_commentaire WHERE reported = true " +
+        String sql = "SELECT id_user, id_movie AS id_oeuvre, content, reported, raison FROM film_commentaire WHERE reported = true " +
                      "UNION ALL " +
-                     "SELECT id_user, id_serie AS id_oeuvre, content, reported FROM serie_commentaire WHERE reported = true";
+                     "SELECT id_user, id_serie AS id_oeuvre, content, reported, raison FROM serie_commentaire WHERE reported = true";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {

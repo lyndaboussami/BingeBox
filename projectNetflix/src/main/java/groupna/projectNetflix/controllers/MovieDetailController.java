@@ -11,7 +11,6 @@ import groupna.projectNetflix.entities.Commentaire;
 import groupna.projectNetflix.entities.Film;
 import groupna.projectNetflix.entities.Oeuvre;
 import groupna.projectNetflix.entities.User;
-import groupna.projectNetflix.entities.Visualisable;
 import groupna.projectNetflix.services.CommentaireService;
 import groupna.projectNetflix.services.RateService;
 import groupna.projectNetflix.services.UserService;
@@ -21,7 +20,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
 
@@ -183,9 +181,9 @@ public class MovieDetailController {
 
     private void updateHeartStyle(boolean isFav) {
         if (isFav) {
-            favButton.setStyle("-fx-text-fill: #ff4d4d;"); // Red for active
+            favButton.setStyle("-fx-text-fill: #ff4d4d;");
         } else {
-            favButton.setStyle("-fx-text-fill: white;"); // White for inactive
+            favButton.setStyle("-fx-text-fill: white;");
             }
         }
     
@@ -233,9 +231,7 @@ public class MovieDetailController {
     private void loadComments(int movieId) {
         commentsContainer.getChildren().clear();
         CommentaireService service = new CommentaireService();
-        
-        // Fetch comments from DB
-        
+                
         service.recupererCommentairesOeuvre(movieId, "film").forEach(comment -> {
             commentsContainer.getChildren().add(createCommentNode(comment));
         });
