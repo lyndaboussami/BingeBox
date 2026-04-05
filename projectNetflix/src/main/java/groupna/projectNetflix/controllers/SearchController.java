@@ -19,6 +19,7 @@ import groupna.projectNetflix.utils.Session;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -35,7 +36,8 @@ public class SearchController extends BaseController{
     @FXML private FlowPane resultsPane;
     @FXML private ComboBox<String> yearFilter;
     @FXML private Label resultsCountLabel;
-
+    @FXML private ToggleButton filterMovies;
+    @FXML private ToggleButton filterSeries;
     @FXML private FlowPane genreFilterContainer;
     
     private Set<Oeuvre> allMedia = new HashSet<>();
@@ -91,6 +93,18 @@ public class SearchController extends BaseController{
             genreChip.setOnAction(e -> updateSearchResults());
             genreFilterContainer.getChildren().add(genreChip);
         }
+        /*filterMovies.setOnAction(e->{
+        	allMedia.clear();
+        	allMedia.addAll(movies);
+        	updateSearchResults();
+        	filterSeries.disableProperty();
+        });
+        filterSeries.setOnAction(e->{
+        	allMedia.clear();
+        	allMedia.addAll(series);
+        	updateSearchResults();
+        	filterMovies.disableProperty();
+        });*/
     }
     
     @FXML
@@ -102,7 +116,6 @@ public class SearchController extends BaseController{
                 .filter(node -> node instanceof ToggleButton && ((ToggleButton) node).isSelected())
                 .map(node -> ((ToggleButton) node).getText())
                 .toList();
-
         List<Oeuvre> filteredResults = allMedia.stream()
             .filter(m -> query.isEmpty() || m.getTitre().toLowerCase().contains(query))
             .filter(m -> selectedYear == null || selectedYear.equals("All Years") || 
