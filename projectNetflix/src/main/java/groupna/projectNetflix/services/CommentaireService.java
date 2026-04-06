@@ -22,10 +22,14 @@ public class CommentaireService {
         return CommentaireDAO.delete(idComment, type);
     }
 //----------------------------------------------------------------------------------------------
-    public List<Commentaire> listerCommentairesSignales() {
-        return CommentaireDAO.findReported();
+    public List<Commentaire> listerCommentairesSignalesFilms() {
+        return CommentaireDAO.findReportedSeries();
     }
 //---------------------------------------------------------------------------------------
+    public List<Commentaire> listerCommentairesSignalesSeries() {
+        return CommentaireDAO.findReportedFilms();
+    }
+//---------------------------------------------------------------------------------------------
     public Boolean validerCommentaire(int idComment, String type) {
     	return CommentaireDAO.validCommentaire(idComment, type);
     }

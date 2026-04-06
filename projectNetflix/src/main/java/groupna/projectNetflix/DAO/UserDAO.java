@@ -18,7 +18,7 @@ import groupna.projectNetflix.utils.ConxDB;
 public class UserDAO {
     private static Connection conn = ConxDB.getInstance();    
 
-    //--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
     
     public static User login(String email, String mdp) {
         User user = null;
@@ -31,11 +31,14 @@ public class UserDAO {
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     int id = rs.getInt("id");
-                    user = findById(id); 
+                    user = findById(id);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        if(user!=null && !user.getRole().equals(Role.ADMIN)) {
+        	incrementerLoginDuJour();
         }
         return user;
     }
@@ -128,20 +131,6 @@ public class UserDAO {
                 .sorted((h1, h2) -> h2.getDateVisionnage().compareTo(h1.getDateVisionnage()))
                 .collect(Collectors.toList());
     }
-//-------------------------------------------------------------------------------------------------
-    /*public static Map<LocalDate, List<Visualisable>> getHistoryGroupedByDate(int idUser) {
-        List<HistoryItem> flatHistory = getUserFullGlobalHistory(idUser);
-        return flatHistory.stream()
-            .collect(Collectors.groupingBy(
-                item -> item.getDateVisionnage().toLocalDateTime().toLocalDate(),
-                TreeMap::new,
-                Collectors.mapping(
-                    item -> (Visualisable) item.getContent(),
-                    Collectors.toList()
-                )
-            )).descendingMap();
-    }*/
-
 //-------------------------------------------------------------------------------------------------
     public static void removeFromCollection(int idUser, int idOeuvre, String tableName) {
         String sql = "DELETE FROM " + tableName + " WHERE id_user = ? AND id_oeuvre = ?";
@@ -319,5 +308,17 @@ public class UserDAO {
         }
 
         return stats;
+    }
+//-------------------------------------------------------------------------------------------------------
+    public static void incrementerLoginDuJour() {
+        String sql = "INSERT INTO LoginPerDay (date, nbLogins) " +
+                     "VALUES (CURRENT_DATE, 1) " +
+                     "ON DUPLICATE KEY UPDATE nbLogins = nbLogins + 1";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de l'incrémentation du login : " + e.getMessage());
+        }
     }
 }

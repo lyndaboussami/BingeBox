@@ -1,11 +1,14 @@
 package groupna.projectNetflix.DAO;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import groupna.projectNetflix.entities.Categorie;
 import groupna.projectNetflix.entities.Film;
@@ -162,5 +165,27 @@ public class DAOStatics {
 	    } catch (SQLException e) { e.printStackTrace(); }
 	    return 0;
 	}
+	public Map<LocalDate, Integer> getStatsLoginsSeptDerniersJours() {
+        Map<LocalDate, Integer> stats = new TreeMap<>();
+        String sql = "SELECT date, nbLogins FROM LoginPerDay " +
+                     "WHERE date >= CURRENT_DATE - INTERVAL 7 DAY " +
+                     "ORDER BY date ASC";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                LocalDate date = rs.getDate("date").toLocalDate();
+                int nbLogins = rs.getInt("nbLogins");
+                
+                stats.put(date, nbLogins);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération des stats : " + e.getMessage());
+        }
+
+        return stats;
+    }
 	
 }
