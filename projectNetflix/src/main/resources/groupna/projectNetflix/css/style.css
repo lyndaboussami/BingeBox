@@ -759,10 +759,20 @@ tab-pane .tab-header-area .tab-header-background {
 }
 
 .chart-series-line {
-    -fx-stroke: #f5f5dc; /* Beige trend line */
+    -fx-stroke: #f5f5dc;
     -fx-stroke-width: 3px;
 }
 
+.chart-bar {
+    -fx-bar-fill: #1a2a6c; 
+}
+
+.chart-plot-background {
+    -fx-background-color: #f5f5dc;
+}
+
+.default-color0.chart-series-line { -fx-stroke: #1a2a6c; }
+.default-color1.chart-series-line { -fx-stroke: #b8860b; }
 /*----------- */
 .media-card {
     -fx-background-color: -fx-card-bg;

@@ -32,7 +32,6 @@ public class SaisonService {
     
     public boolean updateSaison(Saison s) {
         if (s != null && s.getId() > 0) {
-            // On suppose que SaisonDAO.update renvoie un boolean ou le nombre de lignes
             SaisonDAO.update(s);
             return true;
         }

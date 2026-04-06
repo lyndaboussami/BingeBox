@@ -1,101 +1,43 @@
 package groupna.projectNetflix.controllers;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import groupna.projectNetflix.entities.Categorie;
 import groupna.projectNetflix.entities.Film;
+import groupna.projectNetflix.services.FilmService;
+import groupna.projectNetflix.services.UserService;
 import groupna.projectNetflix.DAO.*;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Map;
 
 public class AdminPerformanceController {
 
     @FXML private PieChart movieCategoryChart, seriesCategoryChart;
-    @FXML private LineChart<String, Number> loginLineChart;
+    @FXML private LineChart<String, Number> userTrafficChart;
+    @FXML private BarChart<String, Number> viewsBarChart;
+    
     @FXML private TableView<Map.Entry<Film, Double>> topRatedTable;
     @FXML private TableColumn<Map.Entry<Film, Double>, String> colRatedTitle;
     @FXML private TableColumn<Map.Entry<Film, Double>, Double> colRatedStars;
 
-    @FXML private TableView<Map.Entry<Film, Integer>> topViewedTable;
-    @FXML private TableColumn<Map.Entry<Film, Integer>, String> colViewedTitle;
-    @FXML private TableColumn<Map.Entry<Film, Integer>, Integer> colViewedCount;
-
     @FXML private Label lblTotalMovies, lblTotalSeries, lblTotalUsers;
     
-    //private final FilmDAO filmDAO = new FilmDAO();
-    //private final SerieDAO serieDAO = new SerieDAO();
-    private final DAOStatics statsDAO = new DAOStatics(); 
-
+    private final UserService userService = new UserService();
+    private final FilmService filmService = new FilmService();
     @FXML
     public void initialize() {
         setupTableColumns();
         refreshCharts();
-        //testInterfaceWithMockData(); // Test without DAO
     }
     
-    /*
-    //juste bech ntesti hata lin nzidou l fazet li bech nestaamelhom
-    private void testInterfaceWithMockData() {
-        // 1. Test Movie Categories (PieChart)
-        movieCategoryChart.getData().setAll(
-            new PieChart.Data("Action", 45),
-            new PieChart.Data("Drama", 30),
-            new PieChart.Data("Sci-Fi", 25)
-        );
-
-        // 2. Test Series Categories (PieChart)
-        seriesCategoryChart.getData().setAll(
-            new PieChart.Data("Comedy", 50),
-            new PieChart.Data("Thriller", 20),
-            new PieChart.Data("Documentary", 30)
-        );
-
-        // 3. Test Login History (LineChart)
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Logins");
-        series.getData().add(new XYChart.Data<>("Mon", 120));
-        series.getData().add(new XYChart.Data<>("Tue", 150));
-        series.getData().add(new XYChart.Data<>("Wed", 110));
-        series.getData().add(new XYChart.Data<>("Thu", 190));
-        loginLineChart.getData().add(series);
-
-     // 4. Test Top Rated Table
-        ObservableList<Film> mockRated = FXCollections.observableArrayList();
-        
-        // Using your constructor: (id, resume, categories, titre, date, actors, directors, poster, duration, moviePath, trailerPath)
-        Film f1 = new Film(1, "Resume...", new ArrayList<>(), "Inception", LocalDate.now(), null, null, null, LocalTime.of(2, 28), null, null);
-        
-        Film f2 = new Film(2, "Resume...", new ArrayList<>(), "The Matrix", LocalDate.now(), null, null, null, LocalTime.of(2, 16), null, null);
-        
-        mockRated.addAll(f1, f2);
-        topRatedTable.setItems(mockRated);
-
-        // 5. Test Top Viewed Table
-        ObservableList<Film> mockViewed = FXCollections.observableArrayList();
-        Film f3 = new Film(3, "Resume...", new ArrayList<>(), "Avatar", LocalDate.now(), null, null, null, LocalTime.of(2, 42), null, null);
-        
-        mockViewed.add(f3);
-        topViewedTable.setItems(mockViewed);
-    }
-	*/
     private void setupTableColumns() {
         colRatedTitle.setCellValueFactory(data -> 
             new javafx.beans.property.SimpleStringProperty(data.getValue().getKey().getTitre()));
         
         colRatedStars.setCellValueFactory(data -> 
-            new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getValue()));
-
-        colViewedTitle.setCellValueFactory(data -> 
-            new javafx.beans.property.SimpleStringProperty(data.getValue().getKey().getTitre()));
-        
-        colViewedCount.setCellValueFactory(data -> 
             new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getValue()));
     }
 
@@ -115,20 +57,38 @@ public class AdminPerformanceController {
         seriesStats.forEach((cat, count) -> 
             seriesCategoryChart.getData().add(new PieChart.Data(cat.getLabel(), count)));
 
+        userTrafficChart.getData().clear();
+        
+        XYChart.Series<String, Number> signupSeries = new XYChart.Series<>();
+        signupSeries.setName("New Sign-ups");
+        Map<LocalDate, Integer> signupData = userService.NbrIscrisPerDate();
+        signupData.forEach((date, count) -> {
+            signupSeries.getData().add(new XYChart.Data<>(date.toString(), count));
+        });
+        
+        
         XYChart.Series<String, Number> loginSeries = new XYChart.Series<>();
-        loginSeries.setName("User Traffic");
-        /*
-        Map<String, Integer> loginData = statsDAO.getDailyLoginCounts();
-        loginData.forEach((date, count) -> 
-            loginSeries.getData().add(new XYChart.Data<>(date, count)));
+        loginSeries.setName("Daily Logins");
+        /* Map<LocalDate, Integer> loginData = userService.getDailyLogins(); // Future method
+        loginData.forEach((date, count) -> {
+            loginSeries.getData().add(new XYChart.Data<>(date.toString(), count));
+        });
         */
-        loginLineChart.getData().setAll(loginSeries);
+        
+        userTrafficChart.getData().addAll(signupSeries, loginSeries);
 
         Map<Film, Double> ratedData = DAOStatics.getTop5Rated();
         topRatedTable.setItems(FXCollections.observableArrayList(ratedData.entrySet()));
         
 
+        viewsBarChart.getData().clear();
+        XYChart.Series<String, Number> viewSeries = new XYChart.Series<>();
+        viewSeries.setName("Views");
+        
         Map<Film, Integer> viewedData = DAOStatics.getTop5MostViewed();
-        topViewedTable.setItems(FXCollections.observableArrayList(viewedData.entrySet()));
+        viewedData.forEach((film, count) -> {
+            viewSeries.getData().add(new XYChart.Data<>(film.getTitre(), count));
+        });
+        viewsBarChart.getData().add(viewSeries);
     }
 }

@@ -36,7 +36,7 @@ public class SerieService {
         
         return serie.getId() > 0;
     }
-    public boolean deleteSerie(int id) {
+    public static boolean deleteSerie(int id) {
         if (id <= 0) return false;
         return SerieDAO.delete(id);
     }
@@ -44,7 +44,7 @@ public class SerieService {
         if (serieId <= 0) return 0;
         return SaisonDAO.findAllBySerie(serieId).size();
     }
-    public void updateSerie(Serie s) {
+    public static void updateSerie(Serie s) {
         if (s != null && s.getId() > 0) {
             SerieDAO.update(s);
             if (s.getSaisons() != null) {

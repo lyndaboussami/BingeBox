@@ -53,7 +53,7 @@ public class FilmService {
     public int getVues(int idFilm) {
         return FilmDAO.getNombreVuesFilm(idFilm);
     }
-    public void updateFilm(Film f) {
+    public static void updateFilm(Film f) {
         if (f != null && f.getId() > 0) {
             FilmDAO.update(f);
         }

@@ -47,11 +47,6 @@ public class AdminMediaController {
     private SerieService serieService=new SerieService();
     private EpisodeService episodeService=new EpisodeService();
     private SaisonService saisonService=new SaisonService();
-    //@FXML private FlowPane movieContainer;
-    //@FXML private FlowPane serieContainer;
-
-    //private List<Film> allMovies;
-    //private List<Serie> allSeries;
 
     @FXML
     public void initialize() {
@@ -63,87 +58,21 @@ public class AdminMediaController {
             filterTables(newVal);
         });
         
-    	/*
-        allMovies = DataStore.getMovies();
-        allSeries = DataStore.getSeries();
-        
-        displayMedia(allMovies, allSeries);
-        
-        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
-            filterMedia(newVal);
-        });*/
     }
 
-    /*
-    private void displayMedia(List<Film> movies, List<Serie> series) {
-        movieContainer.getChildren().clear();
-        serieContainer.getChildren().clear();
-
-        movies.forEach(movie -> movieContainer.getChildren().add(createMediaCard(movie)));
-        series.forEach(serie -> serieContainer.getChildren().add(createMediaCard(serie)));
-    }*/
-
-    /*
-    private VBox createMediaCard(Oeuvre media) {
-        VBox card = new VBox(10);
-        card.getStyleClass().add("media-card");
-        card.setPrefSize(180, 250);
-
-        Label title = new Label(media.getTitre());
-        title.getStyleClass().add("card-title");
-        
-        Button editBtn = new Button("Edit");
-        editBtn.setOnAction(e -> openEditDialog(media));
-        
-        card.getChildren().addAll(title, editBtn);
-        return card;
-    }*/
-
     private void loadDataFromDatabase() {
-    	List<Film> dbMovies = filmService.getAllFilms();
-    	List<Serie> dbSeries = serieService.getAllSeries();
-    	
-    	masterMovies.setAll(dbMovies/*DataStore.getMovies()*/);
-        masterSeries.setAll(dbSeries/*DataStore.getSeries()*/);
+    	masterMovies.setAll(filmService.getAllFilms());
+        masterSeries.setAll(serieService.getAllSeries());
         
         movieTable.setItems(masterMovies);
         serieTable.setItems(masterSeries);
     }
-    
-    /*
-    private void filterMedia(String query) {
-        String lowerCaseQuery = query.toLowerCase();
-        
-        List<Film> filteredMovies = allMovies.stream()
-            .filter(f -> f.getTitre().toLowerCase().contains(lowerCaseQuery))
-            .collect(Collectors.toList());
-            
-        List<Serie> filteredSeries = allSeries.stream()
-            .filter(s -> s.getTitre().toLowerCase().contains(lowerCaseQuery))
-            .collect(Collectors.toList());
-
-        displayMedia(filteredMovies, filteredSeries);
-    }
-
-    private void openEditDialog(Oeuvre media) {
-        if (media instanceof Film) {
-            showMovieForm((Film) media);
-        } else if (media instanceof Serie) {
-            showSerieForm((Serie) media);
-        }
-    }*/
 
     private void filterTables(String query) {
         String lower = query.toLowerCase();
         
-        FilteredList<Film> filteredMovies = new FilteredList<>(masterMovies, p -> 
-            p.getTitre().toLowerCase().contains(lower));
-        
-        FilteredList<Serie> filteredSeries = new FilteredList<>(masterSeries, p -> 
-            p.getTitre().toLowerCase().contains(lower));
-
-        movieTable.setItems(filteredMovies);
-        serieTable.setItems(filteredSeries);
+        movieTable.setItems(new FilteredList<>(masterMovies, p -> p.getTitre().toLowerCase().contains(lower)));
+        serieTable.setItems(new FilteredList<>(masterSeries, p -> p.getTitre().toLowerCase().contains(lower)));
     }
     
     private void setupTableColumns() {
@@ -201,7 +130,11 @@ public class AdminMediaController {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : container);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(container);
+                }
             }
         });
 
@@ -263,7 +196,7 @@ public class AdminMediaController {
             
                 deleteBtn.setOnAction(e -> handleAdminAction("Delete", () -> {
                     Serie s = getTableRow().getItem();
-                    SerieDAO.delete(s.getId());
+                    SerieService.deleteSerie(s.getId());
                     getTableView().getItems().remove(s);
                 }));
             }
@@ -362,7 +295,6 @@ public class AdminMediaController {
         TextField moviePath = new TextField(film != null ? film.getPathMovie() : "");
         TextField trailerPath = new TextField(film != null ? film.getPathTrailer() : "");
 
-        //categories (tag system)
         ObservableList<Categorie> selectedCats = FXCollections.observableArrayList();
         if (film != null) selectedCats.addAll(film.getCat());
         
@@ -421,8 +353,6 @@ public class AdminMediaController {
                 }
             }
         });
-
-        //artistes
         
         ObservableList<Artiste> selectedActors = FXCollections.observableArrayList();
         ObservableList<Artiste> selectedDirectors = FXCollections.observableArrayList();
@@ -465,8 +395,8 @@ public class AdminMediaController {
                 
                 if (selectedDirectors.stream().noneMatch(a -> a.getFullname().equals(input))) {
                 selectedDirectors.add(newArtist);
-                updateTags(selectedDirectors, actorTags);
-                actorInput.clear();
+                updateTags(selectedDirectors, directorTags);
+                directorInput.clear();
                 }
             }
         });
@@ -534,11 +464,11 @@ public class AdminMediaController {
                     filmService.addFilm(newFilm); 
                     masterMovies.add(newFilm);
                 }
-                /*else {
-                    FilmDAO.update(newFilm);
+                else {
+                    FilmService.updateFilm(newFilm);
                     int index = masterMovies.indexOf(film);
                     if (index != -1) masterMovies.set(index, newFilm);
-                }*/
+                }
                 movieTable.refresh();
             });
         });
@@ -637,19 +567,43 @@ public class AdminMediaController {
         dialog.showAndWait().ifPresent(newSerie -> {
             handleAdminAction(serie == null ? "Add" : "Update", () -> {
                 if (serie == null) {
-                    SerieDAO.save(newSerie);
-                    masterSeries.add(newSerie);
-                } 
-                /*else {
-                    SerieDAO.update(newSerie);
+                	boolean success = serieService.addSerie(newSerie);
+                	if (success) {
+                        saveSeasonsAndEpisodes(newSerie.getSaisons(), newSerie.getId());
+                        masterSeries.add(newSerie);
+                    }
+                }else {
+                    SerieService.updateSerie(newSerie);
+                    
+                    saveSeasonsAndEpisodes(newSerie.getSaisons(), newSerie.getId());
+                    
                     int index = masterSeries.indexOf(serie);
                     if (index != -1) masterSeries.set(index, newSerie);
-                }*/
+                }
                 serieTable.refresh();
             });
         });
     }
 
+    private void saveSeasonsAndEpisodes(Map<Saison, List<Episode>> seasonsMap, int serieId) {
+        seasonsMap.forEach((saison, episodes) -> {
+            if (saison.getId() == 0) {
+            	saisonService.addSaison(saison, serieId);
+            } else {
+            	saisonService.updateSaison(saison);
+            }
+            if (episodes != null) {
+                for (Episode ep : episodes) {
+                    if (ep.getId() == 0) {
+                        episodeService.addEpisode(ep, saison.getId());
+                    } else {
+                        episodeService.updateEpisode(ep);
+                    }
+                }
+            }
+        });
+    }
+    
     private void showSeasonManager(Map<Saison, List<Episode>> saisonMap) {
         Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("BingeBox | Seasons Manager");

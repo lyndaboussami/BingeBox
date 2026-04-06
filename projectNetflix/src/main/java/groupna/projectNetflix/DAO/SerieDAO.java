@@ -135,8 +135,8 @@ public class SerieDAO extends OeuvreDAO {
             pstmt.setString(1, s.getResume());
             pstmt.setString(2, s.getTitre());
             pstmt.setDate(3, s.getDateDeSortie() != null ? java.sql.Date.valueOf(s.getDateDeSortie()) : null);
-            pstmt.setString(5, s.getPathPoster());
-            pstmt.setInt(6, s.getId());
+            pstmt.setString(4, s.getPathPoster());
+            pstmt.setInt(5, s.getId());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
