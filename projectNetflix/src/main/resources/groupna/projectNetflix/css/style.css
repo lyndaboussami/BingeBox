@@ -1,18 +1,18 @@
 /* Dark Mode (Default) */
 .root {
     /* Backgrounds */
-    -fx-primary-bg: #111522;      /* Navy Blue */
-    -fx-nav-bg: #111522;          /* Slightly darker Navy for depth */
-    -fx-card-bg: #2d3755;         /* Slightly lighter Navy for cards */
+    -fx-primary-bg: #111522;
+    -fx-nav-bg: #111522;
+    -fx-card-bg: #2d3755;
     -fx-hero-bg: #242c45;
     
     /* Text & Accents */
-    -fx-text-main: #e6d7c4;       /* Beige */
-    -fx-text-muted: #b0a596;      /* Muted Beige */
-    -fx-accent: #cfc2b0;          /* Beige buttons/accents */
+    -fx-text-main: #e6d7c4;
+    -fx-text-muted: #b0a596;
+    -fx-accent: #cfc2b0;
     -fx-text-dim: #808080;
     
-    -fx-button-text: #242c45;     /* Navy text on Beige buttons */
+    -fx-button-text: #242c45;
     
     -fx-background-color: -fx-primary-bg;
 }
@@ -20,18 +20,18 @@
 /* Light Mode (Reversed) */
 .light-mode {
     /* Backgrounds */
-    -fx-primary-bg: #b8ac9d;      /* Beige */
-    -fx-nav-bg: #a19789;          /* Slightly darker Beige for depth */
-    -fx-card-bg: #f2e6d5;         /* Slightly lighter Beige for cards */
+    -fx-primary-bg: #b8ac9d;
+    -fx-nav-bg: #a19789;
+    -fx-card-bg: #f2e6d5;
     -fx-hero-bg: #e6d7c4;
     -fx-text-dim: #808080;
     /* Text & Accents */
-    -fx-text-main: #242c45;       /* Navy Blue */
-    -fx-text-muted: #3e4b75;      /* Muted Navy */
-    -fx-accent: #242c45;          /* Navy buttons/accents */
+    -fx-text-main: #242c45;
+    -fx-text-muted: #3e4b75;
+    -fx-accent: #242c45;
     -fx-text-dim: #3e4b75;
     
-    -fx-button-text: #e6d7c4;     /* Beige text on Navy buttons */
+    -fx-button-text: #e6d7c4;
 }
 
 /* Components */
@@ -716,17 +716,18 @@ tab-pane .tab-header-area .tab-header-background {
     -fx-text-fill: -fx-text-main;
 }
 
-/* Pie Chart Slices */
-.default-color0.chart-pie { -fx-pie-color: #cfc2b0; }
-.default-color1.chart-pie { -fx-pie-color: #2d3755; }
-.default-color2.chart-pie { -fx-pie-color: #b0a596; }
+.default-color0.chart-pie { -fx-pie-color: #1a237e; }
+.default-color1.chart-pie { -fx-pie-color: #5c6bc0; }
+.default-color2.chart-pie { -fx-pie-color: #0d47a1; }
+.default-color3.chart-pie { -fx-pie-color: #f5f5dc; }
+.default-color4.chart-pie { -fx-pie-color: #3949ab; }
+.default-color5.chart-pie { -fx-pie-color: #fffdd0; }
+.default-color6.chart-pie { -fx-pie-color: #0d47a1; }
 
-/* Bar and Line Chart Series colors */
 .chart-series-line { -fx-stroke: -fx-accent; }
 .chart-line-symbol { -fx-background-color: -fx-accent, white; }
 .chart-bar { -fx-bar-fill: -fx-accent; }
 
-/*Chart Label Colors */
 .axis {
     -fx-tick-label-fill: #cfc2b0;
     -fx-label-padding: 5;
@@ -744,6 +745,9 @@ tab-pane .tab-header-area .tab-header-background {
     -fx-text-fill: white;
 }
 
+.chart-legend-item-symbol {
+    -fx-background-radius: 2px;
+}
 
 .compact-table {
     -fx-background-color: transparent;

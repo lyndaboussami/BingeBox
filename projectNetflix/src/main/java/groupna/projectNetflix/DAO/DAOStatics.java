@@ -87,6 +87,7 @@ public class DAOStatics {
 	    }
 	    return top5;
 	}
+	/*
 	public static Map<Film, Double> getTop5Rated() {
 	    Map<Film, Double> top5 = new LinkedHashMap<>();
 	    String sql = "SELECT id_film, AVG(note) as moyenne " +
@@ -108,5 +109,58 @@ public class DAOStatics {
 	        e.printStackTrace();
 	    }
 	    return top5;
+	}*/
+	public static Map<Film, Double> getTop5Rated() {
+	    Map<Film, Double> top5 = new LinkedHashMap<>();
+	    String sql = "SELECT id_film, AVG(nbStars) as moyenne " +
+	                 "FROM rate_film " + 
+	                 "GROUP BY id_film " +
+	                 "ORDER BY moyenne DESC " +
+	                 "LIMIT 5";
+
+	    try (Statement stmt = conn.createStatement();
+		         ResultSet rs = stmt.executeQuery(sql)) {
+
+	        while (rs.next()) {
+	            Film f = films.getFilmById(rs.getInt("id_film"));
+	            if (f != null) {
+	                top5.put(f, rs.getDouble("moyenne"));
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return top5;
 	}
+	
+	public static int getTotalMovies() {
+	    String sql = "SELECT COUNT(*) FROM films";
+	    try (Statement stmt = conn.createStatement();
+		         ResultSet rs = stmt.executeQuery(sql)) {
+	    	
+	        if (rs.next()) return rs.getInt(1);
+	    } catch (SQLException e) { e.printStackTrace(); }
+	    return 0;
+	}
+
+	public static int getTotalSeries() {
+	    String sql = "SELECT COUNT(*) FROM series";
+	    try (Statement stmt = conn.createStatement();
+		         ResultSet rs = stmt.executeQuery(sql)) {
+	    	
+	        if (rs.next()) return rs.getInt(1);
+	    } catch (SQLException e) { e.printStackTrace(); }
+	    return 0;
+	}
+
+	public static int getTotalUsers() {
+	    String sql = "SELECT COUNT(*) FROM user";
+	    try (Statement stmt = conn.createStatement();
+		         ResultSet rs = stmt.executeQuery(sql)) {
+	    	
+	        if (rs.next()) return rs.getInt(1);
+	    } catch (SQLException e) { e.printStackTrace(); }
+	    return 0;
+	}
+	
 }

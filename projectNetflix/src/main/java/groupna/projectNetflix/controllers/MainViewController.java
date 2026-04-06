@@ -292,7 +292,7 @@ public class MainViewController {
         	sb.append("🎬 ").append(f.getTitre())
               .append(" (").append(f.getDateDeSortie().getYear()).append(")\n");
             
-            sb.append("⭐ ").append(String.format("%.1f", rating.getMoyenneOeuvre(f.getId(),"film")))//--rate--
+            sb.append("⭐ ").append(String.format("%.1f", rating.getMoyenneOeuvre(f.getId(),"film")))
               .append("/5  |  🕒 ").append(f.getDuree()).append("\n");
             
             if (f.getCat() != null && !f.getCat().isEmpty()) {

@@ -18,15 +18,15 @@
 	    <HBox spacing="20">
 	        <VBox styleClass="auth-card" HBox.hgrow="ALWAYS" alignment="CENTER" prefHeight="80">
 	            <Label text="Total Movies" styleClass="card-text" style="-fx-font-size: 12px;"/>
-	            <Label text="1,284" styleClass="heroTitle" style="-fx-font-size: 22px;"/>
+	            <Label fx:id="lblTotalMovies" text="1,284" styleClass="heroTitle" style="-fx-font-size: 22px;"/>
 	        </VBox>
 	        <VBox styleClass="auth-card" HBox.hgrow="ALWAYS" alignment="CENTER" prefHeight="80">
-	            <Label text="Active Series" styleClass="card-text" style="-fx-font-size: 12px;"/>
-	            <Label text="452" styleClass="heroTitle" style="-fx-font-size: 22px;"/>
+	            <Label text="Total Series" styleClass="card-text" style="-fx-font-size: 12px;"/>
+	            <Label fx:id="lblTotalSeries" text="452" styleClass="heroTitle" style="-fx-font-size: 22px;"/>
 	        </VBox>
 	        <VBox styleClass="auth-card" HBox.hgrow="ALWAYS" alignment="CENTER" prefHeight="80">
-	            <Label text="Avg. Rating" styleClass="card-text" style="-fx-font-size: 12px;"/>
-	            <Label text="4.2 ★" styleClass="heroTitle" style="-fx-font-size: 22px;"/>
+	            <Label text="Total users" styleClass="card-text" style="-fx-font-size: 12px;"/>
+	            <Label fx:id="lblTotalUsers" text="0" styleClass="heroTitle" style="-fx-font-size: 22px;"/>
 	        </VBox>
 	    </HBox>
 	

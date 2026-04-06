@@ -43,7 +43,6 @@ public class HomeViewController extends BaseController{
     }
     
     private void loadContent() {
-        // Mock Data in the future from Database
 
     	List<Film> movies = filmService.getAllFilms();
         List<Serie> series = serieService.getAllSeries();
@@ -135,9 +134,9 @@ public class HomeViewController extends BaseController{
         typeIcon.getStyleClass().add("card-type-badge");
         
         if (data instanceof Film) {
-            typeIcon.setText("🎬"); // Movie Icon
+            typeIcon.setText("🎬");
         } else if (data instanceof Serie) {
-            typeIcon.setText("📺"); // Series Icon
+            typeIcon.setText("📺");
         }
         
         StackPane.setAlignment(typeIcon, javafx.geometry.Pos.TOP_RIGHT);
@@ -152,7 +151,6 @@ public class HomeViewController extends BaseController{
         try {
             title = bundle.getString(titleKey);
         } catch (MissingResourceException e) {
-            //if the key is missing -> object's default title
             title = (data instanceof Film f) ? f.getTitre() : ((Serie)data).getTitre();
         }
 
