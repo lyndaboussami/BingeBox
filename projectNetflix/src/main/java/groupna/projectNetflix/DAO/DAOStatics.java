@@ -165,7 +165,7 @@ public class DAOStatics {
 	    } catch (SQLException e) { e.printStackTrace(); }
 	    return 0;
 	}
-	public Map<LocalDate, Integer> getStatsLoginsSeptDerniersJours() {
+	public static Map<LocalDate, Integer> getStatsLoginsSeptDerniersJours() {
         Map<LocalDate, Integer> stats = new TreeMap<>();
         String sql = "SELECT date, nbLogins FROM LoginPerDay " +
                      "WHERE date >= CURRENT_DATE - INTERVAL 7 DAY " +

@@ -1,12 +1,10 @@
 /* Dark Mode (Default) */
 .root {
-    /* Backgrounds */
     -fx-primary-bg: #111522;
     -fx-nav-bg: #111522;
     -fx-card-bg: #2d3755;
     -fx-hero-bg: #242c45;
     
-    /* Text & Accents */
     -fx-text-main: #e6d7c4;
     -fx-text-muted: #b0a596;
     -fx-accent: #cfc2b0;
@@ -19,13 +17,12 @@
 
 /* Light Mode (Reversed) */
 .light-mode {
-    /* Backgrounds */
     -fx-primary-bg: #b8ac9d;
     -fx-nav-bg: #a19789;
     -fx-card-bg: #f2e6d5;
     -fx-hero-bg: #e6d7c4;
     -fx-text-dim: #808080;
-    /* Text & Accents */
+
     -fx-text-main: #242c45;
     -fx-text-muted: #3e4b75;
     -fx-accent: #242c45;
@@ -180,7 +177,6 @@
     -fx-background-color: #cfc2b0;
     -fx-text-fill: #242c45;
 }
-/* */
 
 .categoryTitle {
     -fx-text-fill: -fx-text-main;
@@ -688,21 +684,18 @@ tab-pane .tab-header-area .tab-header-background {
     -fx-text-fill: -fx-primary-bg;
 }
 
-/* Category Tags */
 .category-tag {
     -fx-background-color: -fx-accent;
     -fx-background-radius: 20;
     -fx-padding: 5 10;
 }
 
-/*text areas */
 .text-area {
     -fx-control-inner-background: #1f2940;
     -fx-text-fill: white;
     -fx-prompt-text-fill: #808080;
 }
 
-/* Styling Chart Content */
 .chart-content {
     -fx-padding: 10;
 }
@@ -728,21 +721,50 @@ tab-pane .tab-header-area .tab-header-background {
 .chart-line-symbol { -fx-background-color: -fx-accent, white; }
 .chart-bar { -fx-bar-fill: -fx-accent; }
 
+.chart-pie-label {
+    -fx-fill: -fx-text-main;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.chart-pie-label-line {
+    -fx-stroke: #f5f5dc;
+    -fx-stroke-width: 1px;
+}
+
+.chart-pie-label {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 2, 0, 0, 0);
+}
+
 .axis {
-    -fx-tick-label-fill: #cfc2b0;
+    -fx-tick-label-fill: -fx-text-main;
+    -fx-tick-mark-stroke: -fx-text-main;
     -fx-label-padding: 5;
 }
 
+.axis:bottom {
+    -fx-border-color: -fx-text-main transparent transparent transparent;
+}
+
+.axis:left {
+    -fx-border-color: transparent -fx-text-main transparent transparent;
+}
+
 .axis-label {
-    -fx-text-fill: #cfc2b0;
+    -fx-text-fill: -fx-text-main;
+}
+
+.chart-vertical-grid-lines, .chart-horizontal-grid-lines {
+    -fx-stroke: rgba(245, 245, 220, 0.1);
 }
 
 .chart-legend {
    -fx-background-color: transparent;
+   -fx-text-fill: -fx-text-main;
 }
 
 .chart-legend-item {
-    -fx-text-fill: white;
+    -fx-text-fill: -fx-text-main;
 }
 
 .chart-legend-item-symbol {
@@ -758,22 +780,32 @@ tab-pane .tab-header-area .tab-header-background {
     -fx-background-color: rgba(245, 245, 220, 0.05);
 }
 
-.chart-series-line {
-    -fx-stroke: #f5f5dc;
-    -fx-stroke-width: 3px;
+.default-color0.chart-series-line { 
+    -fx-stroke: #5c6bc0; 
+    -fx-stroke-width: 3px; 
+}
+.default-color0.chart-line-symbol { 
+    -fx-background-color: #5c6bc0, white; 
+    -fx-background-radius: 5px;
+}
+
+.default-color1.chart-series-line { 
+    -fx-stroke: #d4a373;
+    -fx-stroke-width: 3px; 
+}
+.default-color1.chart-line-symbol { 
+    -fx-background-color: #d4a373, white; 
+    -fx-background-radius: 5px;
 }
 
 .chart-bar {
-    -fx-bar-fill: #1a2a6c; 
+    -fx-bar-fill: -fx-text-main;
 }
 
 .chart-plot-background {
-    -fx-background-color: #f5f5dc;
+    -fx-background-color: transparent;
 }
 
-.default-color0.chart-series-line { -fx-stroke: #1a2a6c; }
-.default-color1.chart-series-line { -fx-stroke: #b8860b; }
-/*----------- */
 .media-card {
     -fx-background-color: -fx-card-bg;
     -fx-background-radius: 10;
@@ -807,7 +839,6 @@ tab-pane .tab-header-area .tab-header-background {
     -fx-border-color: -fx-accent;
 }
 
-/* Hide ScrollPane border */
 .scroll-pane {
     -fx-background-insets: 0;
     -fx-padding: 0;

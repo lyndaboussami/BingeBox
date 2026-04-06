@@ -47,16 +47,6 @@ public class AdminPerformanceController {
         lblTotalSeries.setText(String.valueOf(DAOStatics.getTotalSeries()));
         lblTotalUsers.setText(String.valueOf(DAOStatics.getTotalUsers()));
     	
-        Map<Categorie, Integer> movieStats = DAOStatics.getMoviesCountByCategory();
-        movieCategoryChart.getData().clear();
-        movieStats.forEach((cat, count) -> 
-            movieCategoryChart.getData().add(new PieChart.Data(cat.getLabel(), count)));
-
-        Map<Categorie, Integer> seriesStats = DAOStatics.getSeriesCountByCategory();
-        seriesCategoryChart.getData().clear();
-        seriesStats.forEach((cat, count) -> 
-            seriesCategoryChart.getData().add(new PieChart.Data(cat.getLabel(), count)));
-
         userTrafficChart.getData().clear();
         
         XYChart.Series<String, Number> signupSeries = new XYChart.Series<>();
@@ -69,13 +59,23 @@ public class AdminPerformanceController {
         
         XYChart.Series<String, Number> loginSeries = new XYChart.Series<>();
         loginSeries.setName("Daily Logins");
-        /* Map<LocalDate, Integer> loginData = userService.getDailyLogins(); // Future method
+        Map<LocalDate, Integer> loginData = DAOStatics.getStatsLoginsSeptDerniersJours();
         loginData.forEach((date, count) -> {
             loginSeries.getData().add(new XYChart.Data<>(date.toString(), count));
         });
-        */
         
         userTrafficChart.getData().addAll(signupSeries, loginSeries);
+        
+        
+        Map<Categorie, Integer> movieStats = DAOStatics.getMoviesCountByCategory();
+        movieCategoryChart.getData().clear();
+        movieStats.forEach((cat, count) -> 
+            movieCategoryChart.getData().add(new PieChart.Data(cat.getLabel(), count)));
+
+        Map<Categorie, Integer> seriesStats = DAOStatics.getSeriesCountByCategory();
+        seriesCategoryChart.getData().clear();
+        seriesStats.forEach((cat, count) -> 
+            seriesCategoryChart.getData().add(new PieChart.Data(cat.getLabel(), count)));
 
         Map<Film, Double> ratedData = DAOStatics.getTop5Rated();
         topRatedTable.setItems(FXCollections.observableArrayList(ratedData.entrySet()));
