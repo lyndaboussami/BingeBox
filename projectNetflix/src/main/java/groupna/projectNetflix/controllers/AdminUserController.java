@@ -2,6 +2,7 @@ package groupna.projectNetflix.controllers;
 
 import groupna.projectNetflix.DAO.CommentaireDAO;
 import groupna.projectNetflix.entities.Commentaire;
+import groupna.projectNetflix.services.CommentaireService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -19,7 +20,7 @@ public class AdminUserController {
     @FXML private TableColumn<Commentaire, Void> colActions;
     
     @FXML private TextField commentSearchField;
-
+    CommentaireService comments=new CommentaireService();
     private ObservableList<Commentaire> masterData = FXCollections.observableArrayList();
 
     @FXML
@@ -61,7 +62,7 @@ public class AdminUserController {
     }
 
     private void loadInitialData() {
-        masterData.setAll(CommentaireDAO.findReported());
+        masterData.setAll(comments.listerCommentairesSignalesFilms());
         
         reportsTable.setItems(masterData);
     }
@@ -82,8 +83,7 @@ public class AdminUserController {
         if (selected != null) {
         	handleAdminAction("Delete Comment", () -> {
                 masterData.remove(selected);
-                //missing delete from db!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                System.out.println("Deleted comment from user " + selected.getId_user());
+                comments.supprimerCommentaire(selected.getId(), "film");
         	});
         }
     }
@@ -91,8 +91,8 @@ public class AdminUserController {
     private void handleKeep(Commentaire selected) {
         if (selected != null) {
             masterData.remove(selected);
-            //remove the under review icon in comments and not anymore reported!!!!!!! //selected.setReported(false);
-            System.out.println("Comment marked as safe.");
+            comments.validerCommentaire(selected.getId(), "film");
+            
         }
     }
 

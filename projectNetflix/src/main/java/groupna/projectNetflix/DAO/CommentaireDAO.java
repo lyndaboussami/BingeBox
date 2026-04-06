@@ -102,12 +102,9 @@ public class CommentaireDAO {
             return false;
         }
     }
-    public static List<Commentaire> findReported() {
+    public static List<Commentaire> findReportedFilms() {
         List<Commentaire> reportedList = new ArrayList<>();
-        String sql = "SELECT id, id_user, id_movie AS id_oeuvre, content, reported, raison FROM film_commentaire WHERE reported = true " +
-                     "UNION ALL " +
-                     "SELECT id, id_user, id_serie AS id_oeuvre, content, reported, raison FROM serie_commentaire WHERE reported = true";
-
+        String sql = "SELECT id, id_user, id_movie AS id_oeuvre, content, reported, raison FROM film_commentaire WHERE reported = true ";
         try (PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
             
@@ -126,5 +123,27 @@ public class CommentaireDAO {
             e.printStackTrace();
         }
         return reportedList;
+    }
+    public static List<Commentaire> findReportedSeries(){
+    	List<Commentaire> reportedList = new ArrayList<>();
+    	String sql ="SELECT id, id_user, id_serie AS id_oeuvre, content, reported, raison FROM serie_commentaire WHERE reported = true";
+    	try (PreparedStatement pstmt = conn.prepareStatement(sql);
+                ResultSet rs = pstmt.executeQuery()) {
+               
+               while (rs.next()) {
+                   reportedList.add(new Commentaire(
+                       rs.getInt("id_user"),
+                       rs.getInt("id_oeuvre"),
+                       rs.getString("content"),
+                       rs.getBoolean("reported"),
+                       rs.getString("raison"),
+                       rs.getInt("id")
+                   ));
+               }
+           } catch (SQLException e) {
+               System.err.println("Erreur lors de la récupération des signalements : " + e.getMessage());
+               e.printStackTrace();
+           }
+          return reportedList;
     }
 }
