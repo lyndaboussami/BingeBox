@@ -87,6 +87,9 @@ public class UserDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        if(u.getRole().equals(Role.USER)) {
+        	incrementerLoginDuJour();
+        }
         return generatedId;
     }
 //-----------------------------------------------------------------------------------------------------
