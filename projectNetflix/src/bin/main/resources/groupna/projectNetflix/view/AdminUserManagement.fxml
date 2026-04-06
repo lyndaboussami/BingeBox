@@ -9,27 +9,29 @@
     </padding>
 
     <HBox alignment="CENTER_LEFT" spacing="15">
-        <Label text="User Moderation" styleClass="heroTitle" style="-fx-font-size: 26px;"/>
+        <Label text="Comment Moderation" styleClass="heroTitle" style="-fx-font-size: 26px;"/>
         <Region HBox.hgrow="ALWAYS" />
         <TextField fx:id="commentSearchField" promptText="Search by user or content..." prefWidth="300" styleClass="search-bar"/>
     </HBox>
 
     <VBox spacing="10" VBox.vgrow="ALWAYS">
-        <Label text="Reported Comments" styleClass="categoryTitle" style="-fx-padding: 0;"/>
+        <Label text="Reported Content" styleClass="categoryTitle" style="-fx-padding: 0;"/>
         
         <TableView fx:id="reportsTable" VBox.vgrow="ALWAYS">
+            <columnResizePolicy>
+		        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+		    </columnResizePolicy>
+		    
             <columns>
-                <TableColumn fx:id="colUser" text="User ID" prefWidth="100"/>
-                <TableColumn fx:id="colOeuvre" text="Media ID" prefWidth="100"/> <TableColumn fx:id="colComment" text="Content" prefWidth="400"/>
+                <TableColumn fx:id="colUser" text="User ID" prefWidth="70"/>
+                <TableColumn fx:id="colOeuvre" text="Media ID" prefWidth="70"/>
+                <TableColumn fx:id="colComment" text="Comment Content" prefWidth="400"/>
+                <TableColumn fx:id="colReason" text="Report Reason" prefWidth="200"/>
+                <TableColumn fx:id="colActions" text="Actions" prefWidth="150"/>
             </columns>
             <placeholder>
-                <Label text="No reported comments." styleClass="card-text"/>
+                <Label text="No reported comments found." styleClass="card-text"/>
             </placeholder>
         </TableView>
-
-        <HBox spacing="15" alignment="CENTER_RIGHT">
-            <Button text="Keep" onAction="#handleKeepComment" styleClass="navButton" style="-fx-background-color: #2e7d32;"/>
-            <Button text="Delete" onAction="#handleDeleteComment" styleClass="watchBtn"/>
-        </HBox>
     </VBox>
 </VBox>

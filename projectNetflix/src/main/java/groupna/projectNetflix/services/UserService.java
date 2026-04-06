@@ -77,4 +77,7 @@ public class UserService {
     public int rechercherParEmail(String email) {
         return UserDAO.getIdParEmail(email);
     }
+    public Map<LocalDate, Integer> NbrIscrisPerDate(){
+    	return UserDAO.getInscriptionsParDate();
+    }
 }

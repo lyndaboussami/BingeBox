@@ -11,8 +11,7 @@
     
     <HBox alignment="CENTER_LEFT" spacing="20">
         <VBox>
-            <Label text="BingeBox Back-Office" style="-fx-font-size: 26px; -fx-text-fill: -fx-text-main; -fx-font-weight: bold;"/>
-            <Label text="Content Management Dashboard" styleClass="heroTitle"/>
+            <Label text="Content Management Dashboard" styleClass="heroTitle" style="-fx-font-size: 26px;"/>
         </VBox>
         <Region HBox.hgrow="ALWAYS" />
         <TextField fx:id="searchField" promptText="🔍 Search by title, genre, or ID..." prefWidth="350" styleClass="search-bar"/>

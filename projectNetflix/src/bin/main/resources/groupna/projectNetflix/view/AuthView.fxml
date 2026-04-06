@@ -16,18 +16,18 @@
 
         <VBox spacing="15">
             <HBox fx:id="nameBox" spacing="10" managed="false" visible="false">
-                <TextField fx:id="firstNameField" promptText="First Name" styleClass="search" HBox.hgrow="ALWAYS" />
-                <TextField fx:id="lastNameField" promptText="Last Name" styleClass="search" HBox.hgrow="ALWAYS" />
+                <TextField fx:id="firstNameField" promptText="First Name" styleClass="auth-field" HBox.hgrow="ALWAYS" />
+                <TextField fx:id="lastNameField" promptText="Last Name" styleClass="auth-field" HBox.hgrow="ALWAYS" />
             </HBox>
 
-            <TextField fx:id="emailField" promptText="Email or phone number" styleClass="search" prefHeight="50" />
+            <TextField fx:id="emailField" promptText="Email" styleClass="auth-field" prefHeight="50" />
             
-            <PasswordField fx:id="passwordField" promptText="Password" styleClass="search" prefHeight="50" />
+            <PasswordField fx:id="passwordField" promptText="Password" styleClass="auth-field" prefHeight="50" />
             
             <Hyperlink fx:id="forgotPasswordLink" text="Forgot password?" onAction="#openResetPane" 
 			           style="-fx-text-fill: -fx-text-muted; -fx-font-size: 12px; -fx-underline: false;" />
             <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password" 
-                           styleClass="search" prefHeight="50" managed="false" visible="false" />
+                           styleClass="auth-field" prefHeight="50" managed="false" visible="false" />
         </VBox>
 
         <Button fx:id="submitBtn" text="Log In" onAction="#handleSubmit" 
