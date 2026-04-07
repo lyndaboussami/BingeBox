@@ -19,7 +19,6 @@ public class MoviesController {
     public void initialize() { 
     	List<Film> allMovies = filmService.getAllFilms();
     	
-        // Group movies by Category
         Map<String, List<Film>> moviesByCategory = allMovies.stream()
             .flatMap(movie -> movie.getCat().stream().map(cat -> Map.entry(cat.getLabel(), movie)))
             .collect(Collectors.groupingBy(
@@ -27,7 +26,6 @@ public class MoviesController {
                 Collectors.mapping(Map.Entry::getValue, Collectors.toList())
             ));
 
-        // UI for each category
         moviesByCategory.forEach((categoryName, movies) -> {
             categoryRowsContainer.getChildren().add(createCategoryRow(categoryName, movies));
         });
@@ -59,9 +57,16 @@ public class MoviesController {
 
     private VBox createMovieCard(Film movie) {
         VBox card = new VBox(10);
-        card.getStyleClass().add("movieCard");
+        card.getStyleClass().add("seriesCard");
 
-        // Poster with Badge Logic
+        card.setUserData(movie); 
+
+        MainViewController mainCtrl = MainViewController.getInstance();
+        if (mainCtrl != null) {
+            card.setOnMouseEntered(event -> mainCtrl.showDetails(event));
+            card.setOnMouseExited(event -> mainCtrl.hideDetails(event));
+        }
+        
         StackPane imageStack = new StackPane();
         
         ImageView poster = new ImageView();

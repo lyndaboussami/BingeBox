@@ -1,12 +1,22 @@
 package groupna.projectNetflix.controllers;
 
+import java.io.IOException;
+import java.util.List;
+
+import groupna.projectNetflix.DAO.HistoryItem;
+import groupna.projectNetflix.entities.Episode;
 import groupna.projectNetflix.entities.Film;
 import groupna.projectNetflix.entities.Oeuvre;
+import groupna.projectNetflix.entities.Saison;
 import groupna.projectNetflix.entities.Serie;
 import groupna.projectNetflix.entities.User;
+import groupna.projectNetflix.services.EpisodeService;
+import groupna.projectNetflix.services.SaisonService;
 import groupna.projectNetflix.services.UserService;
 import groupna.projectNetflix.utils.Session;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -17,6 +27,8 @@ import javafx.scene.shape.Rectangle;
 
 public class FavsController {
 	private UserService userService=new UserService();
+	private EpisodeService episodeService = new EpisodeService();
+    private SaisonService saisonService = new SaisonService();
 	@FXML private FlowPane favsGrid;
 
     @FXML
@@ -36,9 +48,9 @@ public class FavsController {
         for (Oeuvre item : favs) {
         	VBox card;
             if (item instanceof Film film) {
-                card = createMovieCard(film); // Use the logic from MoviesController
+                card = createMovieCard(film);
             } else {
-                card = createSeriesCard((Serie) item); // Use the logic from SeriesController
+                card = createSeriesCard((Serie) item);
             }
             favsGrid.getChildren().add(card);        }
     }
@@ -47,7 +59,14 @@ public class FavsController {
         VBox card = new VBox(10);
         card.getStyleClass().add("movieCard");
 
-        // Poster with Badge Logic
+        card.setUserData(movie); 
+
+        MainViewController mainCtrl = MainViewController.getInstance();
+        if (mainCtrl != null) {
+            card.setOnMouseEntered(event -> mainCtrl.showDetails(event));
+            card.setOnMouseExited(event -> mainCtrl.hideDetails(event));
+        }
+        
         StackPane imageStack = new StackPane();
         
         ImageView poster = new ImageView();
@@ -91,6 +110,14 @@ public class FavsController {
         VBox card = new VBox(10);
         card.getStyleClass().add("movieCard");
 
+        card.setUserData(serie); 
+
+        MainViewController mainCtrl = MainViewController.getInstance();
+        if (mainCtrl != null) {
+            card.setOnMouseEntered(event -> mainCtrl.showDetails(event));
+            card.setOnMouseExited(event -> mainCtrl.hideDetails(event));
+        }
+
         StackPane stack = new StackPane();
         
         ImageView poster = new ImageView();
@@ -124,9 +151,56 @@ public class FavsController {
         card.getChildren().addAll(stack, title);
 
         card.setOnMouseClicked(e -> {
-            MainViewController.getInstance().loadDetailPage("SeriesDetailView.fxml", serie);
+        	User user = Session.getInstance().getUser();
+            List<HistoryItem> history = userService.recupererHistoriqueComplet(user.getId());
+            
+            HistoryItem lastWatched = history.stream()
+                    .filter(item -> item.getContent() instanceof Episode)
+                    .filter(item -> {
+                        int idSaison = episodeService.recupererIdSaison(((Episode)item.getContent()).getId());
+                        return saisonService.recupererIdSerie(idSaison) == serie.getId();
+                    })
+                    .findFirst()
+                    .orElse(null);
+            
+            if (lastWatched != null) {
+                Episode epToResume = (Episode) lastWatched.getContent();
+                int idSaison = episodeService.recupererIdSaison(epToResume.getId());
+                List<Episode> seasonEpisodes = episodeService.getEpisodesBySaison(idSaison);
+                
+                playEpisodeDirectly(epToResume, seasonEpisodes);
+                
+                } else {
+                    Saison firstSaison = serie.getSaisons().keySet().stream()
+                        .filter(s -> s.getNum() == 1).findFirst()
+                        .orElse(serie.getSaisons().keySet().iterator().next());
+                    
+                    List<Episode> s1Episodes = serie.getSaisons().get(firstSaison);
+                    if (s1Episodes != null && !s1Episodes.isEmpty()) {
+                        playEpisodeDirectly(s1Episodes.get(0), s1Episodes);
+                    }
+                }
         });
 
         return card;
+    }
+    private void playEpisodeDirectly(Episode ep, List<Episode> currentSeasonEpisodes) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/groupna/projectNetflix/view/VideoPlayerView.fxml"));
+            Parent playerView = loader.load();
+            VideoPlayerController controller = loader.getController();
+            
+            int startIndex = currentSeasonEpisodes.indexOf(ep);
+            controller.loadSeries(currentSeasonEpisodes, startIndex);
+                        
+            StackPane mainStack = (StackPane) favsGrid.getScene().getRoot();
+            mainStack.getChildren().add(playerView);
+            
+            controller.setOnCloseRequest(() -> {
+                controller.stopVideo();
+                ((StackPane) playerView.getParent()).getChildren().remove(playerView);            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

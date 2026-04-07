@@ -22,13 +22,6 @@ public class HistoryController extends BaseController {
     @FXML private VBox historyContainer;
     @FXML private Label emptyLabel;
 
-    //private final FilmService filmService = new FilmService();
-    //private final SerieService serieService = new SerieService();
-    
-	//List<Film> allFilms = DataStore.getMovies();
-    //List<Serie> allSeries = DataStore.getSeries();
-    
-
     @FXML
     public void initialize() {
         loadHistory();
@@ -43,19 +36,36 @@ public class HistoryController extends BaseController {
         } else {
             emptyLabel.setVisible(false);
             for(HistoryItem item:His) {
-            	if(item.getContent() instanceof Film) {
-            		Film f=(Film) item.getContent();
-            		historyContainer.getChildren().add(createHistoryRow(f.getTitre(), f.getPathPoster(),item.getDateVisionnage().toString(), "Movie"));
+            	HBox row;
+            	if(item.getContent() instanceof Film f) {
+            		row = createHistoryRow(f.getTitre(), f.getPathPoster(), item.getDateVisionnage().toString(), "Movie");
+            		
+            		row.setOnMouseClicked(event -> {
+                        MainViewController.getInstance().setSelectedContent(f);
+                        MainViewController.getInstance().loadPage("MovieDetailView.fxml");
+                    });
+            		historyContainer.getChildren().add(row);
             	}
             	else {
             		Episode e=(Episode) item.getContent();
-            		int idSaison=saisonService.getSaisonById(episodeService.recupererIdSaison(e.getId())).getId();
-            		int numSaison=saisonService.getSaisonById(episodeService.recupererIdSaison(e.getId())).getNum();
-            		String TitreSerie=serieService.getSerieById(saisonService.recupererIdSerie(idSaison)).getTitre();
-            		String detail=TitreSerie+"S"+numSaison+"Ep"+e.getNumero();
-            		historyContainer.getChildren().add(createHistoryRow(detail, e.getPathMiniaure(), item.getDateVisionnage().toString(), "Series"));
+            		int idSaison = episodeService.recupererIdSaison(e.getId());
+                    Saison s = saisonService.getSaisonById(idSaison);
+                    int numSaison = s.getNum();
+                    
+                    int idSerie = saisonService.recupererIdSerie(idSaison);
+                    Serie serie = serieService.getSerieById(idSerie);
+                    String TitreSerie = serie.getTitre();
+                    
+                    String detail = TitreSerie + " S" + numSaison + " Ep" + e.getNumero();
+                    
+                    row = createHistoryRow(detail, e.getPathMiniaure(), item.getDateVisionnage().toString(), "Series");
+                    
+                    row.setOnMouseClicked(event -> {
+                    	MainViewController.getInstance().setSelectedContent(serie);
+                        MainViewController.getInstance().loadPage("SeriesDetailView.fxml");
+                    });
+                    historyContainer.getChildren().add(row);
             	}
-            
             }
         }
     }
@@ -65,23 +75,19 @@ public class HistoryController extends BaseController {
         row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
         row.setStyle("-fx-padding: 15; -fx-background-color: -fx-text-muted; -fx-background-radius: 10; -fx-cursor: hand;");
         
-        // Hover effect
         row.setOnMouseEntered(e -> row.setStyle("-fx-padding: 15; -fx-background-color: -fx-accent; -fx-background-radius: 10; -fx-cursor: hand;"));
         row.setOnMouseExited(e -> row.setStyle("-fx-padding: 15; -fx-background-color: -fx-text-muted; -fx-background-radius: 10; -fx-cursor: hand;"));
 
-        // Poster
         ImageView poster = new ImageView();
         try {
             poster.setImage(new Image(getClass().getResourceAsStream(imagePath)));
         } catch (Exception e) {
-            // Fallback if image path is wrong
             System.err.println("Could not load history image: " + imagePath);
         }
         poster.setFitHeight(80);
         poster.setFitWidth(60);
         poster.setPreserveRatio(true);
 
-        // Info
         VBox info = new VBox(5);
         Label titleLabel = new Label(titleText);
         titleLabel.setStyle("-fx-text-fill: -fx-text-main; -fx-font-size: 18px; -fx-font-weight: bold;");

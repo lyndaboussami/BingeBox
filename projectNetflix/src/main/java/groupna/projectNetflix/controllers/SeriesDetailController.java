@@ -2,11 +2,16 @@ package groupna.projectNetflix.controllers;
 
 import groupna.projectNetflix.entities.Serie;
 import groupna.projectNetflix.entities.User;
+import groupna.projectNetflix.services.CommentaireService;
+import groupna.projectNetflix.services.RateService;
 import groupna.projectNetflix.services.UserService;
 import groupna.projectNetflix.utils.Session;
 import groupna.projectNetflix.entities.Saison;
+import groupna.projectNetflix.DAO.HistoryItem;
+import groupna.projectNetflix.entities.Commentaire;
 import groupna.projectNetflix.entities.Episode;
 import groupna.projectNetflix.entities.Oeuvre;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -31,6 +36,14 @@ public class SeriesDetailController {
     
     @FXML private ImageView heroBlurredPoster;
     @FXML private ImageView seriesSharpPoster;
+    
+    private RateService rateService = new RateService();
+    private CommentaireService service = new CommentaireService();
+    
+    private int currentRating = 0;
+    @FXML private HBox starContainer;
+    @FXML private TextField commentField;
+    @FXML private VBox commentsContainer;
     
     @FXML
     private void handleBack() {
@@ -78,9 +91,22 @@ public class SeriesDetailController {
     @FXML
     public void initialize() {
         Object content = MainViewController.getInstance().getSelectedContent();
-        
+        User user =Session.getInstance().getUser();
+
         if (content instanceof Serie series) {
             if (seriesTitle != null) seriesTitle.setText(series.getTitre().toUpperCase());
+            
+            currentRating=rateService.getNoteUtilisateur(user.getId(),series.getId(), "series");
+    		
+        	for (int i = 0; i < starContainer.getChildren().size(); i++) {
+                Button star = (Button) starContainer.getChildren().get(i);
+                if (i < currentRating) {
+                    star.setStyle("-fx-text-fill: #ffcc00; -fx-background-color: transparent; -fx-font-size: 24px;"); // Gold
+                } else {
+                    star.setStyle("-fx-text-fill: #555; -fx-background-color: transparent; -fx-font-size: 24px;"); // Grey
+                }
+            }
+            
             String path = series.getPathPoster();
             
             if (path != null) {
@@ -115,7 +141,6 @@ public class SeriesDetailController {
                     seasonSelector.getItems().add("Season " + s.getNum());
                 }
                 
-                // Select first season by default
                 seasonSelector.getSelectionModel().selectFirst();
                 
                 String initialValue = seasonSelector.getValue();
@@ -124,6 +149,7 @@ public class SeriesDetailController {
                 }
                 seasonSelector.setOnAction(e -> loadEpisodes(series, seasonSelector.getValue()));
             }
+            loadComments(series.getId());
             setupFavLogic(series);
         }
     }
@@ -187,9 +213,44 @@ public class SeriesDetailController {
     	
         HBox row = new HBox(20);
         row.getStyleClass().add("episode-row");
-        row.setStyle("-fx-background-color: -fx-card-bg; -fx-padding: 15; -fx-background-radius: 10;");
+        row.setStyle("-fx-background-color: -fx-card-bg; -fx-padding: 15; -fx-background-radius: 10; -fx-cursor: hand;");
         row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
+        row.setOnMouseEntered(e -> row.setStyle("-fx-background-color: #2a2f41; -fx-padding: 15; -fx-background-radius: 10; -fx-cursor: hand;"));
+        row.setOnMouseExited(e -> row.setStyle("-fx-background-color: -fx-card-bg; -fx-padding: 15; -fx-background-radius: 10; -fx-cursor: hand;"));
+        
+        User user = Session.getInstance().getUser();
+        List<HistoryItem> history = userService.recupererHistoriqueComplet(user.getId());
+        
+        HistoryItem epHistory = history.stream()
+                .filter(item -> item.getContent() instanceof Episode e && e.getId() == ep.getId())
+                .findFirst()
+                .orElse(null);
+        
+        Label progressStatus = new Label();
+
+        if (epHistory != null) {
+            double timeWatchedSeconds = epHistory.getTime(); 
+            
+            long totalDurationSeconds = ep.getDuree().toSecondOfDay(); 
+
+            double percentage = (timeWatchedSeconds / totalDurationSeconds) * 100;
+
+            if (percentage >= 90) {
+                progressStatus.setText("✓ WATCHED");
+                progressStatus.setStyle("-fx-text-fill: #2ecc71; -fx-font-size: 11px; -fx-font-weight: bold;");
+            } else if (percentage > 1) {
+                progressStatus.setText("● IN PROGRESS");
+                progressStatus.setStyle("-fx-text-fill: #f1c40f; -fx-font-size: 11px; -fx-font-weight: bold;");
+            } else {
+                progressStatus.setText("NEW");
+                progressStatus.setStyle("-fx-text-fill: #3498db; -fx-font-size: 11px; -fx-font-weight: bold;");
+            }
+        } else {
+            progressStatus.setText("NEW");
+            progressStatus.setStyle("-fx-text-fill: #3498db; -fx-font-size: 11px; -fx-font-weight: bold;");
+        }
+        
         StackPane thumb = new StackPane(new Label("EP " + ep.getNumero()));
         thumb.setPrefSize(180, 100);
         thumb.setStyle("-fx-background-color: #1a1f31; -fx-background-radius: 5;");
@@ -198,6 +259,7 @@ public class SeriesDetailController {
         Label title = new Label(ep.getNumero() + ". " + ep.getTitre());
         title.setStyle("-fx-text-fill: -fx-text-main; -fx-font-weight: bold; -fx-font-size: 16px;");
         
+        
         Label desc = new Label(ep.getResume());
         desc.setWrapText(true);
         desc.setStyle("-fx-text-fill: -fx-text-muted; -fx-font-size: 13px;");
@@ -205,7 +267,7 @@ public class SeriesDetailController {
         Label duration = new Label(ep.getDuree().toString() + "m");
         duration.setStyle("-fx-text-fill: -fx-accent;");
 
-        info.getChildren().addAll(title, desc, duration);
+        info.getChildren().addAll(progressStatus, title, desc, duration);
         HBox.setHgrow(info, Priority.ALWAYS);
 
         Button playBtn = new Button("▶");
@@ -214,9 +276,7 @@ public class SeriesDetailController {
         playBtn.setOnAction(e -> playEpisode(ep, allEpisodesInSeason));
         
         row.setOnMouseClicked(e -> {
-            if (e.getClickCount() == 2) { // Double click to play
-                playEpisode(ep, allEpisodesInSeason);
-            }
+            playEpisode(ep, allEpisodesInSeason);
         });
         
         row.getChildren().addAll(thumb, info, playBtn);
@@ -246,9 +306,118 @@ public class SeriesDetailController {
 
     private void updateHeartStyle(boolean isFav) {
         if (isFav) {
-            favButton.setStyle("-fx-text-fill: #ff4d4d;"); // Red for active
+            favButton.setStyle("-fx-text-fill: #ff4d4d;");
         } else {
-            favButton.setStyle("-fx-text-fill: white;"); // White for inactive
-            }
+            favButton.setStyle("-fx-text-fill: white;");
         }
     }
+    
+    @FXML
+    private void handleRate(ActionEvent event) {
+        User user = Session.getInstance().getUser();
+        Serie selected = (Serie) MainViewController.getInstance().getSelectedContent();
+        Button clickedStar = (Button) event.getSource();
+        currentRating = Integer.parseInt(clickedStar.getUserData().toString());
+        
+        for (int i = 0; i < starContainer.getChildren().size(); i++) {
+            Button star = (Button) starContainer.getChildren().get(i);
+            if (i < currentRating) {
+                star.setStyle("-fx-text-fill: #ffcc00; -fx-background-color: transparent; -fx-font-size: 24px;");
+            } else {
+                star.setStyle("-fx-text-fill: #555; -fx-background-color: transparent; -fx-font-size: 24px;");
+            }
+        }
+        rateService.noterContenu(user.getId(), selected.getId(), currentRating, "serie");
+    }
+
+    @FXML
+    private void handlePostComment() {
+        try {
+            String text = commentField.getText();
+            if (text == null || text.trim().isEmpty()) {
+                showError("comment invalide", "you can't post an empty comment");
+                return;
+            }
+
+            User user = Session.getInstance().getUser();
+            Serie series = (Serie) MainViewController.getInstance().getSelectedContent();
+            
+            Commentaire newComment = new Commentaire(user.getId(), series.getId(), text, false, null, 0);
+            
+            boolean success = service.posterCommentaire(newComment, "serie");
+            if (success) {
+                commentsContainer.getChildren().add(0, createCommentNode(newComment));
+                commentField.clear();
+            }
+        } catch (Exception e) {
+            showError("Critical Error", "An unexpected error occurred.");
+            e.printStackTrace();
+        }   
+    }
+    
+    private void loadComments(int seriesId) {
+        commentsContainer.getChildren().clear();
+        service.recupererCommentairesOeuvre(seriesId, "serie").forEach(comment -> {
+            commentsContainer.getChildren().add(createCommentNode(comment));
+        });
+    }
+    
+    private VBox createCommentNode(Commentaire comment) {
+        VBox commentBox = new VBox(8);
+        commentBox.setStyle("-fx-background-color: #1a1a1a; -fx-padding: 10; -fx-background-radius: 5;");
+        User user = Session.getInstance().getUser();
+
+        Label userLabel = new Label(userService.recupererUtilisateurParId(comment.getId_user()).toString());
+        userLabel.setStyle("-fx-text-fill: -fx-text-muted; -fx-font-size: 12px; -fx-font-weight: bold;");
+
+        Label contentLabel = new Label(comment.getContent());
+        contentLabel.setWrapText(true);
+        contentLabel.setStyle("-fx-text-fill: white;");
+
+        HBox footer = new HBox(10);
+        footer.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+
+        if (comment.isReported()) {
+            Label reportedLabel = new Label("🔺Under Review");
+            reportedLabel.setStyle("-fx-text-fill: #ff6b6b; -fx-font-style: italic; -fx-font-size: 12px;");
+            footer.getChildren().add(reportedLabel);
+        } else {
+            if(comment.getId_user() != user.getId()) {
+                Button reportBtn = new Button("Report");
+                reportBtn.getStyleClass().add("navButton");
+                reportBtn.setStyle("-fx-font-size: 11px; -fx-cursor: hand; -fx-text-fill: -fx-text-muted;");
+                reportBtn.setOnAction(e -> handleReportClick(comment, commentBox));
+                footer.getChildren().add(reportBtn);
+            }
+        }
+
+        commentBox.getChildren().addAll(userLabel, contentLabel, footer);
+        return commentBox;
+    }
+    
+    private void handleReportClick(Commentaire comment, VBox commentBox) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Report Comment");
+        dialog.setHeaderText("Why are you reporting this comment?");
+        dialog.setContentText("Please specify the reason:");
+
+        dialog.showAndWait().ifPresent(reason -> {
+            if (!reason.trim().isEmpty()) {
+                boolean success = service.signalerAbus(comment.getId(), "serie", reason);
+                
+                if (success) {
+                    comment.setReported(true);
+                    int index = commentsContainer.getChildren().indexOf(commentBox);
+                    commentsContainer.getChildren().set(index, createCommentNode(comment));
+                }
+            }
+        });
+    }
+
+    private void showError(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+}

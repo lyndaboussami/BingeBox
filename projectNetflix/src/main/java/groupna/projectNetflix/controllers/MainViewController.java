@@ -1,6 +1,8 @@
 package groupna.projectNetflix.controllers;
 
+import groupna.projectNetflix.entities.Film;
 import groupna.projectNetflix.entities.Role;
+import groupna.projectNetflix.entities.Serie;
 import groupna.projectNetflix.entities.User;
 import groupna.projectNetflix.services.RateService;
 import groupna.projectNetflix.utils.Session;
@@ -279,7 +281,7 @@ public class MainViewController {
     }
     
     @FXML
-    public void showDetails(javafx.scene.input.MouseEvent event) {
+    public void showDetails(MouseEvent event) {
         Node card = (Node) event.getSource();
         Object data = card.getUserData();
         RateService rating= new RateService();
@@ -287,7 +289,7 @@ public class MainViewController {
 
         StringBuilder sb = new StringBuilder();
 
-        if (data instanceof groupna.projectNetflix.entities.Film f) {
+        if (data instanceof Film f) {
 
         	sb.append("🎬 ").append(f.getTitre())
               .append(" (").append(f.getDateDeSortie().getYear()).append(")\n");
@@ -304,7 +306,7 @@ public class MainViewController {
             
             sb.append("\n\"").append(truncateResume(f.getResume())).append("\"");
         } 
-        else if (data instanceof groupna.projectNetflix.entities.Serie s) {
+        else if (data instanceof Serie s) {
             int seasonCount = (s.getSaisons() != null) ? s.getSaisons().size() : 0;
             
             sb.append("📺 ").append(s.getTitre())
@@ -328,8 +330,8 @@ public class MainViewController {
         tooltip.setPrefWidth(280); 
         
         tooltip.setStyle(
-            "-fx-background-color: #0d111a;" + // Slightly darker navy
-            "-fx-text-fill: #e6d7c4;" +        // Beige text
+            "-fx-background-color: #0d111a;" +
+            "-fx-text-fill: #e6d7c4;" +
             "-fx-font-family: 'Segoe UI', system-ui;" +
             "-fx-font-size: 13px;" +
             "-fx-padding: 15;" +

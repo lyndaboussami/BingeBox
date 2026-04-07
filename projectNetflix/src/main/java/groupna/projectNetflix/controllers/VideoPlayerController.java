@@ -9,6 +9,8 @@ import javafx.scene.layout.*;
 import javafx.scene.media.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.net.URL;
 import java.util.*;
 
 import groupna.projectNetflix.DAO.HistoryItem;
@@ -40,9 +42,8 @@ public class VideoPlayerController {
     private double time;
     private int currentIdEpisode;
 
-    //private static final Map<Integer, Double> localWatchHistory = new HashMap<>();
+    private double startOffset = 0;
 
-    
     
     private void initializePlayer(String url) {
     	if (mediaPlayer != null) {
@@ -63,15 +64,12 @@ public class VideoPlayerController {
             });
             mediaView.setPreserveRatio(true);
 
-            //volume
             mediaPlayer.volumeProperty().bind(volumeSlider.valueProperty().divide(100));
 
-            //slider/time labels
             mediaPlayer.currentTimeProperty().addListener((obs, oldTime, newTime) -> {
                 updateUI(newTime);
             });
 
-            //slider interactions (drag/click)
             progressBar.valueProperty().addListener((obs, oldVal, newVal) -> {
                 if (progressBar.isValueChanging()) {
                     double total = mediaPlayer.getTotalDuration().toMillis();
@@ -109,28 +107,36 @@ public class VideoPlayerController {
         if (currentIndex < 0 || currentIndex >= playlist.size()) return;
 
         Episode ep = playlist.get(currentIndex);
-        String url = getClass().getResource(ep.getPathEp()).toExternalForm();
+        
+        String path = ep.getPathEp(); 
+        URL resource = getClass().getResource(path);
+        
+        if (resource == null) {
+            System.err.println("Could not find video file at: " + path);
+            return;
+        }
+        
+        String url = resource.toExternalForm();
         this.currentIdEpisode=ep.getId();
+        
         initializePlayer(url);
         nextEpisodeOverlay.setVisible(false);
+        
         User user = Session.getInstance().getUser();
+        
         Optional<HistoryItem> alreadyWatched = userService.recupererHistoriqueComplet(user.getId())
-            .stream()
-            .filter(a -> {
-                Object content = a.getContent();
-                if (content instanceof Episode ) {
-                    return ((Episode) content).getId() == ep.getId();
-                }
-                return false; 
-            })
-            .findFirst();
-        if (alreadyWatched.isPresent() && alreadyWatched.get().getTime() > 5.0) {
+                .stream()
+                .filter(a -> a.getContent() instanceof Episode e && e.getId() == ep.getId())
+                .findFirst();
+        
+        if (alreadyWatched.isPresent() && alreadyWatched.get().getTime() > 10.0) {
             showResumeDialog(alreadyWatched.get().getTime());
         } 
         else {
             mediaPlayer.play();
             playPauseBtn.setText("⏸");
         }
+        
         mediaPlayer.setOnEndOfMedia(() -> {
         	userService.marquerEpisodeCommeVu(user.getId(), ep.getId(),mediaPlayer.getCurrentTime().toSeconds());
             if (currentIndex < playlist.size() - 1) {
@@ -155,13 +161,11 @@ public class VideoPlayerController {
     	if (mediaPlayer == null || mediaPlayer.getTotalDuration() == null || timeLabel == null) {
             return; 
         }
-        // Update Slider position
         if (!progressBar.isValueChanging()) {
             double progress = (currentTime.toMillis() / mediaPlayer.getTotalDuration().toMillis()) * 100;
             progressBar.setValue(progress);
         }
 
-        // Update Time Label
         timeLabel.setText(formatTime(currentTime) + " / " + formatTime(mediaPlayer.getTotalDuration()));
     }
 
@@ -192,6 +196,11 @@ public class VideoPlayerController {
 
     @FXML
     private void togglePlay() {
+    	
+    	if (mediaPlayer == null) {
+            return;
+        }
+    	
         if (mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
             mediaPlayer.pause();
             playPauseBtn.setText("▶");
@@ -257,4 +266,9 @@ public class VideoPlayerController {
     public double getTime() {
 		return time;
 	}
+    
+    public void resumeAt(double seconds) {
+        this.startOffset = seconds;
+    }
+    
 }

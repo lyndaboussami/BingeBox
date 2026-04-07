@@ -48,6 +48,7 @@ public class MovieDetailController {
     public void initialize() {
         Object content = MainViewController.getInstance().getSelectedContent();
         User user =Session.getInstance().getUser();
+        
         if (content instanceof Film movie) {
         	currentRating=rateService.getNoteUtilisateur(user.getId(),movie.getId(), "film");
     		
@@ -75,6 +76,7 @@ public class MovieDetailController {
                     System.err.println("Error loading poster: " + posterPath);
                 }
             }
+            
             String categories = movie.getCat().stream()
                     .map(Categorie::getLabel)
                     .collect(Collectors.joining(", "));
@@ -90,6 +92,7 @@ public class MovieDetailController {
             movieDescription.setText(movie.getResume());
             movieMeta.setText(movie.getDateDeSortie().getYear() + "  •  " 
             				+ movie.getDuree().getHour()+"h"+String.format("%02d", movie.getDuree().getMinute()));
+            
             setupFavLogic(movie);
             loadComments(movie.getId());
         }
@@ -123,7 +126,6 @@ public class MovieDetailController {
 
                 String fullUrl = resource.toExternalForm();
                 
-                // Open the player window
                 openVideoPlayer(idFilm,time,fullUrl, film.getTitre());
                 //userService.marquerFilmCommeVu(user.getId(), movie.getId());
 
@@ -197,9 +199,9 @@ public class MovieDetailController {
         for (int i = 0; i < starContainer.getChildren().size(); i++) {
             Button star = (Button) starContainer.getChildren().get(i);
             if (i < currentRating) {
-                star.setStyle("-fx-text-fill: #ffcc00; -fx-background-color: transparent; -fx-font-size: 24px;"); // Gold
+                star.setStyle("-fx-text-fill: #ffcc00; -fx-background-color: transparent; -fx-font-size: 24px;");
             } else {
-                star.setStyle("-fx-text-fill: #555; -fx-background-color: transparent; -fx-font-size: 24px;"); // Grey
+                star.setStyle("-fx-text-fill: #555; -fx-background-color: transparent; -fx-font-size: 24px;");
             }
         }
         rateService.noterContenu(user.getId(), ((Film) selected).getId(), currentRating, "film");
@@ -244,16 +246,14 @@ public class MovieDetailController {
         VBox commentBox = new VBox(8);
         commentBox.setStyle("-fx-background-color: #1a1a1a; -fx-padding: 10; -fx-background-radius: 5;");
         User user=Session.getInstance().getUser();
-        // à ajouter :a way to get the name from id_user
+
         Label userLabel = new Label(userService.recupererUtilisateurParId(comment.getId_user()).toString());
         userLabel.setStyle("-fx-text-fill: -fx-text-muted; -fx-font-size: 12px; -fx-font-weight: bold;");
 
-        // Content: The actual text
         Label contentLabel = new Label(comment.getContent());
         contentLabel.setWrapText(true);
         contentLabel.setStyle("-fx-text-fill: white;");
 
-        // Report Section
         HBox footer = new HBox(10);
         footer.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
 
@@ -310,7 +310,7 @@ public class MovieDetailController {
             }
 
             try {
-                /*URL*/String resource = getClass().getResource(trailerPath).toExternalForm();
+                String resource = getClass().getResource(trailerPath).toExternalForm();
                 if (resource != null) {
                     openVideoPlayer(0,0.0,resource, movie.getTitre() + " - Trailer");
                 } else {

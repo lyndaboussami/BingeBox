@@ -56,8 +56,16 @@ public class SeriesController extends BaseController{
 
     private VBox createSeriesCard(Serie serie) {
         VBox card = new VBox(10);
-        card.getStyleClass().add("movieCard");
+        card.getStyleClass().add("seriesCard");
 
+        card.setUserData(serie); 
+
+        MainViewController mainCtrl = MainViewController.getInstance();
+        if (mainCtrl != null) {
+            card.setOnMouseEntered(event -> mainCtrl.showDetails(event));
+            card.setOnMouseExited(event -> mainCtrl.hideDetails(event));
+        }
+        
         StackPane stack = new StackPane();
         
         ImageView poster = new ImageView();
