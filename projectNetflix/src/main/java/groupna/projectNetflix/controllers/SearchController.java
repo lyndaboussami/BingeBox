@@ -142,7 +142,7 @@ public class SearchController extends BaseController{
     
     private VBox createMediaCard(Object data) {
         VBox card = new VBox();
-        card.getStyleClass().add("movieCard");
+        card.getStyleClass().add("seriesCard");
         card.setSpacing(10);
         
         card.setUserData(data); 

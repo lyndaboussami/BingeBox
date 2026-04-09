@@ -57,7 +57,7 @@ public class FavsController {
     
     private VBox createMovieCard(Film movie) {
         VBox card = new VBox(10);
-        card.getStyleClass().add("movieCard");
+        card.getStyleClass().add("seriesCard");
 
         card.setUserData(movie); 
 
@@ -108,7 +108,7 @@ public class FavsController {
     
     private VBox createSeriesCard(Serie serie) {
         VBox card = new VBox(10);
-        card.getStyleClass().add("movieCard");
+        card.getStyleClass().add("seriesCard");
 
         card.setUserData(serie); 
 

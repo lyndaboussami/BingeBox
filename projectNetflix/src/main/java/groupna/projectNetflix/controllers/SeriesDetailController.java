@@ -21,6 +21,7 @@ import javafx.scene.image.*;
 import javafx.scene.layout.*;
 
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.List;
 
 public class SeriesDetailController {
@@ -212,9 +213,10 @@ public class SeriesDetailController {
     private HBox createEpisodeRow(Episode ep, List<Episode> allEpisodesInSeason) {
     	
         HBox row = new HBox(20);
+        row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
         row.getStyleClass().add("episode-row");
         row.setStyle("-fx-background-color: -fx-card-bg; -fx-padding: 15; -fx-background-radius: 10; -fx-cursor: hand;");
-        row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
         row.setOnMouseEntered(e -> row.setStyle("-fx-background-color: #2a2f41; -fx-padding: 15; -fx-background-radius: 10; -fx-cursor: hand;"));
         row.setOnMouseExited(e -> row.setStyle("-fx-background-color: -fx-card-bg; -fx-padding: 15; -fx-background-radius: 10; -fx-cursor: hand;"));
@@ -227,28 +229,23 @@ public class SeriesDetailController {
                 .findFirst()
                 .orElse(null);
         
-        Label progressStatus = new Label();
-
+        Label progressStatus = new Label("NEW");
+        progressStatus.setStyle("-fx-text-fill: #D2B48C; -fx-font-weight: bold;");
+        
         if (epHistory != null) {
-            double timeWatchedSeconds = epHistory.getTime(); 
+
+        	LocalTime duration = ep.getDuree();
+            long totalSeconds = duration.getHour() * 3600 + duration.getMinute() * 60 + duration.getSecond();
             
-            long totalDurationSeconds = ep.getDuree().toSecondOfDay(); 
-
-            double percentage = (timeWatchedSeconds / totalDurationSeconds) * 100;
-
-            if (percentage >= 90) {
+            double percentage = (epHistory.getTime() / (double) totalSeconds) * 100;
+            
+        	if (percentage >= 90) {
                 progressStatus.setText("✓ WATCHED");
-                progressStatus.setStyle("-fx-text-fill: #2ecc71; -fx-font-size: 11px; -fx-font-weight: bold;");
-            } else if (percentage > 1) {
-                progressStatus.setText("● IN PROGRESS");
-                progressStatus.setStyle("-fx-text-fill: #f1c40f; -fx-font-size: 11px; -fx-font-weight: bold;");
-            } else {
-                progressStatus.setText("NEW");
-                progressStatus.setStyle("-fx-text-fill: #3498db; -fx-font-size: 11px; -fx-font-weight: bold;");
+                progressStatus.setStyle("-fx-text-fill: #F5F5DC;");
+            } else if (percentage > 2) {
+                progressStatus.setText("● " + (int)percentage + "%");
+                progressStatus.setStyle("-fx-text-fill: #F5F5DC;");
             }
-        } else {
-            progressStatus.setText("NEW");
-            progressStatus.setStyle("-fx-text-fill: #3498db; -fx-font-size: 11px; -fx-font-weight: bold;");
         }
         
         StackPane thumb = new StackPane(new Label("EP " + ep.getNumero()));

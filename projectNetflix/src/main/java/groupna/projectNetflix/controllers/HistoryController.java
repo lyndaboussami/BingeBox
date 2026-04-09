@@ -10,6 +10,7 @@ import groupna.projectNetflix.utils.Session;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.image.*;
 
 import java.util.List;
@@ -31,20 +32,24 @@ public class HistoryController extends BaseController {
     	User user=Session.getInstance().getUser();
         historyContainer.getChildren().clear();
         List<HistoryItem> His=userService.recupererHistoriqueComplet(user.getId());
+        
         if (His.isEmpty()) {
             emptyLabel.setVisible(true);
         } else {
             emptyLabel.setVisible(false);
             for(HistoryItem item:His) {
             	HBox row;
+            	
             	if(item.getContent() instanceof Film f) {
-            		row = createHistoryRow(f.getTitre(), f.getPathPoster(), item.getDateVisionnage().toString(), "Movie");
             		
+            		row = createHistoryRow(f.getTitre(), f.getPathPoster(), 
+                            "Watched: " + item.getDateVisionnage().toLocalDateTime().toLocalDate(), 
+                            "🎬");
+            		            		
             		row.setOnMouseClicked(event -> {
                         MainViewController.getInstance().setSelectedContent(f);
                         MainViewController.getInstance().loadPage("MovieDetailView.fxml");
                     });
-            		historyContainer.getChildren().add(row);
             	}
             	else {
             		Episode e=(Episode) item.getContent();
@@ -58,46 +63,68 @@ public class HistoryController extends BaseController {
                     
                     String detail = TitreSerie + " S" + numSaison + " Ep" + e.getNumero();
                     
-                    row = createHistoryRow(detail, e.getPathMiniaure(), item.getDateVisionnage().toString(), "Series");
+                    row = createHistoryRow(detail, e.getPathMiniaure(), "Watched: " + item.getDateVisionnage().toLocalDateTime().toLocalDate(), "📺");
                     
                     row.setOnMouseClicked(event -> {
                     	MainViewController.getInstance().setSelectedContent(serie);
                         MainViewController.getInstance().loadPage("SeriesDetailView.fxml");
                     });
-                    historyContainer.getChildren().add(row);
             	}
+            	historyContainer.getChildren().add(row);
             }
         }
     }
 
     private HBox createHistoryRow(String titleText, String imagePath, String timeAgo, String type) {
         HBox row = new HBox(20);
-        row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-        row.setStyle("-fx-padding: 15; -fx-background-color: -fx-text-muted; -fx-background-radius: 10; -fx-cursor: hand;");
         
-        row.setOnMouseEntered(e -> row.setStyle("-fx-padding: 15; -fx-background-color: -fx-accent; -fx-background-radius: 10; -fx-cursor: hand;"));
-        row.setOnMouseExited(e -> row.setStyle("-fx-padding: 15; -fx-background-color: -fx-text-muted; -fx-background-radius: 10; -fx-cursor: hand;"));
+        row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
+        row.setStyle("-fx-padding: 15; -fx-background-color: transparent; -fx-background-radius: 12; " +
+                " -fx-border-width: 0.5; -fx-cursor: hand;");
+   
+        row.setOnMouseEntered(e -> row.setStyle("-fx-padding: 15; -fx-background-color: -fx-accent; -fx-background-radius: 12; " +
+	                                           "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 4); -fx-cursor: hand;"));
+        row.setOnMouseExited(e -> row.setStyle("-fx-padding: 15; -fx-background-color: transparent; -fx-background-radius: 12; " +
+	                                          " -fx-border-width: 0.5;"));
+	   
         ImageView poster = new ImageView();
         try {
             poster.setImage(new Image(getClass().getResourceAsStream(imagePath)));
         } catch (Exception e) {
             System.err.println("Could not load history image: " + imagePath);
         }
-        poster.setFitHeight(80);
-        poster.setFitWidth(60);
-        poster.setPreserveRatio(true);
-
-        VBox info = new VBox(5);
-        Label titleLabel = new Label(titleText);
-        titleLabel.setStyle("-fx-text-fill: -fx-text-main; -fx-font-size: 18px; -fx-font-weight: bold;");
         
-        Label typeLabel = new Label(type + " • " + timeAgo);
-        typeLabel.setStyle("-fx-text-fill: -fx-button-text; -fx-font-size: 13px;");
+        poster.setFitHeight(90);
+        poster.setFitWidth(140);
+        poster.setPreserveRatio(false);
 
-        info.getChildren().addAll(titleLabel, typeLabel);
-        row.getChildren().addAll(poster, info);
+        
+        Rectangle clip = new Rectangle(140, 90);
+        clip.setArcWidth(15); clip.setArcHeight(15);
+        poster.setClip(clip);
+        
+        
+        VBox info = new VBox(8);
+        
+        
+        info.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        HBox.setHgrow(info, Priority.ALWAYS);
 
+        Label titleLabel = new Label(titleText);
+        titleLabel.setStyle("-fx-text-fill: -fx-text-dim; -fx-font-size: 18px; -fx-font-weight: bold;");
+        
+        Label subLabel = new Label(type + " • " + timeAgo);
+        subLabel.setStyle("-fx-text-fill: -fx-text-dim; -fx-font-size: 13px;");
+        
+        
+        info.getChildren().addAll(titleLabel, subLabel);
+        
+        Label playIcon = new Label("▶");
+        playIcon.setStyle("-fx-text-fill: -fx-accent; -fx-font-size: 24px;");
+
+        row.getChildren().addAll(poster, info, playIcon);
+        
         return row;
     }
 
