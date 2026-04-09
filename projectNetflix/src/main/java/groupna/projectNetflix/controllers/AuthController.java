@@ -31,7 +31,8 @@ public class AuthController extends BaseController{
     @FXML private TextField resetEmailField;
     
     private boolean isLoginMode = true;
-
+    private boolean isSuperAdminCreation = false;
+    
     @FXML
     private void toggleAuthMode() {
         isLoginMode = !isLoginMode;
@@ -65,6 +66,17 @@ public class AuthController extends BaseController{
         }
     }
 
+    public void setSuperAdminCreation(boolean value) {
+        this.isSuperAdminCreation = value;
+        if (value) {
+            isLoginMode = true;
+            toggleAuthMode();
+            authTitle.setText("Create Admin");
+            switchText.setVisible(false);
+            switchLink.setVisible(false);
+        }
+    }
+    
     @FXML
     private void handleSubmit() {
     	if(isLoginMode) {
@@ -111,9 +123,15 @@ public class AuthController extends BaseController{
     		    handleAlert("password not confirmed", "you have to confirme your password");
     		    return;
     		}
-    		int inscrireUtilisateur = userService.inscrireUtilisateur(new User(0, nom, prenom, email, ConfirmPass, Role.USER));
+    		Role assignedRole = isSuperAdminCreation ? Role.ADMIN : Role.USER;
+    		int inscrireUtilisateur = userService.inscrireUtilisateur(new User(0, nom, prenom, email, ConfirmPass, assignedRole));
     		Session.getInstance().setUser(userService.recupererUtilisateurParId(inscrireUtilisateur));
-    		MainViewController.getInstance().unlockFullApp();
+    		if (isSuperAdminCreation) {
+    		    handleAlert("Success", "Admin account created! You can now close this and run the BingeBox app.");
+    		    // ((Stage) submitBtn.getScene().getWindow()).close();
+    		} else {
+    		    MainViewController.getInstance().unlockFullApp();
+    		}
     	}
     }
     @FXML
