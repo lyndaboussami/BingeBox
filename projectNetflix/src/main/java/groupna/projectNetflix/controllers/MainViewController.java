@@ -79,6 +79,9 @@ public class MainViewController {
         loadPage("HomeView.fxml");
     }
     	
+    private double xOffset = 0;
+    private double yOffset = 0;
+    
     private void setupWindowControls() {
         if (navbar != null) {
             navbar.setOnMousePressed(event -> {
@@ -103,17 +106,16 @@ public class MainViewController {
         });
     }   
     
-    private double xOffset = 0;
-    private double yOffset = 0;
+    private static final int RESIZE_MARGIN = 8;
+    private double startX, startY;
 
     public void makeResizable(Stage stage, Node root) {
-        final int RESIZE_MARGIN = 10;
 
         root.setOnMouseMoved(event -> {
             double x = event.getX();
             double y = event.getY();
-            double width = stage.getWidth();
-            double height = stage.getHeight();
+            double width = root.getBoundsInLocal().getWidth();
+            double height = root.getBoundsInLocal().getHeight();
 
             Cursor cursor = Cursor.DEFAULT;
 
@@ -129,30 +131,51 @@ public class MainViewController {
             root.setCursor(cursor);
         });
 
+        root.setOnMousePressed(event -> {
+            startX = event.getScreenX();
+            startY = event.getScreenY();
+        });
+
         root.setOnMouseDragged(event -> {
-            double mouseX = event.getScreenX();
-            double mouseY = event.getScreenY();
+            Cursor cursor = root.getCursor();
 
-            if (root.getCursor() != Cursor.DEFAULT) {
+            double dx = event.getScreenX() - startX;
+            double dy = event.getScreenY() - startY;
 
-                if (root.getCursor() == Cursor.E_RESIZE || root.getCursor() == Cursor.SE_RESIZE || root.getCursor() == Cursor.NE_RESIZE) {
-                    stage.setWidth(mouseX - stage.getX());
-                }
+            double minWidth = 400;
+            double minHeight = 300;
 
-                if (root.getCursor() == Cursor.S_RESIZE || root.getCursor() == Cursor.SE_RESIZE || root.getCursor() == Cursor.SW_RESIZE) {
-                    stage.setHeight(mouseY - stage.getY());
-                }
-
-                if (root.getCursor() == Cursor.W_RESIZE || root.getCursor() == Cursor.SW_RESIZE || root.getCursor() == Cursor.NW_RESIZE) {
-                    double newWidth = stage.getWidth() - (mouseX - stage.getX());
-                    stage.setX(mouseX);
+            if (cursor == Cursor.E_RESIZE || cursor == Cursor.SE_RESIZE || cursor == Cursor.NE_RESIZE) {
+                double newWidth = stage.getWidth() + dx;
+                if (newWidth > minWidth) {
                     stage.setWidth(newWidth);
+                    startX = event.getScreenX();
                 }
+            }
 
-                if (root.getCursor() == Cursor.N_RESIZE || root.getCursor() == Cursor.NE_RESIZE || root.getCursor() == Cursor.NW_RESIZE) {
-                    double newHeight = stage.getHeight() - (mouseY - stage.getY());
-                    stage.setY(mouseY);
+            if (cursor == Cursor.S_RESIZE || cursor == Cursor.SE_RESIZE || cursor == Cursor.SW_RESIZE) {
+                double newHeight = stage.getHeight() + dy;
+                if (newHeight > minHeight) {
                     stage.setHeight(newHeight);
+                    startY = event.getScreenY();
+                }
+            }
+
+            if (cursor == Cursor.W_RESIZE || cursor == Cursor.SW_RESIZE || cursor == Cursor.NW_RESIZE) {
+                double newWidth = stage.getWidth() - dx;
+                if (newWidth > minWidth) {
+                    stage.setX(stage.getX() + dx);
+                    stage.setWidth(newWidth);
+                    startX = event.getScreenX();
+                }
+            }
+
+            if (cursor == Cursor.N_RESIZE || cursor == Cursor.NE_RESIZE || cursor == Cursor.NW_RESIZE) {
+                double newHeight = stage.getHeight() - dy;
+                if (newHeight > minHeight) {
+                    stage.setY(stage.getY() + dy);
+                    stage.setHeight(newHeight);
+                    startY = event.getScreenY();
                 }
             }
         });
@@ -385,6 +408,23 @@ public class MainViewController {
     @FXML private Button btnManageUsers;
     @FXML private Button btnAnalytics;
 
+    public void loadSuperAdminCreator() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/groupna/projectNetflix/view/AuthView.fxml")
+            );
+            Node node = loader.load();
+            
+            AuthController controller = loader.getController();
+            controller.setSuperAdminCreation(true);
+
+            rootPane.setCenter(node);
+            hideNavigation();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
     @FXML
     private void handleAdminNav(ActionEvent event) {
         Button clickedButton = (Button) event.getSource();
