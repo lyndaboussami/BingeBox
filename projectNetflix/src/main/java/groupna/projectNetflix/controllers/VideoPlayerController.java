@@ -10,6 +10,7 @@ import javafx.scene.media.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.File;
 import java.net.URL;
 import java.util.*;
 
@@ -136,60 +137,30 @@ public class VideoPlayerController {
         Episode ep = playlist.get(currentIndex);
         this.currentIdEpisode = ep.getId();
         
-        String path = ep.getPathEp(); 
-        URL resource = getClass().getResource(path);
+        String path = ep.getPathEp();
+        File file = new File(path);
         
-        if (resource == null) {
-            System.err.println("Could not find video file at: " + path);
+        if (!file.exists()) {
+            System.err.println("Impossible de trouver le fichier vidéo de l'épisode à : " + path);
             return;
         }
+        String fullUrl = file.toURI().toString();
         
         User user = Session.getInstance().getUser();
         Optional<HistoryItem> history = userService.recupererHistoriqueComplet(user.getId())
                 .stream()
                 .filter(h -> h.getContent() instanceof Episode e && e.getId() == ep.getId())
                 .findFirst();
-
         if (history.isPresent() && history.get().getTime() > 10.0) {
-            showResumeDialog(history.get().getTime(), resource.toExternalForm());
+            showResumeDialog(history.get().getTime(), fullUrl);
         } else {
-            initializePlayer(resource.toExternalForm());
+            initializePlayer(fullUrl);
         }
 
         mediaPlayer.setOnEndOfMedia(() -> {
             userService.marquerEpisodeCommeVu(user.getId(), ep.getId(), mediaPlayer.getCurrentTime().toSeconds());
             if (currentIndex < playlist.size() - 1) startBingeCountdown();
         });
-        
-        /*
-        String url = resource.toExternalForm();
-        this.currentIdEpisode=ep.getId();
-        
-        initializePlayer(url);
-        nextEpisodeOverlay.setVisible(false);
-        
-        User user = Session.getInstance().getUser();
-        
-        Optional<HistoryItem> alreadyWatched = userService.recupererHistoriqueComplet(user.getId())
-                .stream()
-                .filter(a -> a.getContent() instanceof Episode e && e.getId() == ep.getId())
-                .findFirst();
-        
-        if (alreadyWatched.isPresent() && alreadyWatched.get().getTime() > 10.0) {
-            showResumeDialog(alreadyWatched.get().getTime());
-        } 
-        else {
-            mediaPlayer.play();
-            playPauseBtn.setText("⏸");
-        }
-        
-        mediaPlayer.setOnEndOfMedia(() -> {
-        	userService.marquerEpisodeCommeVu(user.getId(), ep.getId(),mediaPlayer.getCurrentTime().toSeconds());
-            if (currentIndex < playlist.size() - 1) {
-                startBingeCountdown();
-   
-            }
-        });*/
     }
     
     public void setOnCloseRequest(Runnable callback) {

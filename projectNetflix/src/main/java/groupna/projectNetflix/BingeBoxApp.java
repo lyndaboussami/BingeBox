@@ -18,9 +18,8 @@ public class BingeBoxApp extends Application {
         stage.initStyle(StageStyle.UNDECORATED);
         
         Scene scene = new Scene(loader.load());
-
         //stage.setTitle("BingeBox Streaming");
-
+        
         stage.setScene(scene);
         stage.setMaximized(true);
 

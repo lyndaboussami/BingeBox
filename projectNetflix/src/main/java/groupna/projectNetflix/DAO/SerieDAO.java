@@ -83,11 +83,11 @@ public class SerieDAO extends OeuvreDAO {
                         Saison saisonObj = entry.getKey();
                         List<Episode> episodes = entry.getValue();
                         
-                        int id=SaisonDAO.save(saisonObj, generatedId);
+                        int idSaison = SaisonDAO.save(saisonObj, generatedId);
                         
                         if (episodes != null) {
                             for (Episode ep : episodes) {
-                                EpisodeDAO.addEpisode(ep, id);
+                                EpisodeDAO.addEpisode(ep, idSaison);
                             }
                         }
                     }
@@ -137,11 +137,14 @@ public class SerieDAO extends OeuvreDAO {
             pstmt.setDate(3, s.getDateDeSortie() != null ? java.sql.Date.valueOf(s.getDateDeSortie()) : null);
             pstmt.setString(4, s.getPathPoster());
             pstmt.setInt(5, s.getId());
+            
             pstmt.executeUpdate();
+            updateCategories(s.getId(), s.getCat(), "serie_categorie", "id_serie");
+            updateArtistes(s.getId(), s.getActeurs(), "serie_acteurs", "id_serie");
+            updateArtistes(s.getId(), s.getDirecteurs(), "serie_directeurs", "id_serie");
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
-
 }

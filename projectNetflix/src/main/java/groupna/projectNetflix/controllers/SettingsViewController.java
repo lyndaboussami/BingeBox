@@ -43,6 +43,10 @@ public class SettingsViewController extends BaseController {
         if(!test.testEmail(email)) {
         	showStatus("please entre a valid email", true);
         }
+        if(userService.rechercherParEmail(email)!=0) {
+        	showStatus("user with this email already exists", true);
+        	return;
+        }
         currentUser.setNom(lName);
         currentUser.setPrenom(fName);
         currentUser.setEmail(email);

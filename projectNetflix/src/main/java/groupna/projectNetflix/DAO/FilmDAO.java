@@ -14,6 +14,7 @@ import groupna.projectNetflix.entities.Categorie;
 import groupna.projectNetflix.entities.Film;
 
 public class FilmDAO extends OeuvreDAO {
+    
     public static Film findById(int id) {
         Film film = null;
         String sql = "SELECT * FROM films WHERE id = ?";
@@ -38,17 +39,8 @@ public class FilmDAO extends OeuvreDAO {
                     List<Artiste> acteurs = getArtistes(id, "film_acteurs", "id_film");
                     List<Artiste> directeurs = getArtistes(id, "film_directeurs", "id_film");
                     film = new Film(
-                        filmId,
-                        resume,
-                        categories,
-                        titre,
-                        dateSortie,
-                        acteurs,
-                        directeurs,
-                        pathPoster,
-                        duree,
-                        pathMovie,
-                        pathTrailer
+                        filmId, resume, categories, titre, dateSortie,
+                        acteurs, directeurs, pathPoster, duree, pathMovie, pathTrailer
                     );
                 }
             }
@@ -117,29 +109,21 @@ public class FilmDAO extends OeuvreDAO {
             save(f);
         }
     }
+
     public static boolean delete(int filmId) {
         boolean isDeleted = false;
         String sqlDelete = "DELETE FROM films WHERE id = ?";
 
-        try {
-            try (PreparedStatement pstmt = conn.prepareStatement(sqlDelete)) {
-                
-                pstmt.setInt(1, filmId);
-                
-                int rowsAffected = pstmt.executeUpdate();
-                isDeleted = (rowsAffected > 0);
-                
-                if (isDeleted) {
-                    System.out.println("Le film avec l'ID " + filmId + " a été supprimé avec succès.");
-                }
-            }
+        try (PreparedStatement pstmt = conn.prepareStatement(sqlDelete)) {
+            pstmt.setInt(1, filmId);
+            int rowsAffected = pstmt.executeUpdate();
+            isDeleted = (rowsAffected > 0);
         } catch (SQLException e) {
             System.err.println("Erreur lors de la suppression du film : " + e.getMessage());
-            e.printStackTrace();
         }
-        
         return isDeleted;
     }
+
     public static int getNombreVuesFilm(int idFilm) {
         int totalVues = 0;
         String sql = "SELECT COUNT(*) FROM historique_film WHERE id_oeuvre = ?";
@@ -167,7 +151,13 @@ public class FilmDAO extends OeuvreDAO {
             pstmt.setString(6, f.getPathMovie());
             pstmt.setString(7, f.getPathTrailer());
             pstmt.setInt(8, f.getId());
+            
             pstmt.executeUpdate();
+
+            updateCategories(f.getId(), f.getCat(), "film_categorie", "id_film");
+            updateArtistes(f.getId(), f.getActeurs(), "film_acteurs", "id_film");
+            updateArtistes(f.getId(), f.getDirecteurs(), "film_directeurs", "id_film");
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

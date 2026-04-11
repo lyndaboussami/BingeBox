@@ -3,6 +3,7 @@ package groupna.projectNetflix.controllers;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,7 @@ public class DataStore {
                List.of(new Artiste(7, "Joseph Gordon-Levitt"), new Artiste(8, "Brady Corbet")),
                List.of(new Artiste(9, "Gregg Araki")),
                 "/groupna/projectNetflix/assets/mysterious_skin.jpg",
-               LocalTime.of(1, 42), "/movies/mysterious_skin.mp4", "/trailers/mysterious_skin_tr.mp4"),
+               LocalTime.of(1, 42),"C:\\Users\\bsouh\\Desktop\\netflix\\films\\mysterious_skin.mp4", "C:\\Users\\bsouh\\Desktop\\netflix\\films\\mysterious_skin_tr.mp4"),
 
             new Film(5,
                "A troubled young boy risks everything to help a captive killer whale escape.",
@@ -64,7 +65,7 @@ public class DataStore {
                List.of(new Artiste(10, "Jason James Richter"), new Artiste(11, "Michael Madsen")),
                List.of(new Artiste(12, "Simon Wincer")),
                 "/groupna/projectNetflix/assets/free_willy.jpeg",
-               LocalTime.of(1, 52), "/movies/free_willy.mp4", "/trailers/free_willy_tr.mp4"),
+               LocalTime.of(1, 52), "C:\\Users\\bsouh\\Desktop\\netflix\\films\\free_willy.mp4", "C:\\Users\\bsouh\\Desktop\\netflix\\films\\free_willy_tr.mp4"),
 
             new Film(6,
                "An elderly man reads to a woman with Alzheimer's the story of two young lovers.",
@@ -140,8 +141,9 @@ public class DataStore {
         bbSaisons.put(s1, s1Episodes);
 
         Map<Saison, List<Episode>> fpSaisons = new HashMap<>();
-        Saison fpS1 = new Saison(2, 1, LocalDate.of(2023, 5, 31), "Season 1", "Camila creates a sexy profile.", "/trailers/fp_s1.mp4");
-        fpSaisons.put(fpS1, new ArrayList<>()); // Simplify for brevity
+        Saison fpS1 = new Saison(2, 1, LocalDate.of(2023, 5, 31), "Season 1", "Camila creates a sexy profile.", "C:\\Users\\bsouh\\Desktop\\netflix\\series\\fake profile\\fp_s1.mp4");
+        Episode ep1= new Episode(1, 1, "something bad", "test",LocalTime.of(0, 58) , "C:\\Users\\bsouh\\Desktop\\netflix\\series\\fake profile\\fp_s1_e1.mp4.mp4");
+        fpSaisons.put(fpS1, Arrays.asList(ep1)); // Simplify for brevity
 
         series = List.of(
             new Serie(1,
@@ -151,7 +153,7 @@ public class DataStore {
                List.of(new Artiste(7, "Bryan Cranston")),
                List.of(new Artiste(8, "Vince Gilligan")),
                 "/groupna/projectNetflix/assets/bb.jpg",
-               bbSaisons),
+               new HashMap<Saison, List<Episode>>()),
            
             new Serie(2,
                "Ninety-seven years after a nuclear war, 100 juveniles are sent back to Earth.",

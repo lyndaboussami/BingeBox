@@ -79,7 +79,6 @@ public class OeuvreDAO {
             
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    // Création de l'artiste avec les nouvelles propriétés (id, fullname)
                     Artiste a = new Artiste(
                         rs.getInt("id"),
                         rs.getString("fullname")
@@ -92,8 +91,6 @@ public class OeuvreDAO {
         }
         return artistes;
     }
-
-    // Récupération des Catégories
     public static List<Categorie> getCategoriesByProduction(int productionId, String tableLiaison, String colIdProduction) {
         List<Categorie> categories = new ArrayList<>();
         String sql = "SELECT c.nom FROM categories c " +
@@ -118,8 +115,6 @@ public class OeuvreDAO {
         }
         return categories;
     }
-
-    // Recherche d'existence
     public static int findIDifExisted(String titre, String dateSortie, String resume, String tableName) {
         String sql = "SELECT id FROM " + tableName + " WHERE titre = ? AND date_de_sortie = ? AND resume = ?";
 
@@ -137,5 +132,31 @@ public class OeuvreDAO {
             System.err.println("Erreur findIDifExisted dans " + tableName + " : " + e.getMessage());
         }
         return -1;
+    }
+    public static void updateArtistes(int productionId, List<Artiste> nouveauxArtistes, String tableName, String colIdProduction) {
+        String sqlDelete = "DELETE FROM " + tableName + " WHERE " + colIdProduction + " = ?";
+        
+        try (PreparedStatement pstmt = conn.prepareStatement(sqlDelete)) {
+            pstmt.setInt(1, productionId);
+            pstmt.executeUpdate();
+            saveArtistes(productionId, nouveauxArtistes, tableName, colIdProduction);
+            
+            System.out.println("Mise à jour des artistes réussie pour la table " + tableName);
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de l'update des artistes : " + e.getMessage());
+        }
+    }
+    public static void updateCategories(int productionId, List<Categorie> nouvellesCategories, String tableName, String colIdProduction) {
+        String sqlDelete = "DELETE FROM " + tableName + " WHERE " + colIdProduction + " = ?";
+        
+        try (PreparedStatement pstmt = conn.prepareStatement(sqlDelete)) {
+            pstmt.setInt(1, productionId);
+            pstmt.executeUpdate();
+            saveCategories(productionId, nouvellesCategories, tableName, colIdProduction);
+            
+            System.out.println("Mise à jour des catégories réussie pour la table " + tableName);
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de l'update des catégories : " + e.getMessage());
+        }
     }
 }

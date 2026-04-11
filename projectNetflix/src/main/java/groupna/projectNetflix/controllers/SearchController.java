@@ -61,6 +61,8 @@ public class SearchController extends BaseController{
         });
     	
     	yearFilter.setOnAction(e -> updateSearchResults());
+    	filterMovies.setOnAction(e -> updateSearchResults());
+        filterSeries.setOnAction(e -> updateSearchResults());
     }
 
     private void populateDynamicFilters() {
@@ -122,6 +124,13 @@ public class SearchController extends BaseController{
                          String.valueOf(m.getDateDeSortie().getYear()).equals(selectedYear))
             .filter(m -> selectedGenres.isEmpty() || 
                          m.getCat().stream().anyMatch(c -> selectedGenres.contains(c.getLabel())))
+            .filter(m -> {
+                boolean showMovies = filterMovies.isSelected();
+                boolean showSeries = filterSeries.isSelected();
+                if (showMovies == showSeries) return true; 
+                return showMovies ? (m instanceof Film) : (m instanceof Serie);
+
+            })
             .collect(Collectors.toList());
 
         displayResults(filteredResults);

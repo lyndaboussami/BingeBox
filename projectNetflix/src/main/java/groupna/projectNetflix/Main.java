@@ -17,8 +17,8 @@ public class Main {
     	for(Serie s:DataStore.getSeries()) {
     		SerieDAO.save(s);
     	}*/
-    	UserService userService=new UserService();
-    	userService.inscrireUtilisateur(new User(0, "admin", "admin", "admin@gmail.com", "admin123@", Role.ADMIN));
+    	//UserService userService=new UserService();
+    	//userService.inscrireUtilisateur(new User(0, "admin", "admin", "admin@gmail.com", "admin123@", Role.ADMIN));
     }
     
 }

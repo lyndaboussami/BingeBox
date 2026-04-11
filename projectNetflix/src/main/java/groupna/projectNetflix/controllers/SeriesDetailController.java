@@ -229,8 +229,7 @@ public class SeriesDetailController {
                 .findFirst()
                 .orElse(null);
         
-        Label progressStatus = new Label("NEW");
-        progressStatus.setStyle("-fx-text-fill: #D2B48C; -fx-font-weight: bold;");
+        Label progressStatus= new Label();
         
         if (epHistory != null) {
 
@@ -245,7 +244,11 @@ public class SeriesDetailController {
             } else if (percentage > 2) {
                 progressStatus.setText("● " + (int)percentage + "%");
                 progressStatus.setStyle("-fx-text-fill: #F5F5DC;");
+                
             }
+        }else {
+        	progressStatus.setText("NEW");
+        	progressStatus.setStyle("-fx-text-fill: #D2B48C; -fx-font-weight: bold;");
         }
         
         StackPane thumb = new StackPane(new Label("EP " + ep.getNumero()));

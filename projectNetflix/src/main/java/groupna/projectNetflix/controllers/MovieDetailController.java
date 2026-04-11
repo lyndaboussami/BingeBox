@@ -1,5 +1,6 @@
 package groupna.projectNetflix.controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
@@ -98,7 +99,7 @@ public class MovieDetailController {
         }
     }
     
-    @FXML
+    /*@FXML
     private void handlePlay() {
         Object content = MainViewController.getInstance().getSelectedContent();
         if (content instanceof Film ) {
@@ -135,6 +136,43 @@ public class MovieDetailController {
             }
         }
         
+    }*/
+    @FXML
+    private void handlePlay() {
+        Object content = MainViewController.getInstance().getSelectedContent();
+        if (content instanceof Film) {
+            Film film = (Film) content;
+            int idFilm = film.getId();
+            String moviePath = film.getPathMovie(); // Ex: "C:/Users/bsouh/Desktop/..."
+            
+            User user = Session.getInstance().getUser();
+            Optional<HistoryItem> alreadyWatched = userService.recupererHistoriqueComplet(user.getId())
+                .stream()
+                .filter(a -> a.getContent() instanceof Film && a.getContent().equals(film))
+                .findFirst();
+            
+            double time = alreadyWatched.isPresent() ? alreadyWatched.get().getTime() : 0.0;
+
+            if (moviePath == null || moviePath.isEmpty()) {
+                System.err.println("Error: No path defined for this movie.");
+                return;
+            }
+
+            try {
+                File file = new File(moviePath);
+
+                if (!file.exists()) {
+                    System.err.println("Le fichier est introuvable sur le disque dur : " + moviePath);
+                    return;
+                }
+                String fullUrl = file.toURI().toString();
+                openVideoPlayer(idFilm, time, fullUrl, film.getTitre());
+
+            } catch (Exception e) {
+                System.err.println("Error playing video: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
     private void openVideoPlayer(int idFilm,double time,String url, String title) {
         try {
@@ -296,8 +334,35 @@ public class MovieDetailController {
             }
         });
     }
-    
     @FXML
+    private void handlePlayTrailer() {
+        Object content = MainViewController.getInstance().getSelectedContent();
+        
+        if (content instanceof Film movie) {
+            String trailerPath = movie.getPathTrailer(); 
+
+            if (trailerPath == null || trailerPath.isEmpty()) {
+                showError("Trailer Unavailable", "No trailer found for this movie.");
+                return;
+            }
+
+            try {
+               File file = new java.io.File(trailerPath);
+
+                if (file.exists()) {
+                    String fullUrl = file.toURI().toString();
+                    openVideoPlayer(0, 0.0, fullUrl, movie.getTitre() + " - Trailer");
+                } else {
+                    System.err.println("Trailer introuvable au chemin : " + trailerPath);
+                    showError("File Error", "Trailer file not found at: " + trailerPath);
+                }
+            } catch (Exception e) {
+                System.err.println("Error playing trailer: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+    /*@FXML
     private void handlePlayTrailer() {
         Object content = MainViewController.getInstance().getSelectedContent();
         
@@ -320,7 +385,7 @@ public class MovieDetailController {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
     
     @FXML
     private void handleBack() {
