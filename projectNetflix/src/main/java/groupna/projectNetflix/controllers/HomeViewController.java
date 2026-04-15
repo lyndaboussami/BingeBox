@@ -1,9 +1,14 @@
 package groupna.projectNetflix.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
+import groupna.projectNetflix.DAO.DAOStatics;
+import groupna.projectNetflix.entities.Categorie;
 import groupna.projectNetflix.entities.Film;
 import groupna.projectNetflix.entities.Serie;
 import groupna.projectNetflix.services.FilmService;
@@ -23,8 +28,8 @@ public class HomeViewController extends BaseController{
     @FXML private MediaView trailerVideo;
     @FXML private Label heroTitle;
     @FXML private Label heroDesc;
-    @FXML private HBox heroMetaBox, selectionRow, mostWatchedRow;
-
+    @FXML private HBox heroMetaBox, topRatedRow, mostWatchedRow;
+    @FXML private VBox categoryRowsContainer;
     private MediaPlayer mediaPlayer;
 
     @FXML
@@ -47,21 +52,67 @@ public class HomeViewController extends BaseController{
     	List<Film> movies = filmService.getAllFilms();
         List<Serie> series = serieService.getAllSeries();
         
+        List<Object> allMedia = new ArrayList<>();
+        allMedia.addAll(movies);
+        allMedia.addAll(series);
+        
         if (!movies.isEmpty()) {
             setupHero(movies.get(movies.size() - 1));
         }
 
-        //Mix first 3 movies and first 2 series
-        movies.stream().limit(3).forEach(m -> selectionRow.getChildren().add(createCard(m)));
-        series.stream().limit(2).forEach(s -> selectionRow.getChildren().add(createCard(s)));
+        DAOStatics.getTop5MostViewed().forEach((film, views) -> {
+            mostWatchedRow.getChildren().add(createCard(film));
+        });
+        
+        DAOStatics.getTop5Rated().forEach((film, rating) -> {
+            if (topRatedRow != null) topRatedRow.getChildren().add(createCard(film));
+        });
+        
+        
+        Map<String, List<Object>> mediaByCategory = allMedia.stream()
+                .filter(m -> getCategoriesOf(m) != null)
+                .flatMap(media -> getCategoriesOf(media).stream()
+                    .map(cat -> Map.entry(cat.getLabel(), media)))
+                .collect(Collectors.groupingBy(
+                    Map.Entry::getKey, 
+                    Collectors.mapping(Map.Entry::getValue, Collectors.toList())
+                ));
 
-        // MOST WATCHED: For now, we mix them (Logic: sort by a 'views' property)
-        //"newest" as "trending"
-        for (int i = movies.size() - 1; i >= 0 && i > movies.size() - 4; i--) {
-            mostWatchedRow.getChildren().add(createCard(movies.get(i)));
-        }
+        mediaByCategory.forEach((categoryName, items) -> {
+            categoryRowsContainer.getChildren().add(createCategorySection(categoryName, items));
+        });
+        
     }
+    private List<Categorie> getCategoriesOf(Object media) {
+        if (media instanceof Film f) return f.getCat();
+        if (media instanceof Serie s) return s.getCat();
+        return null;
+    }
+    
+    private VBox createCategorySection(String title, List<Object> mediaItems) {
+        VBox section = new VBox(10);
+        section.getStyleClass().add("category-section");
 
+        Label categoryTitle = new Label(title);
+        categoryTitle.getStyleClass().add("categoryTitle");
+
+        HBox mediaRow = new HBox(20);
+        mediaRow.setPadding(new javafx.geometry.Insets(0, 40, 10, 40));
+
+        for (Object item : mediaItems) {
+            mediaRow.getChildren().add(createCard(item));
+        }
+
+        ScrollPane scrollPane = new ScrollPane(mediaRow);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setPannable(true);
+        scrollPane.getStyleClass().add("inner-scroll");
+
+        section.getChildren().addAll(categoryTitle, scrollPane);
+        return section;
+    }
+    
     private void setupHero(Film movie) {
         heroTitle.setText(movie.getTitre().toUpperCase());
         heroDesc.setText(movie.getResume());

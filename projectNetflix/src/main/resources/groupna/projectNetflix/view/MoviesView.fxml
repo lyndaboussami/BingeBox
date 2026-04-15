@@ -11,5 +11,5 @@
         <padding>
             <Insets top="20" bottom="20"/>
         </padding>
-        </VBox>
+    </VBox>
 </ScrollPane>

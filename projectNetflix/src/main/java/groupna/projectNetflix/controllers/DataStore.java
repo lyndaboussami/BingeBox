@@ -56,7 +56,7 @@ public class DataStore {
                List.of(new Artiste(7, "Joseph Gordon-Levitt"), new Artiste(8, "Brady Corbet")),
                List.of(new Artiste(9, "Gregg Araki")),
                 "/groupna/projectNetflix/assets/mysterious_skin.jpg",
-               LocalTime.of(1, 42),"C:\\Users\\bsouh\\Desktop\\netflix\\films\\mysterious_skin.mp4", "C:\\Users\\bsouh\\Desktop\\netflix\\films\\mysterious_skin_tr.mp4"),
+               LocalTime.of(1, 42),"C:\\Users\\bouss\\Desktop\\netflix\\films\\mysterious_skin.mp4", "C:\\Users\\bouss\\Desktop\\netflix\\films\\mysterious_skin_tr.mp4"),
 
             new Film(5,
                "A troubled young boy risks everything to help a captive killer whale escape.",
@@ -65,7 +65,7 @@ public class DataStore {
                List.of(new Artiste(10, "Jason James Richter"), new Artiste(11, "Michael Madsen")),
                List.of(new Artiste(12, "Simon Wincer")),
                 "/groupna/projectNetflix/assets/free_willy.jpeg",
-               LocalTime.of(1, 52), "C:\\Users\\bsouh\\Desktop\\netflix\\films\\free_willy.mp4", "C:\\Users\\bsouh\\Desktop\\netflix\\films\\free_willy_tr.mp4"),
+               LocalTime.of(1, 52), "C:\\Users\\bouss\\Desktop\\netflix\\films\\free_willy.mp4", "C:\\Users\\bouss\\Desktop\\netflix\\films\\free_willy_tr.mp4"),
 
             new Film(6,
                "An elderly man reads to a woman with Alzheimer's the story of two young lovers.",
