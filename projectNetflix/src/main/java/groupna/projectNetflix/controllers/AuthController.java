@@ -125,12 +125,13 @@ public class AuthController extends BaseController{
     		}
     		Role assignedRole = isSuperAdminCreation ? Role.ADMIN : Role.USER;
     		int inscrireUtilisateur = userService.inscrireUtilisateur(new User(0, nom, prenom, email, ConfirmPass, assignedRole));
-    		Session.getInstance().setUser(userService.recupererUtilisateurParId(inscrireUtilisateur));
+    		//Session.getInstance().setUser(userService.recupererUtilisateurParId(inscrireUtilisateur));
     		if (isSuperAdminCreation) {
     		    handleAlert("Success", "Admin account created! You can now close this and run the BingeBox app.");
     		    // ((Stage) submitBtn.getScene().getWindow()).close();
     		} else {
     		    MainViewController.getInstance().unlockFullApp();
+    		    Session.getInstance().setUser(userService.recupererUtilisateurParId(inscrireUtilisateur));
     		}
     	}
     }
