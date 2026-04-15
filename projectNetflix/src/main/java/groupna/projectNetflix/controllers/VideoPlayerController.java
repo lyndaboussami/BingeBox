@@ -11,7 +11,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.File;
-import java.net.URL;
 import java.util.*;
 
 import groupna.projectNetflix.DAO.HistoryItem;
@@ -46,7 +45,8 @@ public class VideoPlayerController {
     private int currentIdEpisode;
 
     private double startOffset = 0;
-
+    private Double forcedStartTime = null;
+    
     @FXML
     public void initialize() {
         Platform.runLater(() -> {
@@ -137,30 +137,37 @@ public class VideoPlayerController {
         Episode ep = playlist.get(currentIndex);
         this.currentIdEpisode = ep.getId();
         
-        String path = ep.getPathEp();
-        File file = new File(path);
-        
+        File file = new File(ep.getPathEp());
         if (!file.exists()) {
-            System.err.println("Impossible de trouver le fichier vidéo de l'épisode à : " + path);
+            System.err.println("FILE NOT FOUND: " + file.getAbsolutePath());
             return;
         }
         String fullUrl = file.toURI().toString();
-        
+
         User user = Session.getInstance().getUser();
         Optional<HistoryItem> history = userService.recupererHistoriqueComplet(user.getId())
                 .stream()
                 .filter(h -> h.getContent() instanceof Episode e && e.getId() == ep.getId())
                 .findFirst();
-        if (history.isPresent() && history.get().getTime() > 10.0) {
+
+        if (forcedStartTime != null && forcedStartTime > 5.0) {
+            this.startOffset = forcedStartTime;
+            forcedStartTime = null;
+            initializePlayer(fullUrl);
+        } 
+        else if (history.isPresent() && history.get().getTime() > 10.0) {
             showResumeDialog(history.get().getTime(), fullUrl);
-        } else {
+        } 
+        else {
             initializePlayer(fullUrl);
         }
 
-        mediaPlayer.setOnEndOfMedia(() -> {
-            userService.marquerEpisodeCommeVu(user.getId(), ep.getId(), mediaPlayer.getCurrentTime().toSeconds());
-            if (currentIndex < playlist.size() - 1) startBingeCountdown();
-        });
+        if (mediaPlayer != null) {
+            mediaPlayer.setOnEndOfMedia(() -> {
+                userService.marquerEpisodeCommeVu(user.getId(), ep.getId(), mediaPlayer.getCurrentTime().toSeconds());
+                if (currentIndex < playlist.size() - 1) startBingeCountdown();
+            });
+        }
     }
     
     public void setOnCloseRequest(Runnable callback) {
@@ -176,6 +183,7 @@ public class VideoPlayerController {
 
     private void updateUI(Duration currentTime) {
     	if (mediaPlayer == null) return;
+    	this.time = currentTime.toSeconds();
         Duration total = mediaPlayer.getTotalDuration();
 
         if (total == null || total.isUnknown()) return;
@@ -302,7 +310,7 @@ public class VideoPlayerController {
 	}
     
     public void resumeAt(double seconds) {
-        this.startOffset = seconds;
+        this.forcedStartTime = seconds;
     }
     
 }

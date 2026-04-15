@@ -13,7 +13,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
 public class AuthController extends BaseController{
 	private Test test=new Test();
@@ -25,10 +24,6 @@ public class AuthController extends BaseController{
     @FXML private HBox nameBox;
     @FXML private TextField firstNameField, lastNameField, emailField;
     @FXML private PasswordField passwordField, confirmPasswordField;
-
-    @FXML private Hyperlink forgotPasswordLink;
-    @FXML private VBox forgotPasswordPane;
-    @FXML private TextField resetEmailField;
     
     private boolean isLoginMode = true;
     private boolean isSuperAdminCreation = false;
@@ -48,8 +43,6 @@ public class AuthController extends BaseController{
             confirmPasswordField.setVisible(false);
             confirmPasswordField.setManaged(false);
             
-            forgotPasswordLink.setVisible(true);
-            forgotPasswordLink.setManaged(true);
         } else {
             authTitle.setText("Sign Up");
             submitBtn.setText("Register");
@@ -60,9 +53,7 @@ public class AuthController extends BaseController{
             nameBox.setManaged(true);
             confirmPasswordField.setVisible(true);
             confirmPasswordField.setManaged(true);
-            
-            forgotPasswordLink.setVisible(false);
-            forgotPasswordLink.setManaged(false);
+
         }
     }
 
@@ -134,43 +125,13 @@ public class AuthController extends BaseController{
     		}
     	}
     }
-    @FXML
-    private void openResetPane() {
-        forgotPasswordPane.setVisible(true);
-        forgotPasswordPane.setManaged(true);
-    }
 
-    @FXML
-    private void closeResetPane() {
-        forgotPasswordPane.setVisible(false);
-        forgotPasswordPane.setManaged(false);
-    }
-
-    @FXML
-    private void handleSendResetCode() {
-        String email = resetEmailField.getText();
-        if (email.isEmpty()) {
-            System.out.println("Please enter an email!");
-            return;
-        }
-        System.out.println("Simulation: Sending reset link to " + email);
-        
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Reset Sent");
-        alert.setHeaderText(null);
-        alert.setContentText("A reset link has been sent to your email.");
-        alert.showAndWait();
-        
-        closeResetPane();
-    }
     private void handleAlert(String Title,String Header) {
     	Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(Title);
         alert.setHeaderText(null);
         alert.setContentText(Header);
         alert.showAndWait();
-        
-        closeResetPane();
     }
 }
 

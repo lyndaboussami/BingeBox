@@ -54,6 +54,7 @@ public class MainViewController {
             loadPage("AuthView.fxml");
         }
     	
+    	languageSelector.setVisible(false);
     	setupWindowControls();
     }
     

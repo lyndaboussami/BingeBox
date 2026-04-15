@@ -40,6 +40,7 @@ public class SeriesController extends BaseController{
         ScrollPane sp = new ScrollPane();
         sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         sp.getStyleClass().add("inner-scroll");
 
         HBox row = new HBox(15);

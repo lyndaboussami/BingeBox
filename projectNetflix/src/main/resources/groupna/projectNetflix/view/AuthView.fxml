@@ -24,10 +24,9 @@
             
             <PasswordField fx:id="passwordField" promptText="Password" styleClass="auth-field" prefHeight="50" />
             
-            <Hyperlink fx:id="forgotPasswordLink" text="Forgot password?" onAction="#openResetPane" 
-			           style="-fx-text-fill: -fx-text-muted; -fx-font-size: 12px; -fx-underline: false;" />
             <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password" 
                            styleClass="auth-field" prefHeight="50" managed="false" visible="false" />
+        
         </VBox>
 
         <Button fx:id="submitBtn" text="Log In" onAction="#handleSubmit" 
@@ -40,18 +39,4 @@
         </HBox>
 
     </VBox>
-    <VBox fx:id="forgotPasswordPane" alignment="CENTER" spacing="20" visible="false" managed="false"
-	      style="-fx-background-color: rgba(17, 21, 34, 0.95); -fx-padding: 40; -fx-background-radius: 15;" 
-	      maxWidth="400" maxHeight="300">
-	    
-	    <Label text="Reset Password" style="-fx-font-size: 24px; -fx-text-fill: -fx-text-main; -fx-font-weight: bold;" />
-	    <Label text="Enter your email to receive a reset code." style="-fx-text-fill: -fx-text-muted; -fx-text-alignment: center;" wrapText="true" />
-	    
-	    <TextField fx:id="resetEmailField" promptText="Email Address" styleClass="auth-field" prefHeight="45" />
-	    
-	    <HBox spacing="10" alignment="CENTER">
-	        <Button text="Cancel" onAction="#closeResetPane" styleClass="navButton" style="-fx-border-color: -fx-text-muted; -fx-border-radius: 5;" />
-	        <Button text="Send Code" onAction="#handleSendResetCode" styleClass="auth-submit-btn" prefWidth="120" />
-	    </HBox>
-	</VBox>
 </StackPane>

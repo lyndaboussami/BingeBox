@@ -165,14 +165,15 @@ public class SeriesDetailController {
             
             int startIndex = currentSeasonEpisodes.indexOf(ep);
             
-            controller.loadSeries(currentSeasonEpisodes, startIndex);
             
             StackPane mainStack = (StackPane) seriesTitle.getScene().getRoot();
             mainStack.getChildren().add(playerView);
 
+            controller.loadSeries(currentSeasonEpisodes, startIndex);
+
             controller.setOnCloseRequest(() -> {
-                controller.stopVideo();
                 userService.marquerEpisodeCommeVu(user.getId(), controller.getCurrentIdEpisode(), controller.getTime());
+                controller.stopVideo();
                 mainStack.getChildren().remove(playerView);
             });
 

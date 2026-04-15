@@ -31,10 +31,12 @@ public class FavsController {
     private SaisonService saisonService = new SaisonService();
 	@FXML private FlowPane favsGrid;
 
+    
     @FXML
     public void initialize() {
     	renderFavorites();
     }
+    
     public void renderFavorites() {
         favsGrid.getChildren().clear();
         User user=Session.getInstance().getUser();
@@ -151,54 +153,86 @@ public class FavsController {
         card.getChildren().addAll(stack, title);
 
         card.setOnMouseClicked(e -> {
-        	User user = Session.getInstance().getUser();
+            User user = Session.getInstance().getUser();
             List<HistoryItem> history = userService.recupererHistoriqueComplet(user.getId());
-            
-            HistoryItem lastWatched = history.stream()
+ 
+            HistoryItem lastWatchedItem = history.stream()
                     .filter(item -> item.getContent() instanceof Episode)
                     .filter(item -> {
-                        int idSaison = episodeService.recupererIdSaison(((Episode)item.getContent()).getId());
+                        int idSaison = episodeService.recupererIdSaison(((Episode) item.getContent()).getId());
                         return saisonService.recupererIdSerie(idSaison) == serie.getId();
                     })
-                    .findFirst()
+                    .reduce((first, second) -> second)
                     .orElse(null);
-            
-            if (lastWatched != null) {
-                Episode epToResume = (Episode) lastWatched.getContent();
-                int idSaison = episodeService.recupererIdSaison(epToResume.getId());
+ 
+            if (lastWatchedItem != null) {
+                Episode lastEp = (Episode) lastWatchedItem.getContent();
+                double savedTime = lastWatchedItem.getTime();
+ 
+                int idSaison = episodeService.recupererIdSaison(lastEp.getId());
                 List<Episode> seasonEpisodes = episodeService.getEpisodesBySaison(idSaison);
-                
-                playEpisodeDirectly(epToResume, seasonEpisodes);
-                
-                } else {
-                    Saison firstSaison = serie.getSaisons().keySet().stream()
+ 
+                playEpisodeWithResume(lastEp, seasonEpisodes, savedTime);
+            } else {
+                Saison firstSaison = serie.getSaisons().keySet().stream()
                         .filter(s -> s.getNum() == 1).findFirst()
                         .orElse(serie.getSaisons().keySet().iterator().next());
-                    
-                    List<Episode> s1Episodes = serie.getSaisons().get(firstSaison);
-                    if (s1Episodes != null && !s1Episodes.isEmpty()) {
-                        playEpisodeDirectly(s1Episodes.get(0), s1Episodes);
-                    }
+ 
+                List<Episode> s1Episodes = serie.getSaisons().get(firstSaison);
+                if (s1Episodes != null && !s1Episodes.isEmpty()) {
+                    playEpisodeDirectly(s1Episodes.get(0), s1Episodes);
                 }
+            }
         });
-
+ 
         return card;
     }
-    private void playEpisodeDirectly(Episode ep, List<Episode> currentSeasonEpisodes) {
+ 
+    private void playEpisodeWithResume(Episode ep, List<Episode> currentSeasonEpisodes, double timestamp) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/groupna/projectNetflix/view/VideoPlayerView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/groupna/projectNetflix/view/VideoPlayerView.fxml"));
             Parent playerView = loader.load();
             VideoPlayerController controller = loader.getController();
-            
+ 
             int startIndex = currentSeasonEpisodes.indexOf(ep);
+ 
+            if (timestamp > 5.0) {
+                controller.resumeAt(timestamp);
+            }
+  
+            if (favsGrid.getScene().getRoot() instanceof StackPane mainStack) {
+                mainStack.getChildren().add(playerView);
+            }
+ 
             controller.loadSeries(currentSeasonEpisodes, startIndex);
-                        
-            StackPane mainStack = (StackPane) favsGrid.getScene().getRoot();
-            mainStack.getChildren().add(playerView);
-            
+
             controller.setOnCloseRequest(() -> {
                 controller.stopVideo();
-                ((StackPane) playerView.getParent()).getChildren().remove(playerView);            });
+                ((StackPane) playerView.getParent()).getChildren().remove(playerView);
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+ 
+    private void playEpisodeDirectly(Episode ep, List<Episode> currentSeasonEpisodes) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/groupna/projectNetflix/view/VideoPlayerView.fxml"));
+            Parent playerView = loader.load();
+            VideoPlayerController controller = loader.getController();
+ 
+            int startIndex = currentSeasonEpisodes.indexOf(ep);
+            controller.loadSeries(currentSeasonEpisodes, startIndex);
+ 
+            StackPane mainStack = (StackPane) favsGrid.getScene().getRoot();
+            mainStack.getChildren().add(playerView);
+ 
+            controller.setOnCloseRequest(() -> {
+                controller.stopVideo();
+                ((StackPane) playerView.getParent()).getChildren().remove(playerView);
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }

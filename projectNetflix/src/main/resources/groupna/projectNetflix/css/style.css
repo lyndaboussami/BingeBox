@@ -91,6 +91,7 @@
     -fx-text-fill: -fx-text-main;
 }
 .watchBtn {
+	-fx-cursor: hand;
     -fx-background-color: -fx-accent;
     -fx-text-fill: -fx-button-text;
     -fx-background-radius: 20;
@@ -191,6 +192,10 @@
     -fx-background-radius: 10;
 }
 
+.seriesCard {
+	-fx-cursor: hand;
+}
+
 .movieCard:hover {
     -fx-scale-x: 1.05;
     -fx-scale-y: 1.05;
@@ -218,7 +223,7 @@
     -fx-border-color: transparent rgba(255, 255, 255, 0.05) transparent transparent;
 }
 
-.sidebar-icon-btn {
+.sidebar-icon-btn, .admin-nav-button {
     -fx-background-color: transparent;
     -fx-text-fill: #968d7f;
     -fx-font-size: 20px;
@@ -448,19 +453,16 @@
     -fx-padding: 0 0 0 10;
 }
 
-.admin-nav-button {
-    -fx-background-color: transparent;
-    -fx-text-fill: #888888;
-    -fx-alignment: CENTER_LEFT;
-    -fx-padding: 10 20 10 20;
-    -fx-cursor: hand;
-    -fx-transition: 0.3s;
+.admin-nav-button:hover {
+    -fx-text-fill: -fx-accent;
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
 }
 
-.admin-nav-button:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.1);
-    -fx-border-color: transparent transparent transparent #7b2cbf;
-    -fx-border-width: 0 0 0 4;
+.admin-nav-button:focused {
+    -fx-text-fill: -fx-accent;
+    -fx-border-color: transparent transparent transparent -fx-accent;
+    -fx-border-width: 0 0 0 3;
 }
 
 .admin-table {
