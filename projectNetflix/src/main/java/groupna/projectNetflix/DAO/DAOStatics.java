@@ -16,11 +16,14 @@ import groupna.projectNetflix.entities.Categorie;
 import groupna.projectNetflix.entities.Film;
 import groupna.projectNetflix.entities.Serie;
 import groupna.projectNetflix.services.FilmService;
+import groupna.projectNetflix.services.SerieService;
 import groupna.projectNetflix.utils.ConxDB;
 
 public class DAOStatics {
 	private static Connection conn = ConxDB.getInstance();
 	private static FilmService films=new FilmService();
+	private static SerieService series=new SerieService();
+
 	public static java.util.Map<Categorie, Integer> getMoviesCountByCategory() {
 	    java.util.Map<Categorie, Integer> stats = new java.util.HashMap<>();
 	    String sql = "SELECT c.nom, COUNT(fc.id_film) as total " +
@@ -170,4 +173,26 @@ public class DAOStatics {
         return stats;
     }
 	
+	public static Map<Serie, Double> getTop5RatedSeries() {
+	    Map<Serie, Double> top5 = new LinkedHashMap<>();
+	    String sql = "SELECT id_serie, AVG(nbStars) as moyenne " +
+	                 "FROM rate_serie " + 
+	                 "GROUP BY id_serie " +
+	                 "ORDER BY moyenne DESC " +
+	                 "LIMIT 5";
+
+	    try (Statement stmt = conn.createStatement();
+	         ResultSet rs = stmt.executeQuery(sql)) {
+
+	        while (rs.next()) {
+	            Serie s = series.getSerieById(rs.getInt("id_serie"));
+	            if (s != null) {
+	                top5.put(s, rs.getDouble("moyenne"));
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return top5;
+	}
 }

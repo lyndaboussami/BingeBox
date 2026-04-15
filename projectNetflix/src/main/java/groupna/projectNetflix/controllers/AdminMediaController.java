@@ -1,7 +1,5 @@
 package groupna.projectNetflix.controllers;
 
-import groupna.projectNetflix.DAO.FilmDAO;
-import groupna.projectNetflix.DAO.SerieDAO;
 import groupna.projectNetflix.entities.*;
 import groupna.projectNetflix.services.EpisodeService;
 import groupna.projectNetflix.services.FilmService;

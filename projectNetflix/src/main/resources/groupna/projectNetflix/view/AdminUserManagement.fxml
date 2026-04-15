@@ -14,24 +14,35 @@
         <TextField fx:id="commentSearchField" promptText="Search by user or content..." prefWidth="300" styleClass="search-bar"/>
     </HBox>
 
-    <VBox spacing="10" VBox.vgrow="ALWAYS">
-        <Label text="Reported Content" styleClass="categoryTitle" style="-fx-padding: 0;"/>
-        
-        <TableView fx:id="reportsTable" VBox.vgrow="ALWAYS">
-            <columnResizePolicy>
-		        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-		    </columnResizePolicy>
-		    
-            <columns>
-                <TableColumn fx:id="colUser" text="User ID" prefWidth="70"/>
-                <TableColumn fx:id="colOeuvre" text="Media ID" prefWidth="70"/>
-                <TableColumn fx:id="colComment" text="Comment Content" prefWidth="400"/>
-                <TableColumn fx:id="colReason" text="Report Reason" prefWidth="200"/>
-                <TableColumn fx:id="colActions" text="Actions" prefWidth="150"/>
-            </columns>
-            <placeholder>
-                <Label text="No reported comments found." styleClass="card-text"/>
-            </placeholder>
-        </TableView>
-    </VBox>
+    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" styleClass="admin-tab-pane">
+	    <Tab text="🎬 Movie Reports" styleClass="navButton">
+	        <VBox spacing="10" style="-fx-padding: 15;">
+	            <TableView fx:id="movieReportsTable" VBox.vgrow="ALWAYS">
+	                <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY" /></columnResizePolicy>
+	                <columns>
+	                    <TableColumn fx:id="colMovieUser" text="User ID" prefWidth="100"/>
+	                    <TableColumn fx:id="colMovieId" text="Movie ID" prefWidth="100"/>
+	                    <TableColumn fx:id="colMovieComment" text="Comment" prefWidth="400"/>
+	                    <TableColumn fx:id="colMovieReason" text="Reason" prefWidth="200"/>
+	                    <TableColumn fx:id="colMovieActions" text="Actions" prefWidth="200"/>
+	                </columns>
+	            </TableView>
+	        </VBox>
+	    </Tab>
+	
+	    <Tab text="📺 Series Reports" styleClass="navButton">
+	        <VBox spacing="10" style="-fx-padding: 15;">
+	            <TableView fx:id="serieReportsTable" VBox.vgrow="ALWAYS">
+	                <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY" /></columnResizePolicy>
+	                <columns>
+	                    <TableColumn fx:id="colSerieUser" text="User ID" prefWidth="100"/>
+	                    <TableColumn fx:id="colSerieId" text="Series ID" prefWidth="100"/>
+	                    <TableColumn fx:id="colSerieComment" text="Comment" prefWidth="400"/>
+	                    <TableColumn fx:id="colSerieReason" text="Reason" prefWidth="200"/>
+	                    <TableColumn fx:id="colSerieActions" text="Actions" prefWidth="200"/>
+	                </columns>
+	            </TableView>
+	        </VBox>
+	    </Tab>
+	</TabPane>
 </VBox>

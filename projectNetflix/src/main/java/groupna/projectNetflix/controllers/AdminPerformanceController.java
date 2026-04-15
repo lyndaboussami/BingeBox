@@ -6,7 +6,7 @@ import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import groupna.projectNetflix.entities.Categorie;
 import groupna.projectNetflix.entities.Film;
-import groupna.projectNetflix.services.FilmService;
+import groupna.projectNetflix.entities.Serie;
 import groupna.projectNetflix.services.UserService;
 import groupna.projectNetflix.DAO.*;
 
@@ -25,8 +25,12 @@ public class AdminPerformanceController {
 
     @FXML private Label lblTotalMovies, lblTotalSeries, lblTotalUsers;
     
+    @FXML private TableView<Map.Entry<Serie, Double>> topRatedSeriesTable;
+    @FXML private TableColumn<Map.Entry<Serie, Double>, String> colSeriesTitle;
+    @FXML private TableColumn<Map.Entry<Serie, Double>, Double> colSeriesStars;
+    
     private final UserService userService = new UserService();
-    private final FilmService filmService = new FilmService();
+    
     @FXML
     public void initialize() {
         setupTableColumns();
@@ -34,12 +38,16 @@ public class AdminPerformanceController {
     }
     
     private void setupTableColumns() {
-        colRatedTitle.setCellValueFactory(data -> 
-            new javafx.beans.property.SimpleStringProperty(data.getValue().getKey().getTitre()));
-        
-        colRatedStars.setCellValueFactory(data -> 
-            new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getValue()));
-    }
+    	colRatedTitle.setCellValueFactory(data -> 
+	        new javafx.beans.property.SimpleStringProperty(data.getValue().getKey().getTitre()));
+	    colRatedStars.setCellValueFactory(data -> 
+	        new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getValue()));
+	
+	    colSeriesTitle.setCellValueFactory(data -> 
+	        new javafx.beans.property.SimpleStringProperty(data.getValue().getKey().getTitre()));
+	    colSeriesStars.setCellValueFactory(data -> 
+	        new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getValue()));
+	}
 
     private void refreshCharts() {
     	
@@ -77,10 +85,12 @@ public class AdminPerformanceController {
         seriesStats.forEach((cat, count) -> 
             seriesCategoryChart.getData().add(new PieChart.Data(cat.getLabel(), count)));
 
-        Map<Film, Double> ratedData = DAOStatics.getTop5Rated();
-        topRatedTable.setItems(FXCollections.observableArrayList(ratedData.entrySet()));
-        
+        Map<Film, Double> ratedMovies = DAOStatics.getTop5Rated();
+        topRatedTable.setItems(FXCollections.observableArrayList(ratedMovies.entrySet()));
 
+        Map<Serie, Double> ratedSeries = DAOStatics.getTop5RatedSeries();
+        topRatedSeriesTable.setItems(FXCollections.observableArrayList(ratedSeries.entrySet()));
+        
         viewsBarChart.getData().clear();
         XYChart.Series<String, Number> viewSeries = new XYChart.Series<>();
         viewSeries.setName("Views");
