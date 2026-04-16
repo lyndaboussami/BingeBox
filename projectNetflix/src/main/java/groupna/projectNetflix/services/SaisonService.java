@@ -10,7 +10,7 @@ public class SaisonService {
         if (s != null && idSerie > 0) {
             int generatedId = SaisonDAO.save(s, idSerie);
             if (generatedId > 0) {
-                s.setId(generatedId); // Crucial pour l'ajout d'épisodes après !
+                s.setId(generatedId);
                 return true;
             }
         }

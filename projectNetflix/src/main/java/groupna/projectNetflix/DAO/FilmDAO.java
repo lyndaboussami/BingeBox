@@ -119,7 +119,7 @@ public class FilmDAO extends OeuvreDAO {
             int rowsAffected = pstmt.executeUpdate();
             isDeleted = (rowsAffected > 0);
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la suppression du film : " + e.getMessage());
+        	e.getMessage();
         }
         return isDeleted;
     }

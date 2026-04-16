@@ -26,7 +26,6 @@ public class RateDAO {
             int rows = pstmt.executeUpdate();
             return rows > 0;
         } catch (SQLException e) {
-            System.err.println("[Erreur SQL] Impossible de sauvegarder la note : " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -47,7 +46,7 @@ public class RateDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("[Erreur SQL] Lecture note utilisateur impossible : " + e.getMessage());
+        	e.getMessage();
         }
         return 0;
     }
@@ -66,7 +65,7 @@ public class RateDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("[Erreur SQL] Calcul moyenne impossible : " + e.getMessage());
+        	e.getMessage();
         }
         return 0.0;
     }
@@ -81,7 +80,7 @@ public class RateDAO {
             pstmt.setInt(2, idOeuvre);
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.err.println("[Erreur SQL] Suppression note impossible : " + e.getMessage());
+        	e.getMessage();
             return false;
         }
     }

@@ -25,14 +25,6 @@
             </VBox>
         </StackPane>
 
-        <VBox spacing="10" styleClass="category-section">
-            <Label text="%label.selection" styleClass="categoryTitle"/>
-            <ScrollPane hbarPolicy="NEVER" vbarPolicy="NEVER" styleClass="inner-scroll">
-                <HBox fx:id="selectionRow" spacing="20">
-                    <padding><Insets left="40" right="40"/></padding>
-                </HBox>
-            </ScrollPane>
-        </VBox>
         
         <VBox spacing="10" styleClass="category-section">
             <Label text="Most Watched" styleClass="categoryTitle"/>
@@ -42,6 +34,21 @@
                 </HBox>
             </ScrollPane>
         </VBox>
+        
+        <VBox spacing="10" styleClass="category-section">
+            <Label text="Most Rated" styleClass="categoryTitle"/>
+            <ScrollPane hbarPolicy="NEVER" vbarPolicy="NEVER" styleClass="inner-scroll">
+                <HBox fx:id="topRatedRow" spacing="20">
+                    <padding><Insets left="40" right="40"/></padding>
+                </HBox>
+            </ScrollPane>
+        </VBox>
+
+	    <VBox fx:id="categoryRowsContainer" spacing="40" styleClass="main-container">
+	        <padding>
+	            <Insets top="20" bottom="20"/>
+	        </padding>
+	    </VBox>
 
         <Region prefHeight="100"/>
     </VBox>

@@ -35,7 +35,7 @@ public class SaisonDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Erreur lors de l'ajout de la Saison : " + e.getMessage());
+        	e.getMessage();
         }
         
         return generatedId;
@@ -117,7 +117,6 @@ public class SaisonDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("[Erreur SQL] Impossible de trouver l'id_serie pour la saison " + idSaison);
             e.printStackTrace();
         }
         return idSerie;
@@ -130,7 +129,6 @@ public class SaisonDAO {
             int rows = pstmt.executeUpdate();
             return rows > 0;
         } catch (SQLException e) {
-            System.err.println("[Erreur SQL] Impossible de supprimer la saison : " + e.getMessage());
             e.printStackTrace();
             return false;
         }

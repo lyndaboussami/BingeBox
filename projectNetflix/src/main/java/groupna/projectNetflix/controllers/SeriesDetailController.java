@@ -155,7 +155,7 @@ public class SeriesDetailController {
         }
     }
 
-    private void playEpisode(Episode ep, List<Episode> currentSeasonEpisodes) {
+    public void playEpisode(Episode ep, List<Episode> currentSeasonEpisodes) {
     	User user=Session.getInstance().getUser();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/groupna/projectNetflix/view/VideoPlayerView.fxml"));

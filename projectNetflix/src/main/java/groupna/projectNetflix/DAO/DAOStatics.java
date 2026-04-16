@@ -38,7 +38,7 @@ public class DAOStatics {
 	                Categorie cat = Categorie.valueOf(nomCat.toUpperCase());
 	                stats.put(cat, count);
 	            } catch (IllegalArgumentException e) {
-	                System.err.println("Catégorie inconnue dans l'Enum : " + nomCat);
+	            	e.getMessage();
 	            }
 	        }
 	    } catch (SQLException e) {
@@ -63,7 +63,7 @@ public class DAOStatics {
 	                Categorie cat = Categorie.valueOf(nomCat.toUpperCase());
 	                stats.put(cat, count);
 	            } catch (IllegalArgumentException e) {
-	                System.err.println("Catégorie inconnue : " + nomCat);
+	            	e.getMessage();
 	            }
 	        }
 	    } catch (java.sql.SQLException e) {
@@ -164,7 +164,7 @@ public class DAOStatics {
             }
 
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la récupération des stats : " + e.getMessage());
+        	e.getMessage();
         }
 
         return stats;

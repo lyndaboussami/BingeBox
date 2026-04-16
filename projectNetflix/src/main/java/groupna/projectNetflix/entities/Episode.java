@@ -1,6 +1,7 @@
 package groupna.projectNetflix.entities;
 
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class Episode implements Visualisable {
 	private int numero;
@@ -75,6 +76,23 @@ public class Episode implements Visualisable {
 		Titre = titre;
 		this.duree = duree;
 		PathEp = pathEp;
+	}
+	@Override
+	public int hashCode() {
+		return Objects.hash(PathEp, PathMiniaure, Titre, duree, id, numero, resume);
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Episode other = (Episode) obj;
+		return Objects.equals(PathEp, other.PathEp) && Objects.equals(PathMiniaure, other.PathMiniaure)
+				&& Objects.equals(Titre, other.Titre) && Objects.equals(duree, other.duree) && id == other.id
+				&& numero == other.numero && Objects.equals(resume, other.resume);
 	}
 	
 	

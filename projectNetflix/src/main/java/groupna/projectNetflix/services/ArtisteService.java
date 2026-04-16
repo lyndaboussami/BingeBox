@@ -9,8 +9,7 @@ public class ArtisteService {
         int idExistant = ArtisteDAO.getIdIfExists(a.getFullname());
         
         if (idExistant != -1) {
-            System.out.println("[Service] L'artiste " + a.getFullname() + " existe déjà (ID: " + idExistant + ").");
-            a.setId(idExistant);
+        	a.setId(idExistant);
             return idExistant;
         }
         return ArtisteDAO.save(a);

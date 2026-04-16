@@ -11,7 +11,7 @@ public class EpisodeService {
         }
         int generatedId = EpisodeDAO.addEpisode(ep, idSaison);
         if (generatedId > 0) {
-            ep.setId(generatedId); // Important pour garder l'objet à jour
+            ep.setId(generatedId);
             return true;
         }
         return false;

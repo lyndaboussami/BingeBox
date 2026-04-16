@@ -6,8 +6,7 @@ import groupna.projectNetflix.entities.Rate;
 public class RateService {
     public boolean noterContenu(int idUser, int idOeuvre, int nbStars, String type) {
         if (nbStars < 1 || nbStars > 5) {
-            System.out.println("[Service] Erreur : La note doit être comprise entre 1 et 5.");
-            return false;
+        	return false;
         }
 
         Rate rate = new Rate(idUser, idOeuvre, nbStars);

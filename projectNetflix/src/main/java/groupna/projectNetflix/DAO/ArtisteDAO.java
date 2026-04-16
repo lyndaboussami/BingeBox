@@ -30,7 +30,7 @@ public class ArtisteDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Erreur ArtisteDAO (save) : " + e.getMessage());
+        	e.getMessage();
         }
         return -1;
     }
@@ -47,7 +47,7 @@ public class ArtisteDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Erreur ArtisteDAO (findById) : " + e.getMessage());
+        	e.getMessage();
         }
         return null;
     }
@@ -65,7 +65,7 @@ public class ArtisteDAO {
                 ));
             }
         } catch (SQLException e) {
-            System.err.println("Erreur ArtisteDAO (findAll) : " + e.getMessage());
+        	e.getMessage();
         }
         return artistes;
     }
@@ -81,7 +81,7 @@ public class ArtisteDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Erreur ArtisteDAO (getIdIfExists) : " + e.getMessage());
+        	e.getMessage();
         }
         return -1;
     }

@@ -6,18 +6,21 @@
 <ScrollPane fitToWidth="true" styleClass="scroll" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="groupna.projectNetflix.controllers.HistoryController">
     <VBox spacing="20" styleClass="main-container">
         <padding>
-            <Insets top="30" bottom="40" left="40" right="40"/>
+            <Insets top="40" bottom="40" left="50" right="50"/>
         </padding>
 
         <HBox alignment="CENTER_LEFT" spacing="20">
-            <Label text="Watching History" style="-fx-font-size: 32px; -fx-text-fill: -fx-text-main; -fx-font-weight: bold;"/>
+            <Label text="Watching History" style="-fx-font-size: 34px; -fx-text-fill: -fx-text-main; -fx-font-weight: bold;"/>
             <Region HBox.hgrow="ALWAYS" />
             <Button text="Clear All" onAction="#clearHistory" styleClass="navButton" />
         </HBox>
 
-        <Separator opacity="0.2" />
+        <Separator opacity="0.2" style="-fx-background-color: #F5F5DC;" />
 
-        <VBox fx:id="historyContainer" spacing="10">
+        <VBox fx:id="historyContainer" spacing="15">
+        	<padding>
+		        <Insets top="20" />
+		    </padding>
             <Label fx:id="emptyLabel" text="You haven't watched anything yet." 
                    style="-fx-text-fill: -fx-text-main; -fx-font-size: 16px;" visible="false"/>
         </VBox>

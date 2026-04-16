@@ -40,8 +40,6 @@ public class UserService {
     public List<Oeuvre> recupererFavoris(int idUser) {
         return UserDAO.getAllUserFavorites(idUser);
     }
-
-    // --- GESTION DE L'HISTORIQUE ---
     public void marquerFilmCommeVu(int idUser, int idFilm,double time) {
         UserDAO.ajouterAHistoriqueFilm(idUser, idFilm,time);
     }
@@ -65,10 +63,10 @@ public class UserService {
     }
     public void viderHistorique(int idUser) {
         UserDAO.clearHistory(idUser);
-        
-        System.out.println("[Service] Demande de suppression d'historique traitée pour l'utilisateur : " + idUser);
     }
-    // --- GESTION DES UTILISATEURS (ADMIN) ---
+    public boolean SupprimerCompteUser(int idUser) {
+    	return UserDAO.deleteUser(idUser);
+    }
 
     public List<User> recupererTousLesUtilisateurs() {
         return UserDAO.getAllUsers();

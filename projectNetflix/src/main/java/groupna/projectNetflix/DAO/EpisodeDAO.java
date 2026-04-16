@@ -35,10 +35,8 @@ public class EpisodeDAO {
                     ep.setId(generatedId);
                 }
             }
-            System.out.println("Épisode ajouté avec succès !");
             
         } catch (SQLException e) {
-            System.err.println("Erreur lors de l'ajout de l'épisode : " + e.getMessage());
             e.printStackTrace();
         }
         return generatedId;
@@ -55,7 +53,6 @@ public class EpisodeDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("[Erreur SQL] Impossible de trouver l'id_saison pour l'épisode " + idEpisode);
             e.printStackTrace();
         }
         return idSaison;
@@ -74,7 +71,7 @@ public class EpisodeDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la récupération de l'épisode : " + e.getMessage());
+        	e.getMessage();
         }
         return ep;
     }
@@ -92,26 +89,20 @@ public class EpisodeDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la lecture des épisodes : " + e.getMessage());
+        	e.getMessage();
         }
         return episodes;
     }
-
-    /**
-     * Méthode utilitaire pour éviter la répétition de code lors de la lecture d'un ResultSet
-     */
     private static Episode mapResultSetToEpisode(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
         String titre = rs.getString("titre");
         int num = rs.getInt("numero");
         String resume = rs.getString("resume");
         String pathEp = rs.getString("path_ep");
-        String pathMin = rs.getString("path_miniature"); // Assurez-vous que cette colonne existe en BDD
+        String pathMin = rs.getString("path_miniature");
         
         java.sql.Time sqlTime = rs.getTime("duree");
         LocalTime duree = (sqlTime != null) ? sqlTime.toLocalTime() : null;
-
-        // Utilisation du constructeur à 7 paramètres défini dans Episode.java
         return new Episode(num, id, resume, titre, duree, pathEp, pathMin);
     }
 
@@ -126,12 +117,8 @@ public class EpisodeDAO {
             int rowsAffected = pstmt.executeUpdate();
             isDeleted = (rowsAffected > 0);
 
-            if (isDeleted) {
-                System.out.println("Épisode n°" + numeroEpisode + " de la Saison " + idSaison + " supprimé.");
-            }
-
         } catch (SQLException e) {
-            System.err.println("Erreur SQL lors de la suppression : " + e.getMessage());
+        	e.getMessage();
         }
 
         return isDeleted;
@@ -157,7 +144,6 @@ public class EpisodeDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("[Erreur SQL] Impossible de charger l'épisode " + id);
             e.printStackTrace();
         }
         return episode;

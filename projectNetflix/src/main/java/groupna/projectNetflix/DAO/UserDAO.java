@@ -172,7 +172,7 @@ public class UserDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Erreur favoris séries : " + e.getMessage());
+        	e.getMessage();
         }
 
         return oeuvres;
@@ -193,7 +193,7 @@ public class UserDAO {
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("[Erreur SQL] " + e.getMessage());
+        	e.getMessage();
         }
     }
 //----------------------------------------------------------------------------------
@@ -207,7 +207,6 @@ public class UserDAO {
             pstmt.executeUpdate();
             
         } catch (SQLException e) {
-            System.err.println("[Erreur SQL] Impossible d'ajouter le visionnage à l'historique.");
             e.printStackTrace();
         }
     }
@@ -219,14 +218,12 @@ public class UserDAO {
             pstmt.setInt(1, idUser);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("[Erreur] Échec de la suppression de l'historique films.");
             e.printStackTrace();
         }
         try (PreparedStatement pstmt = conn.prepareStatement(sqlEpisodes)) {
             pstmt.setInt(1, idUser);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("[Erreur] Échec de la suppression de l'historique épisodes.");
             e.printStackTrace();
         }
     }
@@ -247,6 +244,18 @@ public class UserDAO {
             e.printStackTrace();
         }
     }
+//------------------------------------------------------------------------------------
+    public static boolean deleteUser(int id) {
+    	int r=0;
+    	String sql="DELETE FROM user WHERE id=?";
+    	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            r=pstmt.executeUpdate();
+    	}catch(SQLException e){
+        	e.printStackTrace();
+        }
+    	return r!=0;
+    }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     public static List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
@@ -260,7 +269,6 @@ public class UserDAO {
                 users.add(user);
             }
         } catch (SQLException e) {
-            System.err.println("[Erreur] Impossible de récupérer la liste des utilisateurs.");
             e.printStackTrace();
         }
         
@@ -280,7 +288,6 @@ public class UserDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la récupération de l'ID par email : " + e.getMessage());
             e.printStackTrace();
         }
         return id;
@@ -306,7 +313,6 @@ public class UserDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("[Erreur SQL] Impossible de récupérer les statistiques d'inscription.");
             e.printStackTrace();
         }
 
@@ -321,7 +327,7 @@ public class UserDAO {
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Erreur lors de l'incrémentation du login : " + e.getMessage());
+        	e.getMessage();
         }
     }
 }

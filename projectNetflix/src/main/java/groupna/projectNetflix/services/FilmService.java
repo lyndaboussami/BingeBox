@@ -26,7 +26,6 @@ public class FilmService {
 
         if (existingId != -1) {
             film.setId(existingId);
-            System.out.println("[Service] Le film existe déjà (ID: " + existingId + ")");
             return true; 
         }
         FilmDAO.save(film);

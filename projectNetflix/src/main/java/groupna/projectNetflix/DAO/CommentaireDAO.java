@@ -33,7 +33,7 @@ public class CommentaireDAO {
 
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.err.println("Erreur lors de l'insertion dans " + table + " : " + e.getMessage());
+        	e.getMessage();
             return false;
         }
     }
@@ -119,7 +119,6 @@ public class CommentaireDAO {
                 ));
             }
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la récupération des signalements : " + e.getMessage());
             e.printStackTrace();
         }
         return reportedList;
@@ -141,7 +140,6 @@ public class CommentaireDAO {
                    ));
                }
            } catch (SQLException e) {
-               System.err.println("Erreur lors de la récupération des signalements : " + e.getMessage());
                e.printStackTrace();
            }
           return reportedList;
