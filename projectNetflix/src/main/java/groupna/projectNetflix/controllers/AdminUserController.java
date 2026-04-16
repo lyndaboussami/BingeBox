@@ -1,6 +1,5 @@
 package groupna.projectNetflix.controllers;
 
-import groupna.projectNetflix.DAO.CommentaireDAO;
 import groupna.projectNetflix.entities.Commentaire;
 import groupna.projectNetflix.services.CommentaireService;
 import javafx.collections.FXCollections;
@@ -12,89 +11,101 @@ import javafx.scene.layout.HBox;
 
 public class AdminUserController {
 
-    @FXML private TableView<Commentaire> reportsTable;
-    @FXML private TableColumn<Commentaire, Integer> colUser;
-    @FXML private TableColumn<Commentaire, String> colComment;
-    @FXML private TableColumn<Commentaire, Integer> colOeuvre;
-    @FXML private TableColumn<Commentaire, String> colReason;
-    @FXML private TableColumn<Commentaire, Void> colActions;
-    
-    @FXML private TextField commentSearchField;
-    CommentaireService comments=new CommentaireService();
-    private ObservableList<Commentaire> masterData = FXCollections.observableArrayList();
+	@FXML private TableView<Commentaire> movieReportsTable;
+    @FXML private TableColumn<Commentaire, Integer> colMovieUser, colMovieId;
+    @FXML private TableColumn<Commentaire, String> colMovieComment, colMovieReason;
+    @FXML private TableColumn<Commentaire, Void> colMovieActions;
 
+    @FXML private TableView<Commentaire> serieReportsTable;
+    @FXML private TableColumn<Commentaire, Integer> colSerieUser, colSerieId;
+    @FXML private TableColumn<Commentaire, String> colSerieComment, colSerieReason;
+    @FXML private TableColumn<Commentaire, Void> colSerieActions;
+
+    @FXML private TextField commentSearchField;
+    
+    private CommentaireService commentService = new CommentaireService();
+    private ObservableList<Commentaire> movieData = FXCollections.observableArrayList();
+    private ObservableList<Commentaire> serieData = FXCollections.observableArrayList();
+    
     @FXML
     public void initialize() {
-        setupTable();
+    	setupTable(movieReportsTable, colMovieUser, colMovieId, colMovieComment, colMovieReason, colMovieActions, "film");
+        setupTable(serieReportsTable, colSerieUser, colSerieId, colSerieComment, colSerieReason, colSerieActions, "serie");
+        
         loadInitialData();
         
         commentSearchField.textProperty().addListener((obs, oldVal, newVal) -> {
-            filterComments(newVal);
+            filterAll(newVal);
         });
     }
 
-    private void setupTable() {
-        colUser.setCellValueFactory(new PropertyValueFactory<>("id_user"));
-        colOeuvre.setCellValueFactory(new PropertyValueFactory<>("id_oeuvre"));
-        colComment.setCellValueFactory(new PropertyValueFactory<>("content"));
-        colReason.setCellValueFactory(new PropertyValueFactory<>("raison"));
 
-        reportsTable.getStyleClass().add("main-container"); 
     
-        colActions.setCellFactory(param -> new TableCell<>() {
-            private final Button keepBtn = new Button("Keep");
-            private final Button delBtn = new Button("Delete");
-            private final HBox container = new HBox(10, keepBtn, delBtn);
-            {
-                keepBtn.setStyle("-fx-background-color: #2e7d32; -fx-text-fill: white; -fx-cursor: hand;");
-                delBtn.setStyle("-fx-background-color: #d32f2f; -fx-text-fill: white; -fx-cursor: hand;");
-                
-                keepBtn.setOnAction(e -> handleKeep(getTableRow().getItem()));
-                delBtn.setOnAction(e -> handleDelete(getTableRow().getItem()));
-            }
+    
+    private void setupTable(TableView<Commentaire> table, TableColumn<Commentaire, Integer> userCol, 
+            TableColumn<Commentaire, Integer> idCol, TableColumn<Commentaire, String> contentCol, 
+            TableColumn<Commentaire, String> reasonCol, TableColumn<Commentaire, Void> actionCol, String type) {
 
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                setGraphic(empty ? null : container);
-            }
-        });
-    }
+		userCol.setCellValueFactory(new PropertyValueFactory<>("id_user"));
+		idCol.setCellValueFactory(new PropertyValueFactory<>("id_oeuvre"));
+		contentCol.setCellValueFactory(new PropertyValueFactory<>("content"));
+		reasonCol.setCellValueFactory(new PropertyValueFactory<>("raison"));
+	
+		actionCol.setCellFactory(param -> new TableCell<>() {
+			private final Button keepBtn = new Button("Keep");
+			private final Button delBtn = new Button("Delete");
+			private final HBox container = new HBox(10, keepBtn, delBtn);
+			{
+				keepBtn.setStyle("-fx-background-color: #2e7d32; -fx-text-fill: white; -fx-cursor: hand; -fx-font-weight: bold;");
+				delBtn.setStyle("-fx-background-color: #d32f2f; -fx-text-fill: white; -fx-cursor: hand; -fx-font-weight: bold;");
+				
+				keepBtn.setOnAction(e -> handleModeration(getTableRow().getItem(), "Keep", type));
+				delBtn.setOnAction(e -> handleModeration(getTableRow().getItem(), "Delete", type));
+			}
+			@Override protected void updateItem(Void item, boolean empty) {
+				super.updateItem(item, empty);
+				setGraphic(empty ? null : container);
+			}
+		});
+	}
+
 
     private void loadInitialData() {
-        masterData.setAll(comments.listerCommentairesSignalesFilms());
+    	movieData.setAll(commentService.listerCommentairesSignalesFilms());
+        serieData.setAll(commentService.listerCommentairesSignalesSeries());
         
-        reportsTable.setItems(masterData);
+        movieReportsTable.setItems(movieData);
+        serieReportsTable.setItems(serieData);
     }
 
-    private void filterComments(String query) {
-        if (query == null || query.isEmpty()) {
-            reportsTable.setItems(masterData);
-            return;
-        }
+    private void handleModeration(Commentaire comment, String action, String type) {
+        if (comment == null) return;
 
-        reportsTable.setItems(masterData.filtered(c -> 
-        	c.getContent().toLowerCase().contains(query.toLowerCase()) ||
-        	String.valueOf(c.getId_user()).contains(query)
-        ));
-    }
-
-    private void handleDelete(Commentaire selected) {
-        if (selected != null) {
-        	handleAdminAction("Delete Comment", () -> {
-                masterData.remove(selected);
-                comments.supprimerCommentaire(selected.getId(), "film");
-        	});
+        if ("Delete".equals(action)) {
+            handleAdminAction("Delete " + type + " Comment", () -> {
+                commentService.supprimerCommentaire(comment.getId(), type);
+                if ("film".equals(type)) movieData.remove(comment);
+                else serieData.remove(comment);
+            });
+        } else {
+            commentService.validerCommentaire(comment.getId(), type);
+            if ("film".equals(type)) movieData.remove(comment);
+            else serieData.remove(comment);
         }
     }
 
-    private void handleKeep(Commentaire selected) {
-        if (selected != null) {
-            masterData.remove(selected);
-            comments.validerCommentaire(selected.getId(), "film");
-            
-        }
+    private void filterAll(String query) {
+        String lowerQuery = query.toLowerCase();
+        movieReportsTable.setItems(movieData.filtered(c -> matches(c, lowerQuery)));
+        serieReportsTable.setItems(serieData.filtered(c -> matches(c, lowerQuery)));
     }
+
+    private boolean matches(Commentaire c, String query) {
+        if (query.isEmpty()) return true;
+        return c.getContent().toLowerCase().contains(query) || 
+               String.valueOf(c.getId_user()).contains(query);
+    }
+    
 
     private void handleAdminAction(String action, Runnable onConfirm) {
         String key = String.valueOf((int)(Math.random() * 9000) + 1000);
@@ -104,8 +115,6 @@ public class AdminUserController {
         dialog.setHeaderText(action + " Authorization");
         dialog.setContentText("Enter Pass Key to confirm [" + key + "]:");
         
-        styleDialog(dialog);
-
         dialog.showAndWait().ifPresent(input -> {
             if (input.equals(key)) {
                 onConfirm.run();
@@ -115,21 +124,11 @@ public class AdminUserController {
         });
     }
 
-    private void styleDialog(Dialog<?> dialog) {
-        DialogPane pane = dialog.getDialogPane();
-        String path = "/groupna/projectNetflix/css/style.css";
-        var res = getClass().getResource(path);
-        if (res != null) {
-            pane.getStylesheets().add(res.toExternalForm());
-            pane.getStyleClass().add("dialog-pane");
-        }
-    }
 
     private void showError(String title, String msg) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
         alert.setContentText(msg);
-        styleDialog(alert);
         alert.showAndWait();
     }
     
