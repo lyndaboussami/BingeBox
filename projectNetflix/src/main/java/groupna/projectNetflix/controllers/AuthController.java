@@ -12,6 +12,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 
 public class AuthController extends BaseController{
@@ -25,6 +26,9 @@ public class AuthController extends BaseController{
     @FXML private TextField firstNameField, lastNameField, emailField;
     @FXML private PasswordField passwordField, confirmPasswordField;
     
+    @FXML private TextField passwordTextField;
+    @FXML private ToggleButton eyeButton;
+    
     private boolean isLoginMode = true;
     private boolean isSuperAdminCreation = false;
     
@@ -32,6 +36,8 @@ public class AuthController extends BaseController{
     private void toggleAuthMode() {
         isLoginMode = !isLoginMode;
 
+        clearFields();
+        
         if (isLoginMode) {
             authTitle.setText("Sign In");
             submitBtn.setText("Sign In");
@@ -70,11 +76,11 @@ public class AuthController extends BaseController{
     
     @FXML
     private void handleSubmit() {
+    	
+    	String pass = eyeButton.isSelected() ? passwordTextField.getText() : passwordField.getText();
+    	
     	if(isLoginMode) {
-    		//emailField.clear();
-    		//passwordField.clear();
     		String email = emailField.getText();
-            String pass = passwordField.getText();
             User user=userService.seConnecter(email, pass);
             if (user!=null) {
                 Session.getInstance().setUser(user);;
@@ -84,13 +90,11 @@ public class AuthController extends BaseController{
             }
     	}
     	else {
-    		//emailField.clear();
-    		//passwordField.clear();
     		String email = emailField.getText();
-            String pass = passwordField.getText();
     		String nom=lastNameField.getText();
     		String prenom=firstNameField.getText();
     		String ConfirmPass=confirmPasswordField.getText();
+    		
     		if (!test.testName(nom) || !test.testName(prenom)) {
     		    handleAlert("short username", "your firstname or lastname is too short.");
     		    return;
@@ -114,19 +118,67 @@ public class AuthController extends BaseController{
     		    handleAlert("password not confirmed", "you have to confirme your password");
     		    return;
     		}
+    		
     		Role assignedRole = isSuperAdminCreation ? Role.ADMIN : Role.USER;
     		int inscrireUtilisateur = userService.inscrireUtilisateur(new User(0, nom, prenom, email, ConfirmPass, assignedRole));
-    		//Session.getInstance().setUser(userService.recupererUtilisateurParId(inscrireUtilisateur));
-    		if (isSuperAdminCreation) {
-    		    handleAlert("Success", "Admin account created! You can now close this and run the BingeBox app.");
-    		    // ((Stage) submitBtn.getScene().getWindow()).close();
+    		
+    		if (inscrireUtilisateur > 0) {
+    		
+	    		if (isSuperAdminCreation) {
+	    		    handleAlert("Success", "Admin account created! You can now close this and run the BingeBox app.");
+	    		    clearFields();
+	    		} else {
+	    		    Session.getInstance().setUser(userService.recupererUtilisateurParId(inscrireUtilisateur));
+	    		    clearFields();
+	    		    MainViewController.getInstance().unlockFullApp();
+	    		}
     		} else {
-    		    MainViewController.getInstance().unlockFullApp();
-    		    Session.getInstance().setUser(userService.recupererUtilisateurParId(inscrireUtilisateur));
-    		}
+                handleAlert("Error", "Registration failed. Please try again.");
+            }
     	}
     }
 
+    @FXML
+    private void togglePasswordVisibility() {
+        if (eyeButton.isSelected()) {
+            passwordTextField.setText(passwordField.getText());
+            passwordTextField.setVisible(true);
+            passwordTextField.setManaged(true);
+            
+            passwordField.setVisible(false);
+            passwordField.setManaged(false);
+            
+            eyeButton.setText("🔒");
+        } else {
+            passwordField.setText(passwordTextField.getText());
+            passwordField.setVisible(true);
+            passwordField.setManaged(true);
+            
+            passwordTextField.setVisible(false);
+            passwordTextField.setManaged(false);
+            
+            eyeButton.setText("👁");
+        }
+    }
+    
+    private void clearFields() {
+        firstNameField.clear();
+        lastNameField.clear();
+        emailField.clear();
+        
+        passwordField.clear();
+        passwordTextField.clear();
+        confirmPasswordField.clear();
+        
+        eyeButton.setSelected(false);
+        eyeButton.setText("👁");
+        
+        passwordField.setVisible(true);
+        passwordField.setManaged(true);
+        passwordTextField.setVisible(false);
+        passwordTextField.setManaged(false);
+    }
+    
     private void handleAlert(String Title,String Header) {
     	Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(Title);
