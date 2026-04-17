@@ -19,13 +19,26 @@
                 <TextField fx:id="firstNameField" promptText="First Name" styleClass="auth-field" HBox.hgrow="ALWAYS" />
                 <TextField fx:id="lastNameField" promptText="Last Name" styleClass="auth-field" HBox.hgrow="ALWAYS" />
             </HBox>
-
-            <TextField fx:id="emailField" promptText="Email" styleClass="auth-field" prefHeight="50" />
             
-            <PasswordField fx:id="passwordField" promptText="Password" styleClass="auth-field" prefHeight="50" />
-            
-            <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password" 
-                           styleClass="auth-field" prefHeight="50" managed="false" visible="false" />
+			<VBox spacing="15">
+			    <TextField fx:id="emailField" promptText="Email" styleClass="auth-field" prefHeight="50" maxWidth="Infinity" />
+			    
+			    <HBox alignment="CENTER_LEFT" styleClass="auth-field" prefHeight="50" maxWidth="Infinity" style="-fx-padding: 0 10 0 0;">
+			        <StackPane HBox.hgrow="ALWAYS">
+			            <TextField fx:id="passwordTextField" managed="false" visible="false" 
+			                       promptText="Password"
+			                       style=" -fx-background-color: #1a1f31; -fx-text-fill: -fx-text-main; -fx-prompt-text-fill: -fx-text-muted;" />
+			            <PasswordField fx:id="passwordField" promptText="Password" 
+			                           style=" -fx-background-color: #1a1f31; -fx-text-fill: -fx-text-main; -fx-prompt-text-fill: -fx-text-muted;" />
+			        </StackPane>
+			        
+			        <ToggleButton fx:id="eyeButton" onAction="#togglePasswordVisibility" text="👁" 
+			                      style=" -fx-background-color: #1a1f31; -fx-text-fill: -fx-text-main; -fx-prompt-text-fill: -fx-text-muted; -fx-font-size: 18px;" />
+			    </HBox>
+			
+			    <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password" 
+			                   styleClass="auth-field" prefHeight="50" managed="false" visible="false" />
+			</VBox>
         
         </VBox>
 
