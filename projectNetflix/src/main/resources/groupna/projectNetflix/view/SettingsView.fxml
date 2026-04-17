@@ -63,5 +63,14 @@
             </HBox>
         </VBox>
 
+		<VBox spacing="20" styleClass="auth-container" style="-fx-padding: 30; -fx-border-color: #ff6b6b; -fx-border-width: 1; -fx-border-radius: 5;">
+		    <Label text="Danger Zone" style="-fx-font-size: 20px; -fx-text-fill: #ff6b6b;"/>
+		    <Button text="Delete Account" onAction="#handleDeleteAccount" 
+		            style="-fx-background-color: #ff6b6b; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-cursor: hand;"/>
+		    <Label text="Once you delete your account, there is no going back. Please be certain." 
+		           style="-fx-text-fill: -fx-text-muted;" wrapText="true"/>
+		    
+		    </VBox>
+
     </VBox>
 </ScrollPane>

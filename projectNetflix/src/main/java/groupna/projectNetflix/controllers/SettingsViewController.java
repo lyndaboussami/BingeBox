@@ -106,4 +106,47 @@ public class SettingsViewController extends BaseController {
         confirmPasswordField.clear();
     }
 
+    @FXML
+    private void handleDeleteAccount() {
+        Alert confirmation = new Alert(Alert.AlertType.WARNING);
+        confirmation.setTitle("Account Deletion");
+        confirmation.setHeaderText("Final Warning");
+        confirmation.setContentText("Are you sure you want to delete your account? This cannot be undone.");
+        
+        if (confirmation.showAndWait().get() == ButtonType.OK) {
+            
+            TextInputDialog passwordDialog = new TextInputDialog();
+            passwordDialog.setTitle("Confirm Identity");
+            passwordDialog.setHeaderText("Security Check");
+            passwordDialog.setContentText("Please enter your password to confirm deletion:");
+
+            passwordDialog.showAndWait().ifPresent(password -> {
+                boolean isPasswordCorrect = userService.seConnecter(currentUser.getEmail(), password) != null;
+
+                if (isPasswordCorrect) {
+                    boolean success = userService.SupprimerCompteUser(currentUser.getId());
+                    
+                    if (success) {
+                        Session.getInstance().setUser(null);
+                        MainViewController mainCtrl = MainViewController.getInstance();
+                        
+                        if (mainCtrl != null) {
+                            mainCtrl.loadPage("AuthView.fxml");
+                            
+                            mainCtrl.hideNavigation();
+                            
+                            showStatus("Account deleted. Redirecting...", false);
+                        } else {
+                            showStatus("Account deleted. Please restart the app.", false);
+                        }
+                        
+                    } else {
+                        showStatus("Error: Database could not delete user.", true);
+                    }
+                } else {
+                    showStatus("Incorrect password. Deletion cancelled.", true);
+                }
+            });
+        }
+    }
 }
