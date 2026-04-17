@@ -1,5 +1,6 @@
 package groupna.projectNetflix.controllers;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -125,26 +126,33 @@ public class HomeViewController extends BaseController{
 
         try {
             String videoPath = movie.getPathTrailer();
-            if (videoPath != null) {
-                Media media = new Media(getClass().getResource(videoPath).toExternalForm());
-                mediaPlayer = new MediaPlayer(media);
-                mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-                mediaPlayer.setMute(true);
+            if (videoPath != null && !videoPath.isEmpty()) {
+                File file = new File(videoPath);
                 
-                trailerVideo.setMediaPlayer(mediaPlayer);
-                
-                Rectangle clip = new Rectangle();
-                clip.widthProperty().bind(heroSection.widthProperty());
-                clip.heightProperty().bind(heroSection.heightProperty());
-                
-                heroSection.setClip(clip);
-                trailerVideo.setPreserveRatio(true);
-                
-                
-                trailerVideo.fitWidthProperty().bind(heroSection.widthProperty());
+                if (file.exists()) {
+                    String uriPath = file.toURI().toString();
+                    Media media = new Media(uriPath);
+                    
+                    mediaPlayer = new MediaPlayer(media);
+                    mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+                    mediaPlayer.setMute(true);
+                    
+                    trailerVideo.setMediaPlayer(mediaPlayer);
+                    Rectangle clip = new Rectangle();
+                    clip.widthProperty().bind(heroSection.widthProperty());
+                    clip.heightProperty().bind(heroSection.heightProperty());
+                    
+                    heroSection.setClip(clip);
+                    trailerVideo.setPreserveRatio(true);
+                    trailerVideo.fitWidthProperty().bind(heroSection.widthProperty());
+                    
+                } else {
+                    System.err.println("Fichier vidéo introuvable sur le disque : " + videoPath);
+                }
             }
         } catch (Exception e) {
             System.err.println("Hero video failed to load: " + e.getMessage());
+            e.printStackTrace();
         }
     }
     
@@ -210,11 +218,18 @@ public class HomeViewController extends BaseController{
 
         try {
             if (imagePath != null && !imagePath.isEmpty()) {
-                Image img = new Image(getClass().getResourceAsStream(imagePath));
-                posterView.setImage(img);
+                File file = new File(imagePath);
+                
+                if (file.exists()) {
+                    Image img = new Image(file.toURI().toString(), true);
+                    posterView.setImage(img);
+                } else {
+                    System.err.println("Le fichier n'existe pas : " + imagePath);
+                }
             }
         } catch (Exception e) {
             System.err.println("Could not load image: " + imagePath);
+            e.printStackTrace();
         }
 
         titleLabel.getStyleClass().add("card-text");

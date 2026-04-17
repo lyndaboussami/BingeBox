@@ -1,5 +1,6 @@
 package groupna.projectNetflix.controllers;
 
+import java.io.File;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -95,18 +96,6 @@ public class SearchController extends BaseController{
             genreChip.setOnAction(e -> updateSearchResults());
             genreFilterContainer.getChildren().add(genreChip);
         }
-        /*filterMovies.setOnAction(e->{
-        	allMedia.clear();
-        	allMedia.addAll(movies);
-        	updateSearchResults();
-        	filterSeries.disableProperty();
-        });
-        filterSeries.setOnAction(e->{
-        	allMedia.clear();
-        	allMedia.addAll(series);
-        	updateSearchResults();
-        	filterMovies.disableProperty();
-        });*/
     }
     
     @FXML
@@ -205,11 +194,18 @@ public class SearchController extends BaseController{
 
         try {
             if (imagePath != null && !imagePath.isEmpty()) {
-                Image img = new Image(getClass().getResourceAsStream(imagePath));
-                posterView.setImage(img);
+                File file = new File(imagePath);
+                
+                if (file.exists()) {
+                    Image img = new Image(file.toURI().toString(), true);
+                    posterView.setImage(img);
+                } else {
+                    System.err.println("Fichier introuvable sur le disque : " + imagePath);
+                }
             }
         } catch (Exception e) {
             System.err.println("Could not load image: " + imagePath);
+            e.printStackTrace();
         }
 
         titleLabel.getStyleClass().add("card-text");

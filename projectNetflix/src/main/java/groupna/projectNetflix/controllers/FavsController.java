@@ -1,6 +1,7 @@
 package groupna.projectNetflix.controllers;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -84,13 +85,19 @@ public class FavsController {
         poster.setFitHeight(300);
         
         try {
-            if (movie.getPathPoster() != null) {
-                poster.setImage(new Image(getClass().getResourceAsStream(movie.getPathPoster())));
+            String path = movie.getPathPoster();
+            if (path != null && !path.isEmpty()) {
+                File file = new File(path);
+                
+                if (file.exists()) {
+                    poster.setImage(new Image(new FileInputStream(file)));
+                } else {
+                    System.err.println("Fichier introuvable sur le disque : " + path);
+                }
             }
         } catch (Exception e) {
-            System.err.println("Could not load: " + movie.getPathPoster());
+            System.err.println("Erreur lors du chargement de l'image : " + e.getMessage());
         }
-
         Rectangle clip = new Rectangle(200, 300);
         clip.setArcWidth(15);
         clip.setArcHeight(15);
@@ -177,11 +184,18 @@ public class FavsController {
         poster.setFitHeight(300);
         
         try {
-            if (serie.getPathPoster() != null) {
-                poster.setImage(new Image(getClass().getResourceAsStream(serie.getPathPoster())));
+            String path = serie.getPathPoster();
+            if (path != null && !path.isEmpty()) {
+                File file = new File(path);
+                
+                if (file.exists()) {
+                    poster.setImage(new Image(new FileInputStream(file)));
+                } else {
+                    System.err.println("Fichier introuvable sur le disque : " + path);
+                }
             }
         } catch (Exception e) {
-            System.err.println("Series image failed: " + serie.getPathPoster());
+            System.err.println("Erreur lors du chargement de l'image : " + e.getMessage());
         }
 
         Rectangle clip = new Rectangle(200, 300);

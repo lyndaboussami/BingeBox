@@ -1,5 +1,6 @@
 package groupna.projectNetflix.controllers;
 
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -74,11 +75,18 @@ public class SeriesController extends BaseController{
         poster.setFitHeight(300);
         
         try {
-            if (serie.getPathPoster() != null) {
-                poster.setImage(new Image(getClass().getResourceAsStream(serie.getPathPoster())));
+            String path = serie.getPathPoster();
+            if (path != null && !path.isEmpty()) {
+                File file = new File(path);
+                
+                if (file.exists()) {
+                    poster.setImage(new Image(new FileInputStream(file)));
+                } else {
+                    System.err.println("Fichier introuvable sur le disque : " + path);
+                }
             }
         } catch (Exception e) {
-            System.err.println("Series image failed: " + serie.getPathPoster());
+            System.err.println("Erreur lors du chargement de l'image : " + e.getMessage());
         }
 
         Rectangle clip = new Rectangle(200, 300);

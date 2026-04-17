@@ -1,5 +1,4 @@
 package groupna.projectNetflix.controllers;
-import groupna.projectNetflix.DAO.SerieDAO;
 import groupna.projectNetflix.entities.*;
 import groupna.projectNetflix.services.EpisodeService;
 import groupna.projectNetflix.services.FilmService;
@@ -21,6 +20,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -91,17 +91,25 @@ public class AdminMediaController {
                     String path = f.getPathPoster();
                     
                     try {
-                        var stream = getClass().getResourceAsStream(path);
-                        if (stream != null) {
-                            img.setImage(new Image(stream));
-                            img.setFitHeight(50); 
-                            img.setPreserveRatio(true);
-                            setGraphic(img);
+                        if (path != null && !path.isEmpty()) {
+                            File file = new File(path);
+                            
+                            if (file.exists()) {
+                                Image image = new Image(file.toURI().toString(), true);
+                                
+                                img.setImage(image);
+                                img.setFitHeight(50);
+                                img.setPreserveRatio(true);
+                                setGraphic(img);
+                            } else {
+                                System.err.println("Fichier introuvable sur le disque : " + path);
+                                setGraphic(new Label("No Image"));
+                            }
                         } else {
-                            System.err.println("Resource not found: " + path);
-                            setGraphic(new Label("No Image")); 
+                            setGraphic(null);
                         }
                     } catch (Exception e) {
+                        System.err.println("Erreur de chargement : " + e.getMessage());
                         setGraphic(null);
                     }
                 }
@@ -161,18 +169,26 @@ public class AdminMediaController {
                     String path = s.getPathPoster();
                     
                     try {
-                        var stream = getClass().getResourceAsStream(path);
-                        if (stream != null) {
-                            img.setImage(new Image(stream));
-                            img.setFitHeight(50); 
-                            img.setPreserveRatio(true);
-                            setGraphic(img);
+                        if (path != null && !path.isEmpty()) {
+                            File file = new File(path);
+
+                            if (file.exists()) {
+                                Image image = new Image(file.toURI().toString(), true);
+                                
+                                img.setImage(image);
+                                img.setFitHeight(50); 
+                                img.setPreserveRatio(true);
+                                setGraphic(img);
+                            } else {
+                                Label placeholder = new Label("No Poster");
+                                placeholder.getStyleClass().add("card-text");
+                                setGraphic(placeholder);
+                            }
                         } else {
-                            Label placeholder = new Label("No Poster");
-                            placeholder.getStyleClass().add("card-text");
-                            setGraphic(placeholder);
+                            setGraphic(null);
                         }
                     } catch (Exception e) {
+                        System.err.println("Error loading image: " + e.getMessage());
                         setGraphic(null);
                     }
                 }
@@ -447,7 +463,7 @@ public class AdminMediaController {
                             LocalTime.parse(durationField.getText()),
                             moviePath.getText(),
                             trailerPath.getText()
-                        );
+                        );//---tests---
                 } catch (Exception ex) {
                     new Alert(Alert.AlertType.ERROR, "Invalid data format!").show();
                     return null;
@@ -631,7 +647,7 @@ public class AdminMediaController {
             Saison newSaison = new Saison(0, saisonMap.size() + 1, LocalDate.now(), "Season " + (saisonMap.size() + 1), "", "");
             saisonMap.put(newSaison, new ArrayList<>());
             updateSeasonAccordion(accordion, saisonMap);
-        });
+        });//---tests-----
 
         layout.getChildren().addAll(createLabel("Manage Your Seasons"), accordion, addSeasonBtn);
         
@@ -713,7 +729,7 @@ public class AdminMediaController {
                         LocalTime.parse(duration.getText()), 
                         path.getText(), 
                         thumb.getText()
-                    );
+                    );//----tests---
                 } catch (Exception ex) {
                     new Alert(Alert.AlertType.ERROR, "Invalid Time Format (HH:mm:ss)").show();
                     return null;

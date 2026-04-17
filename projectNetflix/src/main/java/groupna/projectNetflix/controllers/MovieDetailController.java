@@ -66,8 +66,10 @@ public class MovieDetailController {
 
             if (posterPath != null && !posterPath.isEmpty()) {
                 try {
-                    Image posterImage = new Image(getClass().getResource(posterPath).toExternalForm(), true);
+                	File file = new File(posterPath);
+                	String imagePath = file.toURI().toString(); 
 
+                	Image posterImage = new Image(imagePath, true);
                     if (posterImage != null) {
                         movieSharpPoster.setImage(posterImage);
                         heroBlurredPoster.setImage(posterImage);
@@ -99,44 +101,6 @@ public class MovieDetailController {
         }
     }
     
-    /*@FXML
-    private void handlePlay() {
-        Object content = MainViewController.getInstance().getSelectedContent();
-        if (content instanceof Film ) {
-        	Film film = (Film) content;
-        	int idFilm=film.getId();
-        	String moviePath = film.getPathMovie();
-            User user = Session.getInstance().getUser();
-    	    Optional<HistoryItem> alreadyWatched = userService.recupererHistoriqueComplet(user.getId())
-    	        .stream()
-    	        .filter(a -> a.getContent() instanceof Film&&a.getContent().equals(film))
-    	        .findFirst();
-    	    double time = alreadyWatched.isPresent() ? alreadyWatched.get().getTime() : 0.0;
-            if (moviePath == null || moviePath.isEmpty()) {
-                System.err.println("Error: No path defined for this movie in the database.");
-                return;
-            }
-
-            try {
-                URL resource = getClass().getResource(moviePath);
-                
-                if (resource == null) {
-                    System.err.println("File not found at path: " + moviePath);
-                    return;
-                }
-
-                String fullUrl = resource.toExternalForm();
-                
-                openVideoPlayer(idFilm,time,fullUrl, film.getTitre());
-                //userService.marquerFilmCommeVu(user.getId(), movie.getId());
-
-            } catch (Exception e) {
-                System.err.println("Error playing video: " + e.getMessage());
-                e.printStackTrace();
-            }
-        }
-        
-    }*/
     @FXML
     private void handlePlay() {
         Object content = MainViewController.getInstance().getSelectedContent();

@@ -13,6 +13,8 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.image.*;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 
 public class HistoryController extends BaseController {
@@ -90,9 +92,18 @@ public class HistoryController extends BaseController {
 	   
         ImageView poster = new ImageView();
         try {
-            poster.setImage(new Image(getClass().getResourceAsStream(imagePath)));
+            String path = imagePath;
+            if (path != null && !path.isEmpty()) {
+                File file = new File(path);
+                
+                if (file.exists()) {
+                    poster.setImage(new Image(new FileInputStream(file)));
+                } else {
+                    System.err.println("Fichier introuvable sur le disque : " + path);
+                }
+            }
         } catch (Exception e) {
-            System.err.println("Could not load history image: " + imagePath);
+            System.err.println("Erreur lors du chargement de l'image : " + e.getMessage());
         }
         
         poster.setFitHeight(90);

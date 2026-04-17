@@ -20,6 +20,7 @@ import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.List;
@@ -111,9 +112,8 @@ public class SeriesDetailController {
             String path = series.getPathPoster();
             
             if (path != null) {
-                try {
-                    Image img = new Image(getClass().getResource(path).toExternalForm(), true);
-                    
+                try {File file = new File(path); 
+                Image img = new Image(file.toURI().toString(), true);
                     seriesSharpPoster.setImage(img);
                     heroBlurredPoster.setImage(img);
                     
