@@ -39,7 +39,7 @@ public class SeriesController {
         label.getStyleClass().add("categoryTitle");
 
         ScrollPane sp = new ScrollPane();
-        sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         sp.getStyleClass().add("inner-scroll");
 
