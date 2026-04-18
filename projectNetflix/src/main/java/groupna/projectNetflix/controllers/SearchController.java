@@ -31,7 +31,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 
-public class SearchController extends BaseController{
+public class SearchController {
 	@FXML private TextField searchField;
     @FXML private FlowPane resultsPane;
     @FXML private ComboBox<String> yearFilter;

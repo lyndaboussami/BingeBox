@@ -7,7 +7,7 @@ import groupna.projectNetflix.utils.Test;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-public class SettingsViewController extends BaseController {
+public class SettingsViewController {
 	private UserService userService=new UserService();
 	private User currentUser = Session.getInstance().getUser();
     @FXML private TextField firstNameField;
@@ -37,14 +37,15 @@ public class SettingsViewController extends BaseController {
         String email = emailField.getText().trim();
 
         if (!test.testName(lName)||!test.testName(fName)) {
-            showStatus("your firstname and lastname must contain at least 2 characters", true);
+            showStatus("Your firstname and lastname must contain at least 2 characters", true);
             return;
         }
         if(!test.testEmail(email)) {
-        	showStatus("please entre a valid email", true);
+        	showStatus("Please enter a valid email", true);
+        	return;
         }
         if(userService.rechercherParEmail(email)!=0) {
-        	showStatus("user with this email already exists", true);
+        	showStatus("User with this email already exists", true);
         	return;
         }
         currentUser.setNom(lName);

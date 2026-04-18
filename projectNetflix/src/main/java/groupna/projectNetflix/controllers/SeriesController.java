@@ -12,7 +12,7 @@ import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 
-public class SeriesController extends BaseController{
+public class SeriesController {
 	@FXML private VBox seriesRowsContainer;
 	private SerieService serieService=new SerieService();
     @FXML
@@ -41,7 +41,6 @@ public class SeriesController extends BaseController{
         ScrollPane sp = new ScrollPane();
         sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         sp.getStyleClass().add("inner-scroll");
 
         HBox row = new HBox(15);

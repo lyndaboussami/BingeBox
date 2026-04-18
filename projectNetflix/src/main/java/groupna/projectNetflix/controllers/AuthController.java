@@ -15,7 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 
-public class AuthController extends BaseController{
+public class AuthController{
 	private Test test=new Test();
 	private UserService userService=new UserService();
 	@FXML private Label authTitle, switchText;

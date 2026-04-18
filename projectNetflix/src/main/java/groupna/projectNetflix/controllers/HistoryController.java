@@ -17,7 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
 
-public class HistoryController extends BaseController {
+public class HistoryController {
 	private UserService userService=new UserService();
 	private SerieService serieService=new SerieService();
 	private EpisodeService episodeService=new EpisodeService();
@@ -125,11 +125,6 @@ public class HistoryController extends BaseController {
             imageContainer.getChildren().add(poster);
         }
         
-        poster.setFitHeight(90);
-        poster.setFitWidth(140);
-        poster.setPreserveRatio(false);
-        
-        
         VBox info = new VBox(8);
         
         
@@ -148,7 +143,7 @@ public class HistoryController extends BaseController {
         Label playIcon = new Label("▶");
         playIcon.setStyle("-fx-text-fill: -fx-accent; -fx-font-size: 24px;");
 
-        row.getChildren().addAll(poster, info, playIcon);
+        row.getChildren().addAll(imageContainer, info, playIcon);
         
         return row;
     }

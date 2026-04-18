@@ -23,7 +23,7 @@ import javafx.scene.media.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.layout.*;
 
-public class HomeViewController extends BaseController{
+public class HomeViewController{
 	private FilmService filmService=new FilmService();
 	private SerieService serieService=new SerieService();
     @FXML private StackPane heroSection;
