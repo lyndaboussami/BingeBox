@@ -471,7 +471,7 @@ public class AdminMediaController {
                             LocalTime.parse(durationField.getText()),
                             moviePath.getText(),
                             trailerPath.getText()
-                        );//---tests---
+                        );
                 } catch (Exception ex) {
                     new Alert(Alert.AlertType.ERROR, "Invalid data format!please check your inputs").show();
                     return null;
@@ -663,7 +663,7 @@ public class AdminMediaController {
             Saison newSaison = new Saison(0, saisonMap.size() + 1, LocalDate.now(), "Season " + (saisonMap.size() + 1), "", "");
             saisonMap.put(newSaison, new ArrayList<>());
             updateSeasonAccordion(accordion, saisonMap);
-        });//---tests-----
+        });
 
         layout.getChildren().addAll(createLabel("Manage Your Seasons"), accordion, addSeasonBtn);
         
@@ -749,7 +749,7 @@ public class AdminMediaController {
                         LocalTime.parse(duration.getText()), 
                         path.getText(), 
                         thumb.getText()
-                    );//----tests---
+                    );
                 } catch (Exception ex) {
                     new Alert(Alert.AlertType.ERROR, "Invalid Time Format (HH:mm:ss)").show();
                     return null;

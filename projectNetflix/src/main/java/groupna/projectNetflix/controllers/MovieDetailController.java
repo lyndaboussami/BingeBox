@@ -2,7 +2,6 @@ package groupna.projectNetflix.controllers;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -107,7 +106,7 @@ public class MovieDetailController {
         if (content instanceof Film) {
             Film film = (Film) content;
             int idFilm = film.getId();
-            String moviePath = film.getPathMovie(); // Ex: "C:/Users/bsouh/Desktop/..."
+            String moviePath = film.getPathMovie();
             
             User user = Session.getInstance().getUser();
             Optional<HistoryItem> alreadyWatched = userService.recupererHistoriqueComplet(user.getId())

@@ -14,14 +14,13 @@ public class ArtisteService {
         }
         return ArtisteDAO.save(a);
     }
-//-------------------------------------------------------------------------
+
     public Artiste trouverArtisteParId(int id) {
         if (id <= 0) return null;
         return ArtisteDAO.findById(id);
     }
-//-----------------------------------------------------------------------
+
     public List<Artiste> recupererTousLesArtistes() {
         return ArtisteDAO.findAll();
     }
-//-----------------------------------------------------------------------------
 }

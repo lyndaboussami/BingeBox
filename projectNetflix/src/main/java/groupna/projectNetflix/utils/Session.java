@@ -1,8 +1,7 @@
 package groupna.projectNetflix.utils;
 
 import groupna.projectNetflix.entities.User;
-import java.util.HashSet;
-import java.util.Locale; // Add this
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class Session {
@@ -11,7 +10,7 @@ public class Session {
     
     private Locale currentLocale = Locale.ENGLISH;	
     public Session(User user) {
-        this.currentUser = user; //new User(0, "User123", "password", null, null, null, null, null); 
+        this.currentUser = user;
     }
     public static Session getInstance(User user) {
         if (instance == null) {

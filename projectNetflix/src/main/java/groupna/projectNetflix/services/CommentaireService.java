@@ -9,27 +9,27 @@ public class CommentaireService {
     public boolean posterCommentaire(Commentaire c, String type) {
         return CommentaireDAO.save(c, type);
     }
-//---------------------------------------------------------------------------------------
+
     public List<Commentaire> recupererCommentairesOeuvre(int idOeuvre, String type) {
         return CommentaireDAO.findAllByOeuvre(idOeuvre, type);
     }
-//-------------------------------------------------------------------------------------------
+
     public boolean signalerAbus(int idComment, String type,String raison) {
         return CommentaireDAO.reportCommentaire(idComment, type,raison);
     }
-//----------------------------------------------------------------------------------------------
+
     public boolean supprimerCommentaire(int idComment, String type) {
         return CommentaireDAO.delete(idComment, type);
     }
-//----------------------------------------------------------------------------------------------
+
     public List<Commentaire> listerCommentairesSignalesFilms() {
         return CommentaireDAO.findReportedFilms();
     }
-//---------------------------------------------------------------------------------------
+
     public List<Commentaire> listerCommentairesSignalesSeries() {
         return CommentaireDAO.findReportedSeries();
     }
-//---------------------------------------------------------------------------------------------
+
     public Boolean validerCommentaire(int idComment, String type) {
     	return CommentaireDAO.validCommentaire(idComment, type);
     }

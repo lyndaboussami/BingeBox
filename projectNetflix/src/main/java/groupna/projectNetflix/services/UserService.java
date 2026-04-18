@@ -4,13 +4,11 @@ import groupna.projectNetflix.DAO.UserDAO;
 import groupna.projectNetflix.DAO.HistoryItem;
 import groupna.projectNetflix.entities.Oeuvre;
 import groupna.projectNetflix.entities.User;
-import groupna.projectNetflix.entities.Visualisable;
 import groupna.projectNetflix.utils.PasswordHasher;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class UserService {
     public User seConnecter(String email, String mdpSaisi) {
@@ -23,7 +21,7 @@ public class UserService {
         u.setMdp(mdpHache); 
         return UserDAO.save(u);
     }
-//------------------------------------------------------------------------------
+
     public User recupererUtilisateurParId(int id) {
         return UserDAO.findById(id);
     }

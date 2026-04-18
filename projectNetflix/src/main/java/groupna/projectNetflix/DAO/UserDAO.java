@@ -17,8 +17,6 @@ import groupna.projectNetflix.utils.ConxDB;
 
 public class UserDAO {
     private static Connection conn = ConxDB.getInstance();    
-
-//--------------------------------------------------------------------------------------
     
     public static User login(String email, String mdp) {
         User user = null;
@@ -42,7 +40,7 @@ public class UserDAO {
         }
         return user;
     }
-//-----------------------------------------------------------------------------------------
+
     public static User findById(int id) {
         User user = null;
         String sql = "SELECT * FROM user WHERE id = ?";
@@ -65,7 +63,7 @@ public class UserDAO {
         }
         return user;
     }
-//------------------------------------------------------------------------------------------------
+
     public static int save(User u) {
         int generatedId = 0;
         String sql = "INSERT INTO user (nom, prenom, email, mdp, role) VALUES (?, ?, ?, ?, ?)";
@@ -92,7 +90,7 @@ public class UserDAO {
         }
         return generatedId;
     }
-//-----------------------------------------------------------------------------------------------------
+
     public static void addToCollection(int idUser, int idOeuvre, String tableName) {
         String sql = "INSERT IGNORE INTO " + tableName + " (id_user, id_oeuvre) VALUES (?, ?)";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -103,7 +101,7 @@ public class UserDAO {
             e.printStackTrace();
         }
     }
-//---------------------------------------------------------------------------
+
     public static List<HistoryItem> getUserFullGlobalHistory(int idUser) {
         List<HistoryItem> globalHistory = new ArrayList<>(); 
         String sqlFilms = "SELECT id_oeuvre, date_visionnage, time FROM historique_film WHERE id_user = ?";
@@ -134,7 +132,7 @@ public class UserDAO {
                 .sorted((h1, h2) -> h2.getDateVisionnage().compareTo(h1.getDateVisionnage()))
                 .collect(Collectors.toList());
     }
-//-------------------------------------------------------------------------------------------------
+
     public static void removeFromCollection(int idUser, int idOeuvre, String tableName) {
         String sql = "DELETE FROM " + tableName + " WHERE id_user = ? AND id_oeuvre = ?";
 
@@ -147,7 +145,7 @@ public class UserDAO {
             e.printStackTrace();
         }
     }
-//--------------------------------------------------------------------------------------------
+
     public static List<Oeuvre> getAllUserFavorites(int idUser) {
         List<Oeuvre> oeuvres = new ArrayList<>();
         String sqlFilms = "SELECT id_oeuvre FROM fav_film WHERE id_user = ?";
@@ -177,12 +175,12 @@ public class UserDAO {
 
         return oeuvres;
     }
-//----------------------------------------------------------------------------------------
+
     public static void ajouterAuxFavoris(int idUser, int idOeuvre, String type) {
         String tableName = type.equalsIgnoreCase("film") ? "fav_film" : "fav_serie";
         addToCollection(idUser, idOeuvre, tableName);
     }
-//----------------------------------------------------------------------------------------
+
     public static void ajouterAHistoriqueFilm(int idUser, int idFilm, double time) {
         String sql = "INSERT INTO historique_film (id_user, id_oeuvre, time) VALUES (?, ?, ?)";
 
@@ -196,7 +194,7 @@ public class UserDAO {
         	e.getMessage();
         }
     }
-//----------------------------------------------------------------------------------
+
     public static void ajouterAHistoriqueEpisode(int idUser, int idEpisode, double time) {
         String sql = "INSERT INTO historique_episodes (id_user, id_episode, time) VALUES (?, ?, ?)";
 
@@ -210,7 +208,7 @@ public class UserDAO {
             e.printStackTrace();
         }
     }
-//-------------------------------------------------------------------------------------------------------
+
     public static void clearHistory(int idUser) {
         String sqlFilms = "DELETE FROM historique_film WHERE id_user = ?";
         String sqlEpisodes = "DELETE FROM historique_episodes WHERE id_user = ?";
@@ -227,7 +225,7 @@ public class UserDAO {
             e.printStackTrace();
         }
     }
-//----------------------------------------------------------------------------------------------------
+
     public static void update(User u) {
         String sql = "UPDATE user SET nom = ?, prenom = ?, email = ?, mdp = ?, role = ? WHERE id = ?";
 
@@ -244,7 +242,7 @@ public class UserDAO {
             e.printStackTrace();
         }
     }
-//------------------------------------------------------------------------------------
+
     public static boolean deleteUser(int id) {
     	int r=0;
     	String sql="DELETE FROM user WHERE id=?";
@@ -256,7 +254,7 @@ public class UserDAO {
         }
     	return r!=0;
     }
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
     public static List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM users";
@@ -274,7 +272,7 @@ public class UserDAO {
         
         return users;
     }
-//----------------------------------------------------------------------------------
+
     public static int getIdParEmail(String email) {
         int id = 0;
         String sql = "SELECT id FROM user WHERE email = ?";
@@ -292,7 +290,7 @@ public class UserDAO {
         }
         return id;
     }
-//----------------------------------------------------------------------------------
+
     public static Map<LocalDate, Integer> getInscriptionsParDate() {
         Map<LocalDate, Integer> stats = new TreeMap<>();
         String sql = "SELECT date_inscris, COUNT(*) as nb_users " +
@@ -318,7 +316,7 @@ public class UserDAO {
 
         return stats;
     }
-//-------------------------------------------------------------------------------------------------------
+
     public static void incrementerLoginDuJour() {
         String sql = "INSERT INTO LoginPerDay (date, nbLogins) " +
                      "VALUES (CURRENT_DATE, 1) " +

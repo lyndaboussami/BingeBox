@@ -29,12 +29,10 @@ package groupna.projectNetflix.entities;
 	
 	    private final String label;
 	
-	    // Constructeur
 	    Categorie(String label) {
 	        this.label = label;
 	    }
 	
-	    // Getter pour récupérer le nom lisible
 	    public String getLabel() {
 	        return label;
 	    }

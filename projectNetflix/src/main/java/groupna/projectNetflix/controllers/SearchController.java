@@ -20,7 +20,6 @@ import groupna.projectNetflix.utils.Session;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -169,9 +168,9 @@ public class SearchController extends BaseController{
         typeIcon.getStyleClass().add("card-type-badge");
         
         if (data instanceof Film) {
-            typeIcon.setText("🎬"); // Movie Icon
+            typeIcon.setText("🎬");
         } else if (data instanceof Serie) {
-            typeIcon.setText("📺"); // Series Icon
+            typeIcon.setText("📺");
         }
         
         StackPane.setAlignment(typeIcon, javafx.geometry.Pos.TOP_RIGHT);

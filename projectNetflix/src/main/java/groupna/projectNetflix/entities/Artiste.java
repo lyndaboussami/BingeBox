@@ -1,7 +1,5 @@
 package groupna.projectNetflix.entities;
 
-import java.util.List;
-import java.util.Objects;
 public class Artiste {
 	private int id;
 	private String fullname;

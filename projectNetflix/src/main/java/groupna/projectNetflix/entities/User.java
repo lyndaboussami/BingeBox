@@ -1,10 +1,5 @@
 package groupna.projectNetflix.entities;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 public class User {
 	private int id;
 	private String nom;
