@@ -473,7 +473,7 @@ public class AdminMediaController {
                             trailerPath.getText()
                         );
                 } catch (Exception ex) {
-                    new Alert(Alert.AlertType.ERROR, "Invalid data format!please check your inputs").show();
+                    new Alert(Alert.AlertType.ERROR, "Invalid data format! Please check your inputs").show();
                     return null;
                 }
             }

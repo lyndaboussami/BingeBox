@@ -36,7 +36,7 @@
                         <TableColumn fx:id="colMovieActions" text="Actions" prefWidth="150" />
                     </columns>
                     <placeholder>
-                		<Label text="No reported comments found." styleClass="card-text"/>
+                		<Label text="No movies found." styleClass="card-text"/>
             		</placeholder>
                 </TableView>
             </VBox>
@@ -59,7 +59,7 @@
                         <TableColumn fx:id="colSerieActions" text="Actions" prefWidth="150" />
                     </columns>
                     <placeholder>
-                		<Label text="No reported comments found." styleClass="card-text"/>
+                		<Label text="No series found." styleClass="card-text"/>
             		</placeholder>
                 </TableView>
             </VBox>

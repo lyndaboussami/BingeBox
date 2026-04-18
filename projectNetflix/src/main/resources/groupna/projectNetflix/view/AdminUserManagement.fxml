@@ -26,6 +26,9 @@
 	                    <TableColumn fx:id="colMovieReason" text="Reason" prefWidth="200"/>
 	                    <TableColumn fx:id="colMovieActions" text="Actions" prefWidth="200"/>
 	                </columns>
+	                <placeholder>
+                		<Label text="No reported comments found." styleClass="card-text"/>
+            		</placeholder>
 	            </TableView>
 	        </VBox>
 	    </Tab>
@@ -41,6 +44,9 @@
 	                    <TableColumn fx:id="colSerieReason" text="Reason" prefWidth="200"/>
 	                    <TableColumn fx:id="colSerieActions" text="Actions" prefWidth="200"/>
 	                </columns>
+	                <placeholder>
+                		<Label text="No reported comments found." styleClass="card-text"/>
+            		</placeholder>
 	            </TableView>
 	        </VBox>
 	    </Tab>
