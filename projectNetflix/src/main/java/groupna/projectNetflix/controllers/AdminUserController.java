@@ -45,7 +45,6 @@ public class AdminUserController {
     private void setupTable(TableView<Commentaire> table, TableColumn<Commentaire, Integer> userCol, 
             TableColumn<Commentaire, Integer> idCol, TableColumn<Commentaire, String> contentCol, 
             TableColumn<Commentaire, String> reasonCol, TableColumn<Commentaire, Void> actionCol, String type) {
-
 		userCol.setCellValueFactory(new PropertyValueFactory<>("id_user"));
 		idCol.setCellValueFactory(new PropertyValueFactory<>("id_oeuvre"));
 		contentCol.setCellValueFactory(new PropertyValueFactory<>("content"));
@@ -80,15 +79,13 @@ public class AdminUserController {
 
     private void handleModeration(Commentaire comment, String action, String type) {
         if (comment == null) return;
-
         if ("Delete".equals(action)) {
             handleAdminAction("Delete " + type + " Comment", () -> {
-                commentService.supprimerCommentaire(comment.getId(), type);
-                if ("film".equals(type)) movieData.remove(comment);
+                if ("film".equals(type)) 
+                	movieData.remove(comment);
                 else serieData.remove(comment);
             });
         } else {
-            commentService.validerCommentaire(comment.getId(), type);
             if ("film".equals(type)) movieData.remove(comment);
             else serieData.remove(comment);
         }

@@ -23,11 +23,11 @@ public class CommentaireService {
     }
 //----------------------------------------------------------------------------------------------
     public List<Commentaire> listerCommentairesSignalesFilms() {
-        return CommentaireDAO.findReportedSeries();
+        return CommentaireDAO.findReportedFilms();
     }
 //---------------------------------------------------------------------------------------
     public List<Commentaire> listerCommentairesSignalesSeries() {
-        return CommentaireDAO.findReportedFilms();
+        return CommentaireDAO.findReportedSeries();
     }
 //---------------------------------------------------------------------------------------------
     public Boolean validerCommentaire(int idComment, String type) {

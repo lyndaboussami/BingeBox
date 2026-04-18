@@ -86,6 +86,7 @@ public class CommentaireDAO {
             pstmt.setInt(1, idComment);
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
+        	e.getMessage();
             e.printStackTrace();
             return false;
         }
@@ -98,20 +99,21 @@ public class CommentaireDAO {
             pstmt.setInt(1, idComment);
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
+        	e.getMessage();
             e.printStackTrace();
             return false;
         }
     }
     public static List<Commentaire> findReportedFilms() {
         List<Commentaire> reportedList = new ArrayList<>();
-        String sql = "SELECT id, id_user, id_movie AS id_oeuvre, content, reported, raison FROM film_commentaire WHERE reported = true ";
+        String sql = "SELECT id , id_user , id_movie , content , reported, raison FROM film_commentaire WHERE reported = true ";
         try (PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
             
             while (rs.next()) {
                 reportedList.add(new Commentaire(
                     rs.getInt("id_user"),
-                    rs.getInt("id_oeuvre"),
+                    rs.getInt("id_movie"),
                     rs.getString("content"),
                     rs.getBoolean("reported"),
                     rs.getString("raison"),
@@ -125,14 +127,14 @@ public class CommentaireDAO {
     }
     public static List<Commentaire> findReportedSeries(){
     	List<Commentaire> reportedList = new ArrayList<>();
-    	String sql ="SELECT id, id_user, id_serie AS id_oeuvre, content, reported, raison FROM serie_commentaire WHERE reported = true";
+    	String sql ="SELECT id , id_user , id_serie , content , reported , raison FROM serie_commentaire WHERE reported = true";
     	try (PreparedStatement pstmt = conn.prepareStatement(sql);
                 ResultSet rs = pstmt.executeQuery()) {
                
                while (rs.next()) {
                    reportedList.add(new Commentaire(
                        rs.getInt("id_user"),
-                       rs.getInt("id_oeuvre"),
+                       rs.getInt("id_serie"),
                        rs.getString("content"),
                        rs.getBoolean("reported"),
                        rs.getString("raison"),

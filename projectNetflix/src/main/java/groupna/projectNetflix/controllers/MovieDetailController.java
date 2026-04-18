@@ -326,31 +326,6 @@ public class MovieDetailController {
             }
         }
     }
-    /*@FXML
-    private void handlePlayTrailer() {
-        Object content = MainViewController.getInstance().getSelectedContent();
-        
-        if (content instanceof Film movie) {
-            String trailerPath = movie.getPathTrailer(); 
-
-            if (trailerPath == null || trailerPath.isEmpty()) {
-                showError("Trailer Unavailable", "No trailer found for this movie.");
-                return;
-            }
-
-            try {
-                String resource = getClass().getResource(trailerPath).toExternalForm();
-                if (resource != null) {
-                    openVideoPlayer(0,0.0,resource, movie.getTitre() + " - Trailer");
-                } else {
-                    showError("File Error", "Trailer file not found on disk.");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }*/
-    
     @FXML
     private void handleBack() {
     	MainViewController.getInstance().goBack();

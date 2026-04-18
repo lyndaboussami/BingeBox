@@ -8,7 +8,6 @@ public class Commentaire {
 	private String content;
 	private String raison;
 	public Commentaire(int id_user, int id_oeuvre, String content,boolean reported,String raison,int id) {
-		super();
 		this.id_user = id_user;
 		this.id_oeuvre = id_oeuvre;
 		this.content = content;

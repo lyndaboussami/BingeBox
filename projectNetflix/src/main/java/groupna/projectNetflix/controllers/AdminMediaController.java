@@ -450,6 +450,14 @@ public class AdminMediaController {
         
         dialog.setResultConverter(btn -> {
             if (btn == saveButtonType) {
+            	if(resumeArea.getText().isEmpty()||titleField.getText().isEmpty()||selectedActors.isEmpty()||selectedDirectors.isEmpty()||selectedCats.isEmpty()||moviePath.getText().isEmpty()||posterPath.getText().isEmpty()||trailerPath.getText().isEmpty()) {
+            		new Alert(Alert.AlertType.ERROR, "Missing informations!all fields are required.").show();
+            		return null;
+            	}
+            	if(datePicker.getValue().isAfter(LocalDate.now().plusYears(20))||datePicker.getValue().getYear()<1888) {
+            		new Alert(Alert.AlertType.ERROR, "please enter a valide date!").show();
+            		return null;
+            	}
                 try {
                 	return new Film(
                             film == null ? 0 : film.getId(),
@@ -465,7 +473,7 @@ public class AdminMediaController {
                             trailerPath.getText()
                         );//---tests---
                 } catch (Exception ex) {
-                    new Alert(Alert.AlertType.ERROR, "Invalid data format!").show();
+                    new Alert(Alert.AlertType.ERROR, "Invalid data format!please check your inputs").show();
                     return null;
                 }
             }
@@ -572,6 +580,14 @@ public class AdminMediaController {
         dialogPane.setContent(new ScrollPane(grid));
         dialog.setResultConverter(btn -> {
             if (btn == saveButtonType) {
+            	if(resumeArea.getText().isEmpty()||titleField.getText().isEmpty()||posterField.getText().isEmpty()) {
+            		new Alert(Alert.AlertType.ERROR, "Missing informations!all fields are required.").show();
+            		return null;
+            	}
+            	if(datePicker.getValue().isAfter(LocalDate.now().plusYears(20))||datePicker.getValue().getYear()<1928) {
+            		new Alert(Alert.AlertType.ERROR, "please enter a valide date!").show();
+            		return null;
+            	}
                 return new Serie(serie == null ? 0 : serie.getId(), resumeArea.getText(), new ArrayList<>(),
                     titleField.getText(), datePicker.getValue(), new ArrayList<>(), new ArrayList<>(),
                      posterField.getText(), tempSaisonMap);
@@ -720,6 +736,10 @@ public class AdminMediaController {
         
         epDialog.setResultConverter(b -> {
             if (b == saveBtn) {
+            	if(title.getText().isEmpty()||resume.getText().isEmpty()||path.getText().isEmpty()||thumb.getText().isEmpty()) {
+            		new Alert(Alert.AlertType.ERROR, "Missing informations!all fields are required.").show();
+            		return null;
+            	}
                 try {
                     return new Episode(
                         episodes.size() + 1, 
