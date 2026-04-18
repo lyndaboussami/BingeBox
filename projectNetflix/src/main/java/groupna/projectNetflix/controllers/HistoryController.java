@@ -54,8 +54,8 @@ public class HistoryController extends BaseController {
                     });
             	}
             	else {
-            		Episode e=(Episode) item.getContent();
-            		int idSaison = episodeService.recupererIdSaison(e.getId());
+            		Episode e = (Episode) item.getContent();
+                    int idSaison = episodeService.recupererIdSaison(e.getId());
                     Saison s = saisonService.getSaisonById(idSaison);
                     int numSaison = s.getNum();
                     
@@ -65,13 +65,14 @@ public class HistoryController extends BaseController {
                     
                     String detail = TitreSerie + " S" + numSaison + " Ep" + e.getNumero();
                     
-                    row = createHistoryRow(detail, e.getPathMiniaure(), "Watched: " + item.getDateVisionnage().toLocalDateTime().toLocalDate(), "📺");
+                    row = createHistoryRow(detail, serie.getPathPoster(), 
+                            "Watched: " + item.getDateVisionnage().toLocalDateTime().toLocalDate(), "📺");
                     
                     row.setOnMouseClicked(event -> {
-                    	MainViewController.getInstance().setSelectedContent(serie);
+                        MainViewController.getInstance().setSelectedContent(serie);
                         MainViewController.getInstance().loadPage("SeriesDetailView.fxml");
                     });
-            	}
+                }
             	historyContainer.getChildren().add(row);
             }
         }
@@ -89,31 +90,44 @@ public class HistoryController extends BaseController {
 	                                           "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 4); -fx-cursor: hand;"));
         row.setOnMouseExited(e -> row.setStyle("-fx-padding: 15; -fx-background-color: transparent; -fx-background-radius: 12; " +
 	                                          " -fx-border-width: 0.5;"));
-	   
+        
         ImageView poster = new ImageView();
+        boolean imageLoaded = false;
+
         try {
-            String path = imagePath;
-            if (path != null && !path.isEmpty()) {
-                File file = new File(path);
-                
+            if (imagePath != null && !imagePath.isEmpty()) {
+                File file = new File(imagePath);
                 if (file.exists()) {
                     poster.setImage(new Image(new FileInputStream(file)));
-                } else {
-                    System.err.println("Fichier introuvable sur le disque : " + path);
+                    imageLoaded = true;
                 }
             }
         } catch (Exception e) {
-            System.err.println("Erreur lors du chargement de l'image : " + e.getMessage());
+            System.err.println("Image loading failed: " + e.getMessage());
+        }
+
+        poster.setFitHeight(90);
+        poster.setFitWidth(140);
+        poster.setPreserveRatio(false);
+
+        Rectangle clip = new Rectangle(140, 90);
+        clip.setArcWidth(15); clip.setArcHeight(15);
+        poster.setClip(clip);
+
+        StackPane imageContainer = new StackPane();
+        if (!imageLoaded) {
+            Label placeholder = new Label(type);
+            placeholder.setStyle("-fx-font-size: 30px;");
+            imageContainer.getChildren().add(placeholder);
+            imageContainer.setStyle("-fx-background-color: #1a1f31; -fx-background-radius: 12;");
+            imageContainer.setPrefSize(140, 90);
+        } else {
+            imageContainer.getChildren().add(poster);
         }
         
         poster.setFitHeight(90);
         poster.setFitWidth(140);
         poster.setPreserveRatio(false);
-
-        
-        Rectangle clip = new Rectangle(140, 90);
-        clip.setArcWidth(15); clip.setArcHeight(15);
-        poster.setClip(clip);
         
         
         VBox info = new VBox(8);

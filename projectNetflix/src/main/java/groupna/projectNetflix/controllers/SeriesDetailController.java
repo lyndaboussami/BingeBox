@@ -252,9 +252,41 @@ public class SeriesDetailController {
         	progressStatus.setStyle("-fx-text-fill: #D2B48C; -fx-font-weight: bold;");
         }
         
-        StackPane thumb = new StackPane(new Label("EP " + ep.getNumero()));
+        Serie series = (Serie) MainViewController.getInstance().getSelectedContent();
+        String posterPath = series.getPathPoster();
+
+        StackPane thumb = new StackPane();
         thumb.setPrefSize(180, 100);
-        thumb.setStyle("-fx-background-color: #1a1f31; -fx-background-radius: 5;");
+        thumb.setStyle("-fx-background-color: #1a1f31; -fx-background-radius: 5; -fx-overflow-hidden: true;");
+
+        boolean imageLoaded = false;
+
+        if (posterPath != null && !posterPath.isEmpty()) {
+            try {
+                File file = new File(posterPath);
+                if (file.exists()) {
+                    Image img = new Image(file.toURI().toString(), 180, 100, false, true);
+                    
+                    if (!img.isError()) {
+                        ImageView posterView = new ImageView(img);
+                        posterView.setFitWidth(180);
+                        posterView.setFitHeight(100);
+                        posterView.setPreserveRatio(false); 
+                        
+                        thumb.getChildren().add(posterView);
+                        imageLoaded = true;
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("Could not load episode thumbnail: " + posterPath);
+            }
+        }
+
+        if (!imageLoaded) {
+            Label fallbackLabel = new Label("EP " + ep.getNumero());
+            fallbackLabel.setStyle("-fx-text-fill: -fx-text-muted; -fx-font-weight: bold;");
+            thumb.getChildren().add(fallbackLabel);
+        }
         
         VBox info = new VBox(5);
         Label title = new Label(ep.getNumero() + ". " + ep.getTitre());
