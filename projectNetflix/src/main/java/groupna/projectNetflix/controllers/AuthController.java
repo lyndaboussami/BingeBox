@@ -39,8 +39,8 @@ public class AuthController extends BaseController{
         clearFields();
         
         if (isLoginMode) {
-            authTitle.setText("Sign In");
-            submitBtn.setText("Sign In");
+            authTitle.setText("Log In");
+            submitBtn.setText("Log In");
             switchText.setText("New to BingeBox?");
             switchLink.setText("Sign up now.");
             

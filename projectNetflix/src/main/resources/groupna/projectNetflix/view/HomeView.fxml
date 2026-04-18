@@ -12,7 +12,7 @@
             
             <Region style="-fx-background-color: linear-gradient(to right, rgba(17,21,34,1) 10%, rgba(17,21,34,0) 80%);" mouseTransparent="true"/>
 
-            <VBox spacing="15" alignment="CENTER_LEFT" mouseTransparent="true">
+            <VBox spacing="15" alignment="CENTER_LEFT">
                 <padding><Insets left="60" bottom="30"/></padding>
                 
                 <HBox fx:id="heroMetaBox" spacing="10" alignment="CENTER_LEFT">
@@ -27,7 +27,7 @@
 
         
         <VBox spacing="10" styleClass="category-section">
-            <Label text="Most Watched" styleClass="categoryTitle"/>
+            <Label text="Top 5 Most Watched Movies" styleClass="categoryTitle"/>
             <ScrollPane hbarPolicy="NEVER" vbarPolicy="NEVER" styleClass="inner-scroll">
                 <HBox fx:id="mostWatchedRow" spacing="20">
                     <padding><Insets left="40" right="40"/></padding>
@@ -36,7 +36,7 @@
         </VBox>
         
         <VBox spacing="10" styleClass="category-section">
-            <Label text="Most Rated" styleClass="categoryTitle"/>
+            <Label text="Top 5 Most Rated Movies" styleClass="categoryTitle"/>
             <ScrollPane hbarPolicy="NEVER" vbarPolicy="NEVER" styleClass="inner-scroll">
                 <HBox fx:id="topRatedRow" spacing="20">
                     <padding><Insets left="40" right="40"/></padding>

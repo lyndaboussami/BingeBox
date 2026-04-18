@@ -2,6 +2,7 @@ package groupna.projectNetflix.controllers;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -33,6 +34,10 @@ public class HomeViewController extends BaseController{
     @FXML private VBox categoryRowsContainer;
     private MediaPlayer mediaPlayer;
 
+    @FXML private Button heroWatchBtn;
+    
+    private Film currentHeroMovie;
+    
     @FXML
     public void initialize() {
         loadContent();
@@ -58,7 +63,10 @@ public class HomeViewController extends BaseController{
         allMedia.addAll(series);
         
         if (!movies.isEmpty()) {
-            setupHero(movies.get(movies.size() - 1));
+            List<Film> shuffledMovies = new ArrayList<>(movies);
+            Collections.shuffle(shuffledMovies);
+            
+            setupHero(shuffledMovies.get(0));
         }
 
         DAOStatics.getTop5MostViewed().forEach((film, views) -> {
@@ -115,8 +123,15 @@ public class HomeViewController extends BaseController{
     }
     
     private void setupHero(Film movie) {
+    	this.currentHeroMovie = movie;
         heroTitle.setText(movie.getTitre().toUpperCase());
         heroDesc.setText(movie.getResume());
+        
+        heroWatchBtn.setOnAction(event -> {
+            if (currentHeroMovie != null) {
+                MainViewController.getInstance().loadDetailPage("MovieDetailView.fxml", currentHeroMovie);
+            }
+        });
         
         heroMetaBox.getChildren().clear();
         heroMetaBox.getChildren().addAll(

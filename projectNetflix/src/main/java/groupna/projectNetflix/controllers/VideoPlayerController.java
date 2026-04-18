@@ -133,7 +133,8 @@ public class VideoPlayerController {
 
     private void playCurrentEpisode() {
         if (currentIndex < 0 || currentIndex >= playlist.size()) return;
-
+        nextEpisodeOverlay.setVisible(false);
+        
         Episode ep = playlist.get(currentIndex);
         this.currentIdEpisode = ep.getId();
         
@@ -276,8 +277,12 @@ public class VideoPlayerController {
     }
 
     private void startBingeCountdown() {
+    	if (bingeTimer != null) bingeTimer.stop();
+    	
         nextEpisodeOverlay.setVisible(true);
         final int[] secondsLeft = {10};
+        
+        countdownLabel.setText("10");
         
         bingeTimer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
             secondsLeft[0]--;
@@ -292,7 +297,9 @@ public class VideoPlayerController {
 
     @FXML
     private void playNextImmediately() {
+    	
         if (bingeTimer != null) bingeTimer.stop();
+        nextEpisodeOverlay.setVisible(false);
         currentIndex++;
         playCurrentEpisode();
     }
