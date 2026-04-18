@@ -739,7 +739,7 @@ public class DataStore {
                                     List.of(new Artiste(47, "Lee Se-young"), new Artiste(48, "Sakaguchi Kentaro")),
                                     List.of(new Artiste(49, "Moon Hyun-sung")),
                                     "C:\\Users\\bouss\\Desktop\\netflix\\what_comes_after_love.jpg",
-                                    new HashMap<>()),
+                                    wcalSaisons),
 
                                 new Serie(5,
                                     "A gothic horror animation following Richter Belmont.",
@@ -748,7 +748,7 @@ public class DataStore {
                                     List.of(new Artiste(50, "Richter Belmont"), new Artiste(51, "Alucard")),
                                     List.of(new Artiste(52, "Kevin Bradley")),
                                     "C:\\Users\\bouss\\Desktop\\netflix\\castlevania_nocturne.jpg",
-                                    new HashMap<>()),
+                                    cnSaisons),
                                 
                                 new Serie(6,
                                     "Eight close-knit siblings of the powerful Bridgerton family attempt to find love and happiness in London high society.",

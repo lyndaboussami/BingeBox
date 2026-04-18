@@ -451,11 +451,11 @@ public class AdminMediaController {
         dialog.setResultConverter(btn -> {
             if (btn == saveButtonType) {
             	if(resumeArea.getText().isEmpty()||titleField.getText().isEmpty()||selectedActors.isEmpty()||selectedDirectors.isEmpty()||selectedCats.isEmpty()||moviePath.getText().isEmpty()||posterPath.getText().isEmpty()||trailerPath.getText().isEmpty()) {
-            		new Alert(Alert.AlertType.ERROR, "Missing informations!all fields are required.").show();
+            		new Alert(Alert.AlertType.ERROR, "Missing informations! All fields are required.").show();
             		return null;
             	}
             	if(datePicker.getValue().isAfter(LocalDate.now().plusYears(20))||datePicker.getValue().getYear()<1888) {
-            		new Alert(Alert.AlertType.ERROR, "please enter a valide date!").show();
+            		new Alert(Alert.AlertType.ERROR, "Please enter a valid date!").show();
             		return null;
             	}
                 try {
@@ -581,11 +581,11 @@ public class AdminMediaController {
         dialog.setResultConverter(btn -> {
             if (btn == saveButtonType) {
             	if(resumeArea.getText().isEmpty()||titleField.getText().isEmpty()||posterField.getText().isEmpty()) {
-            		new Alert(Alert.AlertType.ERROR, "Missing informations!all fields are required.").show();
+            		new Alert(Alert.AlertType.ERROR, "Missing informations! All fields are required.").show();
             		return null;
             	}
             	if(datePicker.getValue().isAfter(LocalDate.now().plusYears(20))||datePicker.getValue().getYear()<1928) {
-            		new Alert(Alert.AlertType.ERROR, "please enter a valide date!").show();
+            		new Alert(Alert.AlertType.ERROR, "Please enter a valid date!").show();
             		return null;
             	}
                 return new Serie(serie == null ? 0 : serie.getId(), resumeArea.getText(), new ArrayList<>(),
@@ -737,7 +737,7 @@ public class AdminMediaController {
         epDialog.setResultConverter(b -> {
             if (b == saveBtn) {
             	if(title.getText().isEmpty()||resume.getText().isEmpty()||path.getText().isEmpty()||thumb.getText().isEmpty()) {
-            		new Alert(Alert.AlertType.ERROR, "Missing informations!all fields are required.").show();
+            		new Alert(Alert.AlertType.ERROR, "Missing informations! All fields are required.").show();
             		return null;
             	}
                 try {

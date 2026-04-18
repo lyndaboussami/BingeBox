@@ -12,14 +12,15 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-    	/*for(Film f:DataStore.getMovies()) {
+    	for(Film f:DataStore.getMovies()) {
     		FilmDAO.save(f);
     	}
     	for(Serie s:DataStore.getSeries()) {
     		SerieDAO.save(s);
-    	}*/
+    	}
+    	/*
     	CommentaireService comment=new CommentaireService();
-    	comment.validerCommentaire(35, "film");
+    	comment.validerCommentaire(35, "film");*/
     	//UserService userService=new UserService();
     	//userService.inscrireUtilisateur(new User(0, "admin", "admin", "admin@gmail.com", "admin123@", Role.ADMIN));
     }
