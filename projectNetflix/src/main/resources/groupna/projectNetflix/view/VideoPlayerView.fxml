@@ -15,9 +15,9 @@
     </HBox>
     
     <VBox fx:id="controlsBox" alignment="BOTTOM_CENTER" spacing="10" pickOnBounds="false" StackPane.alignment="BOTTOM_CENTER">
-        <VBox spacing="10" style="-fx-background-color: rgba(0,0,0,0.8); -fx-padding: 20;">
+        <VBox spacing="10" style=" -fx-background-color:transparent; -fx-padding: 20;">
         
-        <Slider fx:id="progressBar" style="-fx-cursor: hand;"/>
+        <Slider fx:id="progressBar" style="-fx-cursor: hand; "/>
         <HBox spacing="20" alignment="CENTER"></HBox>
     </VBox>
         <HBox fx:id="controlsBar" spacing="20" alignment="CENTER">
