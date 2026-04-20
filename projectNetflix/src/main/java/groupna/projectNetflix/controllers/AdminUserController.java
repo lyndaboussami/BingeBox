@@ -81,11 +81,13 @@ public class AdminUserController {
         if (comment == null) return;
         if ("Delete".equals(action)) {
             handleAdminAction("Delete " + type + " Comment", () -> {
+            	commentService.supprimerCommentaire(comment.getId(), type);
                 if ("film".equals(type)) 
                 	movieData.remove(comment);
                 else serieData.remove(comment);
             });
         } else {
+        	commentService.validerCommentaire(comment.getId(), type);
             if ("film".equals(type)) movieData.remove(comment);
             else serieData.remove(comment);
         }
